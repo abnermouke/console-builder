@@ -15,6 +15,9 @@
         }
     ],
     "require": {
-        "abnermouke/easy-builder": "*"
+        "abnermouke/easy-builder": "*",
+        "anhskohbo/no-captcha": "*",
+        "intervention/image": "*",
+        "maatwebsite/excel": "*"
     }
 }
