@@ -1,0 +1,20 @@
+{
+    "name": "abnermouke/console-builder",
+    "description": "ConsoleBuilder是一款完整的管理后台/控制面板构建工具包，一键安装即可搭建一套完整后台模版，内含一套完整表格、表单构建器，开发高效，体验优良！",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Abnermouke\\ConsoleBuilder\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Abnermouke",
+            "email": "abnermouke@outlook.com"
+        }
+    ],
+    "require": {
+        "abnermouke/easy-builder": "*"
+    }
+}
