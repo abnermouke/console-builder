@@ -1,0 +1,48 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-14
+ * Time: 11:39:28
+ */
+
+namespace App\Services\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Repository\Abnermouke\Console\AdminRepository;
+use App\Repository\Abnermouke\Console\RoleRepository;
+
+/**
+ * 管理员角色逻辑服务容器
+ * Class RoleService
+ * @package App\Services\Abnermouke\Console
+ */
+class RoleService extends BaseService
+{
+
+    /**
+     * 引入父级构造
+     * RoleService constructor.
+     * @param bool $pass 是否直接获取结果
+     */
+    public function __construct($pass = false) { parent::__construct($pass); }
+
+
+    /**
+     * 统计角色数量
+     * @Author Abnermouke <abnermouke@gmail.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @param $role_id
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function census($role_id)
+    {
+        //更新角色个数
+        (new RoleRepository())->update(['id' => (int)$role_id], ['admin_count' => (new AdminRepository())->count(['role_id' => (int)$role_id]), 'updated_at' => auto_datetime()]);
+        //返回成功
+        return $this->success(compact('role_id'));
+    }
+}

@@ -1,0 +1,95 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-16
+ * Time: 14:08:49
+ */
+
+use App\Model\Abnermouke\Console\Menus;
+use App\Repository\Abnermouke\Console\MenuRepository;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+/**
+ * 菜单数据迁移处理器
+ * Class CreateAbnermoukeConsoleMenusTable
+ */
+class CreateAbnermoukeConsoleMenusTable extends Migration
+{
+    /**
+     * 开始菜单数据迁移操作
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time 2022-03-16 14:08:49
+     * @throws \Exception
+     */
+    public function up()
+    {
+        Schema::connection(Menus::DB_CONNECTION)->create('acb_menus', function (Blueprint $table) {
+            //设置字符集
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            //设置引擎
+            $table->engine = 'innodb';
+            //配置字段
+            $table->increments('id')->comment('表ID');
+            //其他字段配置
+            $table->string('guard_name', 100)->nullable(false)->default('')->comment('菜单名称');
+            $table->string('alias', 200)->nullable(false)->default('DEFAULT')->comment('别名（开发进行特殊处理时需要）');
+            $table->integer('parent_id')->nullable(false)->default(0)->unsigned()->comment('父级菜单ID');
+            $table->tinyInteger('type')->nullable(false)->default(Menus::TYPE_OF_REDIRECT_WITH_NONE)->unsigned()->comment('跳转类型');
+            $table->string('route_name', 200)->nullable(false)->default('')->comment('跳转路由名称');
+            $table->string('redirect_uri', 255)->nullable(false)->default('')->comment('跳转链接');
+            $table->longText('permission_nodes')->comment('权限节点');
+            $table->string('icon', 100)->nullable(false)->default('')->comment('图标class');
+            $table->string('pulse_theme', 50)->nullable(false)->default('')->comment('pulse样式（white、primary、secondary、success、info、warning、danger、light、dark）');
+            $table->string('number_theme', 50)->nullable(false)->default('')->comment('数字提示样式（white、primary、secondary、success、info、warning、danger、light、dark）');
+            $table->timestamp('created_at')->nullable()->comment('创建时间');
+            $table->timestamp('updated_at')->nullable()->comment('更新时间');
+            //索引配置
+            $table->index('parent_id', 'PARENT_ID');
+        });
+        //添加表自增长值
+        (new MenuRepository())->setIncrementId(1, Menus::DB_CONNECTION);
+        //修改表注释
+        (new MenuRepository())->setTableComment('菜单表', Menus::DB_CONNECTION);
+        //设置默认数据
+        $this->defaultData();
+    }
+
+    /**
+     * 设置默认数据
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time 2022-03-16 14:08:49
+     * @return mixed
+     * @throws \Exception
+     */
+    private function defaultData()
+    {
+        //引入MenuRepository
+        $repository = new MenuRepository();
+        // 默认数据处理逻辑
+        $repository->insertAll([
+            ['id' => 1, 'guard_name' => '控制台', 'alias' => 'CONSOLE', 'parent_id' => 0, 'type' => Menus::TYPE_OF_REDIRECT_WITH_NONE, 'route_name' => '', 'redirect_uri' => '', 'permission_nodes' => [], 'icon' => '', 'pulse_theme' => '', 'number_theme' => '', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
+            ['id' => 2, 'guard_name' => '首页', 'alias' => 'INDEX', 'parent_id' => 1, 'type' => Menus::TYPE_OF_REDIRECT_WITH_ROUTE, 'route_name' => 'abnermouke.console.index', 'permission_nodes' => ['get@abnermouke.console.index'], 'redirect_uri' => route('abnermouke.console.index'), 'icon' => '', 'pulse_theme' => '', 'number_theme' => '', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
+        ]);
+        //返回数据
+        return true;
+    }
+
+    /**
+     * 回滚菜单数据迁移操作
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time 2022-03-16 14:08:49
+     * @throws \Exception
+     */
+    public function down()
+    {
+        Schema::connection(Menus::DB_CONNECTION)->dropIfExists('acb_menus');
+    }
+}

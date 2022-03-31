@@ -1,0 +1,81 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-14
+ * Time: 11:39:28
+ */
+
+namespace App\Handler\Cache\Data\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseCacheHandler;
+use App\Repository\Abnermouke\Console\AdminLogRepository;
+
+/**
+ * 管理员操作记录数据缓存处理器
+ * Class AdminLogCacheHandler
+ * @package App\Handler\Cache\Data\Abnermouke\Console
+ */
+class AdminLogCacheHandler extends BaseCacheHandler
+{
+
+    //管理员ID
+    private $admin_id;
+
+    /**
+     * 构造函数
+     * AdminLogCacheHandler constructor.
+     * @param $admin_id int 管理员ID
+     * @throws \Exception
+     */
+    public function __construct($admin_id)
+    {
+        //引入父级构造
+        parent::__construct('abnermouke:console:admin_logs_data_cache:'.($this->admin_id = $admin_id), 0, 'file');
+        //初始化缓存
+        $this->init();
+    }
+
+    /**
+     * 刷新当前缓存
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time __TIME__
+     * @return array
+     * @throws \Exception
+     */
+    public function refresh()
+    {
+        //删除缓存
+        $this->clear();
+        //初始化缓存
+        return $this->init();
+    }
+
+    /**
+     * 初始化缓存
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time __TIME__
+     * @return array
+     * @throws \Exception
+     */
+    private function init()
+    {
+        //获取缓存
+        $cache = $this->cache;
+        //判断缓存信息
+        if (!$cache || empty($this->cache)) {
+            //引入Repository
+            $repository = new AdminLogRepository();
+            //初始化缓存数据
+            $this->cache = $cache = $repository->limit(['admin_id' => (int)$this->admin_id], ['id', 'content', 'created_at', 'ip'], [], ['created_at' => 'desc']);
+            //保存缓存
+            $this->save();
+        }
+        //返回缓存信息
+        return $cache;
+    }
+
+}

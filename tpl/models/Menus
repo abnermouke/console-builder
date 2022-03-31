@@ -1,0 +1,53 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-16
+ * Time: 14:08:49
+ */
+
+namespace App\Model\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseModel;
+
+/**
+ * 菜单表
+ * Class Menus
+ * @package App\Model\Abnermouke\Console
+ */
+class Menus extends BaseModel
+{
+    //设置表名
+    protected $table = self::TABLE_NAME;
+
+    //定义表链接信息
+    protected $connection = 'mysql';
+
+    //定义表名
+    public const TABLE_NAME = 'acb_menus';
+
+    //定义表链接信息
+    public const DB_CONNECTION = 'mysql';
+
+    //类型分组解释信息
+    public const TYPE_GROUPS = [
+        //是否选择
+        '__switch__' => [self::SWITCH_ON => '是', self::SWITCH_OFF => '不是'],
+        //默认状态
+        '__status__' => [self::STATUS_ENABLED => '正常启用', self::STATUS_DISABLED => '禁用中', self::STATUS_VERIFYING => '审核中', self::STATUS_VERIFY_FAILED => '审核失败', self::STATUS_DELETED => '已删除'],
+
+        //菜单跳转类型
+        'types' => [
+            self::TYPE_OF_REDIRECT_WITH_NONE => '不跳转',
+            self::TYPE_OF_REDIRECT_WITH_ROUTE => '路由跳转模式',
+            self::TYPE_OF_REDIRECT_WITH_LINK => '自定义链接跳转模式',
+        ],
+
+    ];
+
+    //跳转类型
+    public const TYPE_OF_REDIRECT_WITH_NONE = 1;
+    public const TYPE_OF_REDIRECT_WITH_ROUTE = 2;
+    public const TYPE_OF_REDIRECT_WITH_LINK = 3;
+}

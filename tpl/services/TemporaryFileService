@@ -1,0 +1,68 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-15
+ * Time: 02:43:04
+ */
+
+namespace App\Services\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler;
+use App\Repository\Abnermouke\Console\TemporaryFileRepository;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+
+/**
+ * 临时文件记录逻辑服务容器
+ * Class TemporaryFileService
+ * @package App\Services\Abnermouke\Console
+ */
+class TemporaryFileService extends BaseService
+{
+
+    /**
+     * 引入父级构造
+     * TemporaryFileService constructor.
+     * @param bool $pass 是否直接获取结果
+     */
+    public function __construct($pass = false) { parent::__construct($pass); }
+
+    /**
+     * 创建临时文件信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @param $storage_name string 文件路径
+     * @param string $storage_disk 驱动
+     * @param int $expire_second 过期秒数
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function temporary($storage_name, $storage_disk = 'public', $expire_second = 0)
+    {
+        //初始化过期秒数
+        $expire_second = (int)$expire_second > 0 ? (int)$expire_second : (int)(new ConfigCacheHandler())->get('TEMPORARY_FILES_AUTO_DELETE_SECOND_LIMIT', 3600);
+        //整理信息
+        $file = [
+            'storage_disk' => $storage_disk,
+            'storage_name' => $storage_name,
+            'storage_path' => Storage::disk($storage_disk)->path($storage_name),
+            'link' => Storage::disk($storage_disk)->url($storage_name),
+            'expire_time' => time() + $expire_second,
+            'created_at' => auto_datetime(),
+            'updated_at' => auto_datetime()
+        ];
+        //判断信息是否存在
+        if (!$temporary_file_id = (new TemporaryFileRepository())->find(Arr::only($file, ['storage_disk', 'storage_name']), 'id')) {
+            //创建临时文件信息
+            $temporary_file_id = (new TemporaryFileRepository())->insertGetId($file);
+        }
+        //拆分文件信息
+        $file['file_info'] = pathinfo($file['storage_name']);
+        //返回成功
+        return $this->success(compact('temporary_file_id', 'file'));
+    }
+}

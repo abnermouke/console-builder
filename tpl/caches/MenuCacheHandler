@@ -1,0 +1,145 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-16
+ * Time: 14:52:26
+ */
+
+namespace App\Handler\Cache\Data\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseCacheHandler;
+use App\Repository\Abnermouke\Console\MenuRepository;
+use Illuminate\Support\Arr;
+
+/**
+ * 菜单数据缓存处理器
+ * Class MenuCacheHandler
+ * @package App\Handler\Cache\Data\Abnermouke\Console
+ */
+class MenuCacheHandler extends BaseCacheHandler
+{
+
+    /**
+     * 自定义参数
+     * @var array
+     */
+    private $custom_params = [];
+
+    /**
+     * 管理员ID
+     * @var
+     */
+    private $admin_id;
+
+
+    /**
+     * 构造函数
+     * MenuCacheHandler constructor.
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        //引入父级构造
+        parent::__construct('abnermouke:console:menus_data_cache:'.($this->admin_id = current_auth('id', config('console_builder.session_prefix', 'abnermouke:console:auth'))), rand(86300, 863000), 'file');
+        //初始化缓存
+        $this->init();
+    }
+
+    /**
+     * 刷新当前缓存
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time __TIME__
+     * @return array
+     * @throws \Exception
+     */
+    public function refresh()
+    {
+        //删除缓存
+        $this->clear();
+        //初始化缓存
+        return $this->init();
+    }
+
+    /**
+     * 自定义菜单显示
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @return bool
+     * @throws \Exception
+     */
+    private function customs()
+    {
+
+        // TODO : 针对此管理员特殊提示（__ALIAS__为菜单项特殊标识）
+
+//        $this->custom_params = [
+//            '__ALIAS__' => ['number' => 1, 'pulse_theme' => 'success', 'number_theme' => 'primary', 'guard_name' => '自定义菜单名称（其他项也可快读覆盖使用）'],
+//        ];
+
+        //设置缓存
+        $this->cache['customs'] = $this->custom_params;
+        //保存缓存
+        $this->save();
+
+        //返回成功
+        return true;
+    }
+
+    /**
+     * 初始化缓存
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time __TIME__
+     * @return array
+     * @throws \Exception
+     */
+    private function init()
+    {
+        //获取缓存
+        $cache = $this->cache;
+        //判断缓存信息
+        if (!$cache || empty($this->cache)) {
+            //初始化缓存数据
+            if ($this->cache = $cache = ['menus' => $this->getSubMenus(), 'customs' => $this->custom_params]) {
+                //保存缓存
+                $this->save();
+            }
+        }
+        //返回缓存信息
+        return $cache;
+    }
+
+    /**
+     * 获取子菜单信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @param int $menu_id
+     * @param array $sub_menus
+     * @return array|mixed|string
+     * @throws \Exception
+     */
+    private function getSubMenus($menu_id = 0, $sub_menus = [])
+    {
+        //查询子菜单
+        if ($menus = (new MenuRepository())->get(['parent_id' => (int)$menu_id], ['id', 'alias', 'guard_name', 'parent_id', 'type', 'route_name', 'redirect_uri', 'icon', 'pulse_theme', 'number_theme'])) {
+            //循环子菜单
+            foreach ($menus as $k => $menu) {
+                //查询子集
+                if ($subs = $this->getSubMenus((int)$menu['id'], [])) {
+                    //设置子集信息
+                    $menus[$k]['subs'] = $subs;
+                }
+            }
+            //设置子菜单
+            $sub_menus = $menus;
+        }
+        //返回子菜单
+        return $sub_menus;
+    }
+
+}

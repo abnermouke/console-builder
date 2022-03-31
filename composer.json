@@ -16,8 +16,9 @@
     ],
     "require": {
         "abnermouke/easy-builder": "*",
-        "anhskohbo/no-captcha": "*",
         "intervention/image": "*",
-        "maatwebsite/excel": "*"
+        "maatwebsite/excel": "*",
+        "overtrue/laravel-wechat": "^5.0",
+        "overtrue/laravel-pinyin": "*"
     }
 }

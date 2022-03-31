@@ -1,0 +1,42 @@
+<?php
+
+
+namespace App\Builders\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseModel;
+
+/**
+ * 构建器基础主题配置
+ * Class ConsoleBuilderBasicTheme
+ * @package App\Builders\Abnermouke\Console
+ */
+class ConsoleBuilderBasicTheme
+{
+
+    //keen metronic 8 模版主题
+    public const TABLE_WITH_KM8 = 'km8';
+    public const FORM_WITH_KM8 = 'km8';
+
+    //默认主题色
+    public const DEFAULT_THEME_ALIAS = ['primary', 'info', 'success', 'danger', 'warning', 'dark'];
+
+
+    // 默认状态 status 主题
+    public const DEFAULT_STATUS_THEME = [
+        BaseModel::STATUS_ENABLED => 'success',
+        BaseModel::STATUS_DISABLED => 'warning',
+        BaseModel::STATUS_VERIFYING => 'primary',
+        BaseModel::STATUS_VERIFY_FAILED => 'info',
+        BaseModel::STATUS_DELETED => 'danger',
+    ];
+
+    // 默认选择 switch 主题
+    public const DEFAULT_SWITCH_THEME = [
+        BaseModel::SWITCH_ON => 'success',
+        BaseModel::SWITCH_OFF => 'danger'
+    ];
+
+
+    // TODO: 更多自定义主题规则
+
+}

@@ -1,0 +1,163 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-14
+ * Time: 11:39:28
+ */
+
+namespace App\Handler\Cache\Data\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseCacheHandler;
+use App\Model\Abnermouke\Console\Roles;
+use App\Repository\Abnermouke\Console\NodeRepository;
+use App\Repository\Abnermouke\Console\RoleRepository;
+use Illuminate\Http\Request;
+
+/**
+ * 管理员角色数据缓存处理器
+ * Class RoleCacheHandler
+ * @package App\Handler\Cache\Data\Abnermouke\Console
+ */
+class RoleCacheHandler extends BaseCacheHandler
+{
+
+    //角色ID
+    private $role_id;
+
+    /**
+     * 构造函数
+     * RoleCacheHandler constructor.
+     * @param $role_id int 角色ID
+     * @throws \Exception
+     */
+    public function __construct($role_id)
+    {
+        //引入父级构造
+        parent::__construct('abnermouke:console:roles_data_cache:'.($this->role_id = $role_id), 0, 'file');
+        //初始化缓存
+        $this->init();
+    }
+
+    /**
+     * 刷新当前缓存
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time __TIME__
+     * @return array
+     * @throws \Exception
+     */
+    public function refresh()
+    {
+        //删除缓存
+        $this->clear();
+        //初始化缓存
+        return $this->init();
+    }
+
+
+    /**
+     * 检查权限
+     * @Author Abnermouke <abnermouke@gmail.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @param $request Request
+     * @return bool
+     */
+    public function checkPermission($request)
+    {
+        //获取全部请求方式
+        $methods = $request->route()->methods;
+        //获取请求方式
+        $method = $methods ? strtolower(head($methods)) : 'get';
+        //验证权限
+        return $this->hasPermission($method, $request->route()->getName());
+    }
+
+    /**
+     * 确认是否有权限
+     * @Author Abnermouke <abnermouke@gmail.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @param $method
+     * @param $route_name
+     * @return bool
+     */
+    public function hasPermission($method, $route_name)
+    {
+        //获取当前权限标示
+        $alias = $method.'&'.$route_name;
+        //判断是否是满权限
+        if ((int)$this->cache['is_full_permission'] === Roles::SWITCH_ON) {
+            //返回成功
+            return true;
+        }
+        //设置节点信息
+        $this->cache['permission_nodes'] = object_2_array($this->cache['permission_nodes']);
+        //循环默认必须存在路由
+        foreach (config('console_builder.nodes.default_node_aliases', []) as $alias) {
+            //新增必须存在的权限节点
+            array_push($this->cache['permission_nodes'], $alias);
+        }
+        //判断是否在权限组内
+        if (!$this->cache['permission_nodes'] || empty($this->cache['permission_nodes']) || !in_array($alias, $this->cache['permission_nodes'])) {
+            //返回失败
+            return false;
+        }
+        //验证成功
+        return true;
+    }
+
+    /**
+     * 获取当前所有节点
+     * @Author Abnermouke <abnermouke@gmail.com>
+     * @Originate in Abnermouke's MBP
+     * @Time __TIME__
+     * @return array|mixed|string
+     * @throws \Exception
+     */
+    public function currentPermissions()
+    {
+        //设置节点信息
+        $this->cache['permission_nodes'] = object_2_array($this->cache['permission_nodes']);
+        //判断是否是满权限
+        if ((int)$this->cache['is_full_permission'] === Roles::SWITCH_ON) {
+            //获取全部姐弟哪
+            $this->cache['permission_nodes'] = (new NodeRepository())->pluck('alias');
+        } else {
+            //添加首页
+            $this->cache['permission_nodes'][] = 'get&index';
+        }
+        //返回节点信息
+        return $this->cache['permission_nodes'];
+    }
+
+
+    /**
+     * 初始化缓存
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Yunni Technology Co Ltd.
+     * @Time __TIME__
+     * @return array
+     * @throws \Exception
+     */
+    private function init()
+    {
+        //获取缓存
+        $cache = $this->cache;
+        //判断缓存信息
+        if (!$cache || empty($this->cache)) {
+            //引入Repository
+            $repository = new RoleRepository();
+            //初始化缓存数据
+            if ($this->cache = $cache = $repository->row(['id' => (int)$this->role_id], ['is_full_permission', 'permission_nodes'])) {
+                //保存缓存
+                $this->save();
+            }
+        }
+        //返回缓存信息
+        return $cache;
+    }
+
+}

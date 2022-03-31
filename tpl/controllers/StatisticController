@@ -1,0 +1,24 @@
+<?php
+/**
+ * Power by abnermouke/easy-builder.
+ * User: Abnermouke <abnermouke@outlook.com>
+ * Originate in Yunni Technology Co Ltd.
+ * Date: 2022-03-14
+ * Time: 16:50:58
+*/
+
+namespace App\Http\Controllers\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseController;
+
+/**
+ * 基础信息统计基础控制器
+ * Class StatisticController
+ * @package App\Http\Controllers\Abnermouke\Console
+ */
+class StatisticController extends BaseController
+{
+
+    //
+
+}

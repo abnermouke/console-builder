@@ -1,0 +1,19 @@
+/**
+    黑色主题下 ck_editor富文本编辑器背景色调整
+ */
+.dark-mode .ck.ck-editor__main>.ck-editor__editable {
+    background: unset;
+}
+/**
+    Tagify 实例化后手机显示placeholder内容超出问题解决
+ */
+tags.tagify--noTags.tagify--empty {
+    overflow: hidden;
+}
+
+/**
+    百度编辑器Ueditor一系列样式调整
+ */
+.edui-default .edui-dialog-buttons .edui-button .edui-button-body, .edui-default .edui-menuitem-body, .edui-default .edui-toolbar .edui-combox .edui-combox-body, .edui-default .edui-for-customstyle .edui-listitem-label, .edui-default .edui-for-customstyle .edui-listitem-label > h1, .edui-popup div {
+    color: #000000;
+}
