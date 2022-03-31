@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Builders\Abnermouke\Console\Table;
+namespace Abnermouke\ConsoleBuilder\Builders\Table;
 
 use Abnermouke\ConsoleBuilder\Builders\Table\Filters\GroupFilterBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Table\Filters\InputFilterBuilder;
@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 /**
  * 通用表格构建器
  * Class ConsoleTableBuilder
- * @package App\Builders\Abnermouke\Console\Table
+ * @package Abnermouke\ConsoleBuilder\Builders\Table
  */
 class ConsoleTableBuilder
 {

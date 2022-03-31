@@ -78,16 +78,15 @@ class RadioItemBuilder extends BasicItemBuilder
      * 设置触发
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time 2022-03-23 02:32:06
+     * @Time 2022-04-01 02:53:32
      * @param $value mixed 触发值
      * @param array $trigger_show_fields 显示字段
-     * @param array $trigger_hide_fields 隐藏字段
-     * @return array|array[]
+     * @return RadioItemBuilder
      */
-    public function trigger($value, $trigger_show_fields = [], $trigger_hide_fields = [])
+    public function trigger($value, $trigger_show_fields = [])
     {
         //设置触发
-        return $this->addTrigger($value, $trigger_show_fields, $trigger_hide_fields);
+        return $this->addTrigger($value, $trigger_show_fields);
     }
 
 

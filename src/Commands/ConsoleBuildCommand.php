@@ -112,6 +112,10 @@ class ConsoleBuildCommand extends Command
      */
     private function createTemplate()
     {
+        //配置需要单独复制文件
+        $copy_files = [
+            ['from' => __DIR__.'/../../tpl/services/UploadService', 'to' => app_path('Services/Abnermouke/Console/UploadService.php')]
+        ];
         //打印信息
         $this->output->title('开始创建 Abnermouke/ConsoleBuilder 基础模版信息...');
         //整理模版
@@ -146,11 +150,11 @@ class ConsoleBuildCommand extends Command
             //记录信息
             $templates['services'][$service->getFilename().'.php'] = file_get_contents($service->getRealPath());
         }
-//        //替换repositories模版
-//        foreach (File::allFiles(__DIR__.'/../../tpl/repositories') as $repository) {
-//            //记录信息
-//            $templates['repositories'][$repository->getFilename().'.php'] = file_get_contents($repository->getRealPath());
-//        }
+        //替换repositories模版
+        foreach (File::allFiles(__DIR__.'/../../tpl/repositories') as $repository) {
+            //记录信息
+            $templates['repositories'][$repository->getFilename().'.php'] = file_get_contents($repository->getRealPath());
+        }
         //循环本项目migrations
         foreach (File::allFiles($target_migration_path = database_path('migrations/abnermouke')) as $file) {
             //截取文件名
@@ -218,6 +222,14 @@ class ConsoleBuildCommand extends Command
         File::makeDirectory($target_builder_tools_path, 0777, true);
         //复制接口逻辑
         File::copyDirectory(__DIR__.'/../../tpl/builders', $target_builder_tools_path);
+        //判断是否存在需要单独复制文件
+        if ($copy_files) {
+            //循环文件
+            foreach ($copy_files as $file) {
+                //复制文件
+                File::copy($file['from'], $file['to']);
+            }
+        }
         //替换指定内容
         $this->replaceCurrentTemplate([$target_migration_path, $target_model_path, $target_service_path, $target_interface_path, $target_cache_path, $target_controller_path, $target_builder_tools_path]);
         //打印信息
@@ -243,6 +255,11 @@ class ConsoleBuildCommand extends Command
             foreach (File::allFiles($path) as $file) {
                 //替换内容
                 file_put_contents($file->getRealPath(), str_replace(['__TIME__'], [auto_datetime()], file_get_contents($file->getRealPath())));
+                //获取文件后缀
+                if (!$file->getExtension() || $file->getExtension() !== 'php') {
+                    //更改后缀
+                    File::move($file->getRealPath(), $file->getRealPath().'.php');
+                }
             }
         }
         //返回成功

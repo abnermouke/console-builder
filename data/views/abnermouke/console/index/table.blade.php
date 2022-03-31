@@ -15,13 +15,13 @@
 {{--主体内容--}}
 @section('container')
     {!!
-        ($builder = (new \App\Builders\Abnermouke\Console\Table\ConsoleTableBuilder(route('abnermouke.console.table'))))
+        ($builder = (new \Abnermouke\ConsoleBuilder\Builders\Table\ConsoleTableBuilder(route('abnermouke.console.table'))))
         ->addButton($builder->buildBotton()->text('创建信息')->url(route('abnermouke.console.oauth.index'), 'get')->icon('la la-plus')->id_suffix('create_new_one')->confirm_before_query('是否确定需要创建新信息？'))
         ->addButton($builder->buildBotton()->text('导出信息')->theme('info')->url(route('abnermouke.console.index'), 'get', true)->icon('la la-file-export', true)->id_suffix('export'))
         ->addButton($builder->buildBotton()->text('删除选中')->theme('danger')->ajax(route('abnermouke.console.delete'), 'post', route('abnermouke.console.oauth.index'))->icon('la la-trash', true)->id_suffix('trash_selected')->confirm_before_query('是否确认删除您选中的记录？'))
         ->setCheckbox('id', ['trash_selected'])
         ->setFields(function () use ($builder) {
-            return ($fieldBuilder = new \App\Builders\Abnermouke\Console\Table\Tools\TableFieldsBuilder())
+            return ($fieldBuilder = new \Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableFieldsBuilder())
             ->addField($fieldBuilder->buildTexts('texts', '双文本')->theme_options(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_STATUS_THEME, 'is_locked')->template('{guard_name}')->description('{alias}'))
             ->addField($fieldBuilder->buildProject('project', '项目')->template('{guard_name}')->description('ID：{id}')->show(false))
             ->addField($fieldBuilder->buildAvatar('friends', '朋友')->description('Team Member')->show(false))

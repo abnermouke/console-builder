@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Abnermouke\Console;
 use Abnermouke\EasyBuilder\Library\CodeLibrary;
 use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
 use Abnermouke\EasyBuilder\Module\BaseController;
-use App\Builders\Abnermouke\Console\Table\Tools\TableContentBuilder;
 use App\Repository\Abnermouke\Console\RoleRepository;
 use Illuminate\Http\Request;
 
@@ -89,7 +88,7 @@ class IndexController extends BaseController
             return responseError(CodeLibrary::DATA_MISSING, [], '非法参数');
         }
         //实例化表格内容构建器
-        return responseSuccess((new TableContentBuilder($data))->setData((new RoleRepository())->lists([]))->render(), '成功');
+        return responseSuccess((new \Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableContentBuilder($data))->setData((new RoleRepository())->lists([]))->render(), '成功');
     }
 
     public function delete(Request $request)

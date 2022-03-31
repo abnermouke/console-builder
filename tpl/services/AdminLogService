@@ -9,8 +9,8 @@
 
 namespace App\Services\Abnermouke\Console;
 
+use Abnermouke\ConsoleBuilder\Builders\ConsoleBuilderBasicTool;
 use Abnermouke\EasyBuilder\Module\BaseService;
-use App\Builders\Abnermouke\Console\ConsoleBuilderBasicTool;
 use App\Handler\Cache\Data\Abnermouke\Console\AdminLogCacheHandler;
 use App\Repository\Abnermouke\Console\AdminLogRepository;
 
