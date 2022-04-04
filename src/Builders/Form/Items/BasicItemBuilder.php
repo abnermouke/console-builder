@@ -241,6 +241,18 @@ class BasicItemBuilder
      */
     public function get()
     {
+        //根据类型自定义处理
+        switch ($this->item['type']) {
+            case 'image':
+                //判断宽度是否大于300
+                if (($box_width = (int)data_get($this->item, 'extras.box_width', 200)) > 305) {
+                    //设置宽度
+                    $this->item['extras']['box_width'] = 305;
+                    //计算高度
+                    $this->item['extras']['box_height'] = (int)((int)$this->item['extras']['box_height'] * (305/$box_width));
+                }
+                break;
+        }
         //返回表单项信息
         return $this->item;
     }

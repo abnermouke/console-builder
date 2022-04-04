@@ -24,7 +24,7 @@
                 </div>
                 <div class="row mb-12">
                     @if((new \App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler())->get('AMAP_WEB_SERVER_API_KEY', ''))
-                        @foreach((new \App\Repository\Abnermouke\Console\AmapAreaRepository())->get(['parent_id' => 1], ['id', 'type', 'guard_name', 'code'], [], ['code' => 'asc']) as $province)
+                        @foreach((new \App\Repository\Abnermouke\Console\AmapAreaRepository())->get(['parent_id' => 100], ['id', 'type', 'guard_name', 'code'], [], ['code' => 'asc']) as $province)
                             <div class="col-md-3 pe-md-10 my-10 amap_box_items">
                                 <h2 class="text-gray-800 fw-bolder mb-4">{{ $province['guard_name'] }}</h2>
                                 <div class="h-350px overflow-auto">

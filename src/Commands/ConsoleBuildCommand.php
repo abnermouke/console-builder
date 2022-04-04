@@ -98,6 +98,8 @@ class ConsoleBuildCommand extends Command
         Artisan::call('migrate:refresh', ['--path' => '/database/migrations/fillings']);
         //打印信息
         $this->output->success('数据库初始表创建成功');
+        //清除缓存
+        Artisan::call('cache:clear');
         //返回成功
         return true;
     }
@@ -150,15 +152,15 @@ class ConsoleBuildCommand extends Command
             //记录信息
             $templates['services'][$service->getFilename().'.php'] = file_get_contents($service->getRealPath());
         }
-        //替换repositories模版
-        foreach (File::allFiles(__DIR__.'/../../tpl/repositories') as $repository) {
-            //记录信息
-            $templates['repositories'][$repository->getFilename().'.php'] = file_get_contents($repository->getRealPath());
-        }
+//        //替换repositories模版
+//        foreach (File::allFiles(__DIR__.'/../../tpl/repositories') as $repository) {
+//            //记录信息
+//            $templates['repositories'][$repository->getFilename().'.php'] = file_get_contents($repository->getRealPath());
+//        }
         //循环本项目migrations
         foreach (File::allFiles($target_migration_path = database_path('migrations/abnermouke')) as $file) {
             //截取文件名
-            $file_name = implode('_', array_slice(explode('_', $file), 5));
+            $file_name = implode('_', array_slice(explode('_', $file->getFilename()), 4));
             //判断名称
             if (isset($templates['migrations'][$file_name])) {
                 //替换内容

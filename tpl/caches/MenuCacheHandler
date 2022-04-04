@@ -100,7 +100,7 @@ class MenuCacheHandler extends BaseCacheHandler
     private function init()
     {
         //获取缓存
-        $cache = $this->cache = false;
+        $cache = $this->cache;
         //判断缓存信息
         if (!$cache || empty($this->cache)) {
             //初始化缓存数据

@@ -110,7 +110,7 @@ class ConsoleBuilderNodeTool
      * @return string|string[]
      * @throws \ReflectionException
      */
-    private function getClassDescription($controller)
+    private static function getClassDescription($controller)
     {
         //整理信息
         $class_name = head(explode('@', $controller));

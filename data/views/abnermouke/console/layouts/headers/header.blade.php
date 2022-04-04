@@ -10,9 +10,6 @@
                         </svg>
                     </span>
                 </button>
-                <a href="{{ route('abnermouke.console.index') }}" class="d-flex align-items-center">
-                    <img alt="Logo" src="{{ $console_configs['APP_LOGO'] }}" class="h-30px h-lg-30px" />
-                </a>
                 @if(\Abnermouke\EasyBuilder\Library\Currency\DeviceLibrary::pc())
                     <div class="align-self-end overflow-auto" id="kt_brand_tabs">
                         @include('abnermouke.console.layouts.headers.tabs')
@@ -21,9 +18,11 @@
             </div>
             <div class="d-flex align-items-center flex-row-auto">
                 <div class="d-flex align-items-center ms-1">
-                    <a href="javascript:;" id="kt-refresh_console_nodes" data-query-url="{{ route('abnermouke.console.refresh.nodes') }}" class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-35px h-35px h-md-40px w-md-40px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="刷新系统权限节点">
-                        <i class="fonticon-repeat fs-2"></i>
-                    </a>
+                    @if(acb_has_permission('abnermouke.console.refresh.nodes', 'post'))
+                        <a href="javascript:;" id="kt-refresh_console_nodes" data-query-url="{{ route('abnermouke.console.refresh.nodes') }}" class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-35px h-35px h-md-40px w-md-40px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="刷新系统权限节点">
+                            <i class="fonticon-repeat fs-2"></i>
+                        </a>
+                    @endif
                 </div>
                 @php
                     $current_auth = current_auth(false, config('console_builder.session_prefix'));

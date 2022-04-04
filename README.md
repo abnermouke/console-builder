@@ -6,7 +6,7 @@
 
 ----
 
-最后更新时间：2022年03月31日，持续更新中！！！
+最后更新时间：2022年04月06日，持续更新中！！！
 
 ---
 
@@ -16,6 +16,7 @@
 1. PHP >= 7.2（建议安装7.4）
 2. **[Composer](https://getcomposer.org/)**
 3. abnermouke/easy-builder
+4. Laravel Framework 6+
 
 
 
@@ -80,6 +81,32 @@ protected $middlewareGroups = [
 ```
 - 注册路由
 - 移除 app/Http/Kernel.php 默认中间件：\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+
+Laravel 6 与 Laravel 7 中配置路由服务
+
+```
+  public function map()
+    {
+        
+        // 其他路由配置
+
+        $this->mapAbnermoukeConsoleRoutes();
+    }
+
+    /**
+     * Define the "abnermouke/console" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapAbnermoukeConsoleRoutes()
+    {
+        Route::middleware('abnermouke.console')
+            ->namespace('App\Http\Controllers\Abnermouke\Console')
+            ->group(base_path('routes/abnermouke/console.php'));
+    }
+```
 
 Laravel 8 中配置路由服务 app/Providers/RouteServiceProvider.php
 

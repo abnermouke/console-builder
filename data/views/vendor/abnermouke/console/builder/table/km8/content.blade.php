@@ -54,11 +54,11 @@
                     @else
                         <tr>
                             <td colspan="12">
-                                <div class="pt-lg-10 mt-5 mb-5 text-center">
+                                <div class="pt-lg-10 mt-5 mb-10 text-center">
                                     <h4 class="fw-bolder text-gray-800 mb-5">暂无相关数据展示</h4>
                                     <div class="fw-bold text-muted">No relevant data, please try to change the search criteria to see more highlights !</div>
                                 </div>
-                                <div class="d-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain bgi-position-y-bottom min-h-150px min-h-lg-350px md-10" style="background-image: url({{ proxy_assets('themes/km8/media/illustrations/sketchy-1/18.png', 'abnermouke') }})"></div>
+                                <div class="d-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain bgi-position-y-bottom h-150px mt-10" style="background-image: url({{ proxy_assets('themes/km8/media/illustrations/sketchy-1/18.png', 'abnermouke') }})"></div>
                             </td>
                         </tr>
                     @endif

@@ -35,6 +35,11 @@ class ConfigInterfaceService extends BaseService
             $configs = array_column($configs, 'content', 'alias');
         }
         //整理信息
+        $configs['QINIU_PARAMS__domain'] = data_get($configs, 'QINIU_PARAMS.domain', '');
+        $configs['QINIU_PARAMS__access_key'] = data_get($configs, 'QINIU_PARAMS.access_key', '');
+        $configs['QINIU_PARAMS__access_secret'] = data_get($configs, 'QINIU_PARAMS.access_secret', '');
+        $configs['QINIU_PARAMS__bucket'] = data_get($configs, 'QINIU_PARAMS.bucket', '');
+        $configs['QINIU_PARAMS__visibility'] = data_get($configs, 'QINIU_PARAMS.visibility', 'public');
         $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__app_id'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.app_id', '');
         $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__secret'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.secret', '');
         $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__token'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.token', '');
@@ -86,6 +91,11 @@ class ConfigInterfaceService extends BaseService
                 case 'GEETEST_PARAMS__geetest_key':
                 case 'GEETEST_PARAMS__token':
                 case 'GEETEST_PARAMS__aes_key':
+                case 'QINIU_PARAMS__domain':
+                case 'QINIU_PARAMS__access_key':
+                case 'QINIU_PARAMS__access_secret':
+                case 'QINIU_PARAMS__bucket':
+                case 'QINIU_PARAMS__visibility':
                     //配置信息
                     $configs[Arr::first(explode('__', $alias))][Arr::last(explode('__', $alias))] = $config;
                     //判断是否更改

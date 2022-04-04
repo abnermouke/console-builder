@@ -1,4 +1,4 @@
-<div class="header-tabs overflow-auto mx-4 ms-lg-10 mb-5 mb-lg-0" id="kt_header_tabs">
+<div class="header-tabs overflow-auto mx-4 me-lg-10 mb-5 mb-lg-0" id="kt_header_tabs">
     <ul class="nav flex-nowrap text-nowrap" id="menu_tops">
         @foreach((new \App\Handler\Cache\Data\Abnermouke\Console\MenuCacheHandler())->get('menus', []) as $menu)
             @php

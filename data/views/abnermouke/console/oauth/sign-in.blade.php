@@ -49,9 +49,9 @@ Contact: abnermouke@outlook.com
     <body id="acb_body" data-H="{{ (int)date('H') }}" class="{{ $console_configs['CONSOLE_DEFAULT_THEME'] === 'auto' ? (((int)date('H') >= 19 || (int)date('H') <= 6) ? 'dark-mode' : 'bg-body') : ($console_configs['CONSOLE_DEFAULT_THEME'] === 'dark' ? 'dark-mode' : 'bg-body') }}">
         <div class="d-flex flex-column flex-root">
             <div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-image: url('{{ proxy_assets('themes/km8/media/illustrations/sketchy-1/14'.($console_configs['CONSOLE_DEFAULT_THEME'] == 'auto' ? ((date('H') >= 19 && date('H') <= 6) ? 'dark' : '') : ($console_configs['CONSOLE_DEFAULT_THEME'] == 'dark' ? '-dark' : '')).'.png', 'abnermouke') }}')">
-            <div class="d-flex flex-center flex-column flex-column-fluid pb-lg-20">
-                <a href="javascript:;">
-                    <img alt="Logo" src="{{ $console_configs['APP_LOGO'] }}" class="h-200px" />
+            <div class="d-flex flex-column pt-20 flex-column-fluid pb-lg-20">
+                <a href="javascript:;" class="text-center">
+                    <img alt="Logo" src="{{ $console_configs['APP_LOGO'] }}" class="h-175px mb-5" />
                 </a>
                 <div class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto" id="sign-in_box">
                     <form class="form w-100" id="sign-in_form" method="post" onsubmit="autoLogin($(this));return false;" data-query-login="{{ route('abnermouke.console.oauth.sign.in') }}" data-redirect-uri="{{ $redirect_uri }}">

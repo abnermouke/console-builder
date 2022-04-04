@@ -117,3 +117,43 @@ if (!function_exists('get_acbt_link')) {
         return $link ? $link : $default_link;
     }
 }
+
+if (!function_exists('acb_has_permission')) {
+    /**
+     * 验证是否有权限
+     * @Author Abnermouke <abnermouke@gmail.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2021-04-28 14:30:49
+     * @param $route_name
+     * @param string $method
+     * @return bool
+     * @throws Exception
+     */
+    function acb_has_permission($route_name, $method = 'post')
+    {
+        //验证信息
+        return (new \App\Handler\Cache\Data\Abnermouke\Console\RoleCacheHandler(current_auth('role_id', config('console_builder.session_prefix', 'abnermouke:console:auth'))))->hasPermission(strtolower($method), strtolower($route_name));
+    }
+}
+
+
+if (!function_exists('abnermouke_console_abort_error'))
+{
+    /**
+     * 渲染错误信息
+     * @Author Abnermouke <abnermouke@gmail.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2021-04-28 15:33:24
+     * @param $code
+     * @param string $message
+     * @param false $redirect_uri
+     * @return \Illuminate\Http\Response
+     */
+    function abnermouke_console_abort_error($code, $message = '页面找不到了', $redirect_uri = false)
+    {
+        //配置消息信息
+        $message = !empty($message) ? $message : '页面找不到了！';
+        //渲染页面
+        return response()->view('vendor.abnermouke.console.errors', compact('code', 'message', 'redirect_uri'));
+    }
+}

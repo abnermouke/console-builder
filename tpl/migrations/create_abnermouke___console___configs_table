@@ -23,7 +23,7 @@ class CreateAbnermoukeConsoleConfigsTable extends Migration
       * 开始系统配置数据迁移操作
       * @Author Abnermouke <abnermouke@outlook.com>
       * @Originate in Yunni Technology Co Ltd.
-      * @Time __TIME__
+      * @Time 2022-04-04 17:27:27
       * @throws \Exception
     */
     public function up()
@@ -57,7 +57,7 @@ class CreateAbnermoukeConsoleConfigsTable extends Migration
       * 设置默认数据
       * @Author Abnermouke <abnermouke@outlook.com>
       * @Originate in Yunni Technology Co Ltd.
-      * @Time __TIME__
+      * @Time 2022-04-04 17:27:27
       * @return mixed
       * @throws \Exception
     */
@@ -70,7 +70,7 @@ class CreateAbnermoukeConsoleConfigsTable extends Migration
             ['alias' => 'APP_TITLE', 'description' => '应用标题', 'content' => 'Console控制台', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'APP_DESCRIPTION', 'description' => '应用描述', 'content' => 'Power By https://github.com/abnermouke', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'APP_KEYWORDS', 'description' => '应用关键词', 'content' => ['abnermouke@outlook.com', 'abnermouke/console-builder', '控制台', '构建器'], 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
-            ['alias' => 'APP_LOGO', 'description' => '应用LOGO图片', 'content' => proxy_assets('medias/logos/logo@1x.png', 'abnermouke', true), 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
+            ['alias' => 'APP_LOGO', 'description' => '应用LOGO图片', 'content' => proxy_assets('medias/logos/logo.png', 'abnermouke', false), 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'APP_SHORTCUT_ICON', 'description' => '应用浏览器导航小图标', 'content' => proxy_assets('medias/logos/favicon.png', 'abnermouke'), 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'CONSOLE_DEFAULT_THEME', 'description' => '控制台主题（auto:自动 <default:light;19：00-06：00 dark>, light:明亮主题;dark:暗黑主题）', 'content' => 'auto', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'CONSOLE_WECHAT_OAUTH', 'description' => '控制台启动微信授权登录', 'content' => 2, 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
@@ -87,7 +87,7 @@ class CreateAbnermoukeConsoleConfigsTable extends Migration
             ['alias' => 'TEMPORARY_FILES_AUTO_DELETE_SECOND_LIMIT', 'description' => '临时文件自动删除时间（秒）', 'content' => 10800, 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'AMAP_WEB_SERVER_API_KEY', 'description' => '高德地图WEB服务API KEY', 'content' => '', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'QINIU_SYNC_AUTO', 'description' => '自动化同步资源至七牛云', 'content' => 2, 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
-            ['alias' => 'QINIU_PARAMS', 'description' => '七牛云储存配置参数', 'content' => ['domain' = '', 'access_key' = '', 'access_secret' => '', 'bucket' => '', 'visibility' => 'public'], 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
+            ['alias' => 'QINIU_PARAMS', 'description' => '七牛云储存配置参数', 'content' => ['domain' => '', 'access_key' => '', 'access_secret' => '', 'bucket' => '', 'visibility' => 'public'], 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
         ]);
         //返回数据
         return true;
@@ -97,7 +97,7 @@ class CreateAbnermoukeConsoleConfigsTable extends Migration
       * 回滚系统配置数据迁移操作
       * @Author Abnermouke <abnermouke@outlook.com>
       * @Originate in Yunni Technology Co Ltd.
-      * @Time __TIME__
+      * @Time 2022-04-04 17:27:27
       * @throws \Exception
     */
     public function down()

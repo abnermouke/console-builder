@@ -63,11 +63,6 @@ class SelectItemBuilder extends BasicItemBuilder
      */
     public function options($options = [], $default_value = '__WITHOUT_SELECTED_OPTION__')
     {
-        //判断长度
-        if (count($options) >= 5) {
-            //设置可搜索
-            $this->searchable();
-        }
         //设置选择项
         return $this->extra('options', $options)->default_value($default_value);
     }

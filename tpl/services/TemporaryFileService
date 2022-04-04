@@ -9,8 +9,10 @@
 
 namespace App\Services\Abnermouke\Console;
 
+use Abnermouke\EasyBuilder\Library\Currency\StorageFileLibrary;
 use Abnermouke\EasyBuilder\Module\BaseService;
 use App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler;
+use App\Model\Abnermouke\Console\Configs;
 use App\Repository\Abnermouke\Console\TemporaryFileRepository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -57,9 +59,14 @@ class TemporaryFileService extends BaseService
                 if (Storage::disk($storage_disk)->exists($storage_name)) {
                     //移除临时文件（不再删除）
                     (new TemporaryFileRepository())->delete(compact('storage_disk', 'storage_name'));
-
-                    //TODO：判断是否自动上传七牛云
-//                    $links[$k] = '__QINIU_FILE_LINK__'
+                    //判断是否自动上传七牛云
+                    if ((int)(new ConfigCacheHandler())->get('QINIU_SYNC_AUTO', Configs::SWITCH_OFF) === Configs::SWITCH_ON) {
+                        //自动上传七牛
+                        if ($qiniu_link = StorageFileLibrary::sync_to_qiniu($storage_name, $storage_disk, (new ConfigCacheHandler())->get('QINIU_PARAMS', false), false)) {
+                            //替换链接
+                            $links[$k] = $qiniu_link;
+                        }
+                    }
                 } else {
                     //判断是否为本地地址（非本站地址不处理）
                     if (strstr($link, $storage_base_path)) {

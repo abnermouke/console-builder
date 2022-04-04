@@ -137,14 +137,46 @@ $(function () {
 function initMenus()
 {
     //查询第一个当前路由的item
-    var item, title = $('title'), routers = $("#acb_routers"), acb_permissions = $("#acb_permissions"), kt_toolbar_breadcrumb_title = $("#kt_toolbar_breadcrumb_title");
+    var item, aside = $("#kt_aside_menu_wrapper"), header = $("#kt_header_navs_wrapper"), title = $('title'), routers = $("#acb_routers"), acb_permissions = $("#acb_permissions"), kt_toolbar_breadcrumb_title = $("#kt_toolbar_breadcrumb_title");
     //判断元素是否存在
     if (typeof acb_permissions !== 'undefined' && acb_permissions.length > 0) {
         //初始化信息
         acb_permissions = JSON.parse(acb_permissions.text().trim());
+        //循环元素
+        header.find('.menu-link[data-menu-type="link"]').each(function () {
+            //获取配置route_names
+            var route_names = $(this).attr('data-route-names'), has_permission = false;
+            //判断信息
+            if (typeof route_names !== 'undefined' && route_names.length > 0) {
+                //拆分信息
+                route_names = route_names.split(',');
+                //循环路由名称
+                $.each(route_names, function (i, item) {
+                    //判断路由名是否存在
+                    if ($.inArray(item, acb_permissions) >= 0) {
+                        //设置有权限
+                        has_permission = true;
+                        //跳出循环
+                        return false;
+                    }
+                });
+                //判断是否有权限
+                if (!has_permission) {
+                    //判断侧边栏是否存在
+                    if (typeof aside !== 'undefined' && aside.length > 0) {
+                        //删除指定元素
+                        aside.find('.aside-obj[data-did="'+$(this).attr('data-did')+'"]').remove();
+                    }
+                    //删除当前元素
+                    $(this).parents('.menu-obj').eq(0).remove();
+                }
+            }
+        });
+        //清空剩余菜单
+        clearWithoutPermissionMenus();
     }
     //循环元素
-    $("#kt_header_navs_wrapper").find('.menu-link').each(function () {
+    header.find('.menu-link').each(function () {
         //获取配置route_names
         var route_names = $(this).attr('data-route-names');
         //判断信息
@@ -191,6 +223,51 @@ function initMenus()
 }
 
 /**
+ * 清除没有权限的菜单
+ * @returns {boolean}
+ */
+function clearWithoutPermissionMenus()
+{
+    //获取基本信息
+    var aside = $("#kt_aside_menu_wrapper");
+        //循环元素
+    $("#kt_header_navs_wrapper").find('.menu-obj[data-menu-type="tab"]').each(function () {
+        //判断是否存在下级
+        if ($(this).hasClass('menu-lg-down-accordion')) {
+            //获取ID
+            var did = $(this).attr('data-did');
+            //查询子菜单数量
+            if ($(this).find('.menu-obj[data-parent-did="'+did+'"]').length <= 0) {
+                //判断侧边栏是否存在
+                if (typeof aside !== 'undefined' && aside.length > 0) {
+                    //删除指定元素
+                    aside.find('.aside-obj[data-did="'+did+'"]').remove();
+                }
+                //移除当前元素
+                $(this).remove();
+            }
+        }
+    });
+    //循环元素
+    $("#menu_tops").find('.menu-obj[data-menu-type="nav"]').each(function () {
+        //获取ID
+        var did = $(this).attr('data-did');
+        //查询数量
+        if ($("#kt_header_navs_tab_"+did).find('.menu-obj[data-menu-type="tab"]').length <= 0) {
+            //判断侧边栏是否存在
+            if (typeof aside !== 'undefined' && aside.length > 0) {
+                //删除指定元素
+                aside.find('.aside-obj[data-did="'+did+'"]').remove();
+            }
+            //删除当前元素
+            $(this).remove();
+        }
+    });
+    //返回成功
+    return true;
+}
+
+/**
  * 展开菜单
  * @param menu_did 菜单ID
  * @param breadcrumbs 面包屑
@@ -201,7 +278,7 @@ function showMenu(menu_did, breadcrumbs)
     //判断是否存在
     if (typeof (menu_did) !== 'undefined' && parseInt(menu_did) > 0) {
         //查询菜单ITEM
-        var item;
+        var item, aside = $("#kt_aside_menu_wrapper");
         //判断手机设备还是电脑设备
         if (parseInt(MOBILE_DEVICE) === 1) {
             //查找元素
@@ -209,6 +286,21 @@ function showMenu(menu_did, breadcrumbs)
         } else {
             //查找元素
             item = $("#kt_header").find('.menu-obj[data-did="'+parseInt(menu_did)+'"]')
+        }
+        //判断侧边栏是否存在
+        if (typeof aside !== 'undefined' && aside.length > 0) {
+            //删除指定元素
+            var aside_item = aside.find('.aside-obj[data-did="'+menu_did+'"]');
+            //根据类型处理
+            switch (aside_item.attr('data-menu-type')) {
+                case 'accordion':
+                    //选中菜单
+                    aside_item.removeClass('here show').addClass('here show');
+                    break;
+                case 'item':
+                    aside_item.find('.menu-link').removeClass('active').addClass('active');
+                    break;
+            }
         }
         //判断是否存在
         if (typeof (item) !== 'undefined' && item.length > 0) {

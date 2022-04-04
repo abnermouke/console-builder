@@ -83,6 +83,7 @@ class RoleCacheHandler extends BaseCacheHandler
      * @param $method
      * @param $route_name
      * @return bool
+     * @throws \Exception
      */
     public function hasPermission($method, $route_name)
     {
@@ -94,14 +95,9 @@ class RoleCacheHandler extends BaseCacheHandler
             return true;
         }
         //设置节点信息
-        $this->cache['permission_nodes'] = object_2_array($this->cache['permission_nodes']);
-        //循环默认必须存在路由
-        foreach (config('console_builder.nodes.default_node_aliases', []) as $alias) {
-            //新增必须存在的权限节点
-            array_push($this->cache['permission_nodes'], $alias);
-        }
+        $this->cache['permission_nodes'] = $this->currentPermissions();
         //判断是否在权限组内
-        if (!$this->cache['permission_nodes'] || empty($this->cache['permission_nodes']) || !in_array($alias, $this->cache['permission_nodes'])) {
+        if (!$this->cache['permission_nodes'] || empty($this->cache['permission_nodes']) || !in_array($alias, $this->cache['permission_nodes'], true)) {
             //返回失败
             return false;
         }
@@ -123,11 +119,14 @@ class RoleCacheHandler extends BaseCacheHandler
         $this->cache['permission_nodes'] = object_2_array($this->cache['permission_nodes']);
         //判断是否是满权限
         if ((int)$this->cache['is_full_permission'] === Roles::SWITCH_ON) {
-            //获取全部姐弟哪
+            //获取全部节点
             $this->cache['permission_nodes'] = (new NodeRepository())->pluck('alias');
         } else {
-            //添加首页
-            $this->cache['permission_nodes'][] = 'get&index';
+            //循环默认必须存在路由
+            foreach (config('console_builder.nodes.default_node_aliases', []) as $alias) {
+                //新增必须存在的权限节点
+                array_push($this->cache['permission_nodes'], $alias);
+            }
         }
         //返回节点信息
         return $this->cache['permission_nodes'];

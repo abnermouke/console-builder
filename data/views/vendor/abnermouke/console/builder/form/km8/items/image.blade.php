@@ -6,7 +6,7 @@
         @endif
     </label>
     <div class="fv-row" id="acbf_{{ $sign }}_item_{{ $field }}_upload_box">
-        <div class="h-{{ data_get($extras, 'box_height', 200) }}px w-{{ data_get($extras, 'box_width', 200) }}px bg-light-{{ \Illuminate\Support\Arr::random(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_THEME_ALIAS) }} mb-2" style="{{ $default_value ? 'background: url('.$default_value.');' : '' }}background-size: 100%;background-repeat: no-repeat" id="acbf_{{ $sign }}_item_{{ $field }}_wrapper">
+        <div class="bg-light-{{ \Illuminate\Support\Arr::random(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_THEME_ALIAS) }} mb-2" style="{{ $default_value ? 'background: url('.$default_value.');' : '' }}background-size: 100%;background-repeat: no-repeat;height: {{ data_get($extras, 'box_height', 200) }}px;width: {{ data_get($extras, 'box_width', 200) }}px" id="acbf_{{ $sign }}_item_{{ $field }}_wrapper">
         </div>
         <div class="fv-row mt-1">
             <input type="file" accept="{{ data_get($extras, 'accept', 'image/*') }}" data-width="{{ data_get($extras, 'width', 200) }}" data-height="{{ data_get($extras, 'height', 200) }}" class="d-none" id="acbf_{{ $sign }}_item_{{ $field }}_uploader" value="" autocomplete="off" {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }}>
