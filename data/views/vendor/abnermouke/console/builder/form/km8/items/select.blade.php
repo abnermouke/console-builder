@@ -5,7 +5,7 @@
             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="{!! $tip !!}"></i>
         @endif
     </label>
-    <select class="form-select form-select-solid" data-control="select2" {{ data_get($extras, 'multiple', false) ? 'multiple' : '' }} @if(!data_get($extras, 'searchable', false)) data-hide-search="true" @endif autocomplete="off" id="acbf_{{ $sign }}_item_{{ $field }}" data-placeholder="{{ data_get($extras, 'placeholder', '') }}" {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }} name="{{ $field }}">
+    <select class="form-select form-select-solid" {{ data_get($extras, 'multiple', false) ? 'multiple' : '' }} autocomplete="off" id="acbf_{{ $sign }}_item_{{ $field }}" data-placeholder="{{ data_get($extras, 'placeholder', '') }}" {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }} name="{{ $field }}">
         <option value="__WITHOUT_SELECTED_OPTION__" @if($default_value === '__WITHOUT_SELECTED_OPTION__') selected @endif>{{ data_get($extras, 'placeholder', $guard_name) }}</option>
         @foreach($extras['options'] as $value => $guard_name)
             <option value="{{ $value }}" @if($value === $default_value) selected @endif>{{ $guard_name }}</option>

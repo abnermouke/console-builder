@@ -21,7 +21,7 @@ class InputItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name, $input_type = 'text')
     {
         //设置基础信息
-        $this->setParam('type', 'input')->extra('input_type', $input_type)->extra('input_mode', 'text')->guard_name($guard_name)->field($field)->placeholder('请输入'.$guard_name);
+        $this->setParam('type', 'input')->extra('input_type', $input_type)->extra('input_mode', 'text')->guard_name($guard_name)->field($field)->placeholder('请输入'.$guard_name)->value_type(BasicItemBuilder::VALUE_TYPE_OF_STRING);
         //判断是否为链接
         switch ($input_type) {
             case 'url':
@@ -34,7 +34,7 @@ class InputItemBuilder extends BasicItemBuilder
                 break;
             case 'number':
                 //设置最长字数
-                $this->max_length(10);
+                $this->max_length(10)->value_type(BasicItemBuilder::VALUE_TYPE_OF_INTEGRAL);
                 break;
             case 'date':
                 //设置默认格式

@@ -21,7 +21,7 @@ class ValuesItemBuilder extends BasicItemBuilder
     public function __construct($filed, $guard_name)
     {
         //设置基础参数
-        $this->setParam('type', 'values')->field($filed)->guard_name($guard_name);
+        $this->setParam('type', 'values')->field($filed)->guard_name($guard_name)->value_type(BasicItemBuilder::VALUE_TYPE_OF_OBJECT);
     }
 
     /**

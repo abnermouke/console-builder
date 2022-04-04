@@ -391,11 +391,10 @@ class ConsoleTableBuilder
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
      * @Time 2022-03-18 15:31:57
-     * @param bool $debug 是否调试参数
      * @return string
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function render($debug = false)
+    public function render()
     {
         //初始化字段信息
         $fields = [];
@@ -427,7 +426,7 @@ class ConsoleTableBuilder
         //加密核心配置（字段、标识、主题等）为签名，用于与后台通讯
         $this->builder['signature'] = Crypt::encryptString(json_encode(Arr::only($this->builder, ['sign', 'theme', 'fields', 'checkbox', 'actions'])));
         //调试参数
-        if ($debug) {
+        if ((int)request()->get('__acbt_debug__', 0) === 1) {
             //打印参数
             dd($this->builder);
         }

@@ -3,6 +3,7 @@
 
 namespace Abnermouke\ConsoleBuilder\Builders\Form;
 
+use Abnermouke\ConsoleBuilder\Builders\Form\Items\BasicItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormAlertBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormButtonBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormStructureBuilder;
@@ -101,7 +102,7 @@ class ConsoleFormBuilder
         //判断是否传入对象
         $alert = is_object($builder) ? $builder->get() : $builder;
         //添加默认信息
-        if (!empty($alert['title'])) {
+        if (data_get($alert, 'title', false)) {
             //设置筛选项
             $this->builder['alert'] = $alert;
         }
@@ -122,7 +123,7 @@ class ConsoleFormBuilder
         //判断是否传入对象
         $back = is_object($builder) ? $builder->get() : $builder;
         //添加默认信息
-        if (!empty($back['redirect_uri'])) {
+        if (data_get($back, 'redirect_uri', false)) {
             //设置筛选项
             $this->builder['back'] = $back;
         }
@@ -143,7 +144,7 @@ class ConsoleFormBuilder
         //判断是否传入对象
         $submit = is_object($builder) ? $builder->get() : $builder;
         //添加默认信息
-        if (!empty($submit['redirect_uri'])) {
+        if (data_get($submit, 'redirect_uri', false)) {
             //设置筛选项
             $this->builder['submit'] = $submit;
         }
@@ -316,6 +317,13 @@ class ConsoleFormBuilder
                     $config['default_value'] = data_get($this->builder['data'], $field, $config['default_value']);
                     break;
             }
+            //判断值类型
+            switch ($config['value_type']) {
+                case BasicItemBuilder::VALUE_TYPE_OF_INTEGRAL:
+                    //设置int值
+                    $config['default_value'] = (int)$config['default_value'];
+                    break;
+            }
             //设置信息
             $this->builder['items'][$field] = $config;
         }
@@ -384,8 +392,20 @@ class ConsoleFormBuilder
             //设置关闭modal后刷新表格
             data_set($this->builder, 'submit.after_ajax', FormButtonBuilder::AJAX_AFTER_REFRESH_TABLE);
         }
+        //判断结构
+        if (!$this->builder['structures']) {
+            //生成实例
+            $structure = $this->buildStructure();
+            //循环字段
+            foreach ($this->builder['items'] as $field => $item) {
+                //添加字段
+                $structure->addFiled($field, 12);
+            }
+            //设置默认结构
+            $this->addStructure($structure);
+        }
         //调试参数
-        if ((int)request()->get('__debug__', 0) === 1) {
+        if ((int)request()->get('__acbf_debug__', 0) === 1) {
             //打印参数
             dd($this->builder);
         }

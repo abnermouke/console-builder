@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Interfaces\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Library\CodeLibrary;
+use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Repository\Abnermouke\Console\ConfigRepository;
+use App\Services\Abnermouke\Console\AdminLogService;
+use App\Services\Abnermouke\Console\ConfigService;
+use Dflydev\DotAccessData\Data;
+use Illuminate\Support\Arr;
+
+/**
+ * 系统配置逻辑服务容器
+ * Class ConfigInterfaceService
+ * @package App\Interfaces\Abnermouke\Console
+ */
+class ConfigInterfaceService extends BaseService
+{
+
+    /**
+     * 获取配置信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 02:22:59
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function configs()
+    {
+        //获取全部配置
+        if ($configs = (new ConfigRepository())->get([], ['alias', 'content'])) {
+            //整理信息
+            $configs = array_column($configs, 'content', 'alias');
+        }
+        //整理信息
+        $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__app_id'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.app_id', '');
+        $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__secret'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.secret', '');
+        $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__token'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.token', '');
+        $configs['WECHAT_OFFICE_ACCOUNT_PARAMS__aes_key'] = data_get($configs, 'WECHAT_OFFICE_ACCOUNT_PARAMS.aes_key', '');
+        $configs['GEETEST_PARAMS__geetest_id'] = data_get($configs, 'GEETEST_PARAMS.geetest_id', '');
+        $configs['GEETEST_PARAMS__geetest_key'] = data_get($configs, 'GEETEST_PARAMS.geetest_key', '');
+        $configs['GEETEST_PARAMS__token'] = data_get($configs, 'GEETEST_PARAMS.token', '');
+        $configs['GEETEST_PARAMS__aes_key'] = data_get($configs, 'GEETEST_PARAMS.aes_key', '');
+        $configs['SMS_ALI_PARAMS__access_key_id'] = data_get($configs, 'SMS_ALI_PARAMS.access_key_id', '');
+        $configs['SMS_ALI_PARAMS__access_key_secret'] = data_get($configs, 'SMS_ALI_PARAMS.access_key_secret', '');
+        $configs['SMS_ALI_PARAMS__sign_name'] = data_get($configs, 'SMS_ALI_PARAMS.sign_name', '');
+        //返回配置信息
+        return $this->success(compact('configs'));
+    }
+
+    /**
+     * 保存配置
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 11:43:50
+     * @param $request
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function store($request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING,'非法参数');
+        }
+        //获取所有内容
+        $edited = $data['__edited__'];
+        $data = $data['__data__'];
+        //初始化配置信息
+        $configs = [];
+        //循环信息
+        foreach ($data as $alias => $config) {
+            //判断标识
+            switch ($alias) {
+                case 'WECHAT_OFFICE_ACCOUNT_PARAMS__app_id':
+                case 'WECHAT_OFFICE_ACCOUNT_PARAMS__secret':
+                case 'WECHAT_OFFICE_ACCOUNT_PARAMS__token':
+                case 'WECHAT_OFFICE_ACCOUNT_PARAMS__aes_key':
+                case 'SMS_ALI_PARAMS__access_key_id':
+                case 'SMS_ALI_PARAMS__access_key_secret':
+                case 'SMS_ALI_PARAMS__sign_name':
+                case 'GEETEST_PARAMS__geetest_id':
+                case 'GEETEST_PARAMS__geetest_key':
+                case 'GEETEST_PARAMS__token':
+                case 'GEETEST_PARAMS__aes_key':
+                    //配置信息
+                    $configs[Arr::first(explode('__', $alias))][Arr::last(explode('__', $alias))] = $config;
+                    //判断是否更改
+                    if (in_array($alias, $edited) && !in_array(Arr::first(explode('__', $alias)), $edited)) {
+                        //添加更改
+                        $edited[] = Arr::first(explode('__', $alias));
+                    }
+                    break;
+                default:
+                    //设置配置
+                    $configs[$alias] = $config;
+                    break;
+            }
+        }
+        //获取指定数据
+        $configs = Arr::only($configs, $edited);
+        //保存数据
+        if (!($service = new ConfigService())->setConfigs($configs)) {
+            //返回失败
+            return $this->fail($service->getCode(), $service->getMessage(), $service->getExtra() );
+        }
+        //添加操作日志
+        (new AdminLogService())->record('保存系统配置信息', $configs);
+        //返回成功
+        return $this->success($edited);
+    }
+
+}

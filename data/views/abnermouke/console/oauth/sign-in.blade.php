@@ -18,16 +18,17 @@ Contact: abnermouke@outlook.com
         <link rel="canonical" href="{{ proxy_assets('') }}" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="website-url" content="{{ config('app.url') }}">
+        <meta name="default-theme" content="{{ $console_configs['CONSOLE_DEFAULT_THEME'] }}">
         <meta name="aes-iv" content="{{ config('project.aes.iv') }}">
         <meta name="aes-encrypt-key" content="{{ auto_datetime('Ymd').config('project.aes.encrypt_key_suffix') }}">
         <meta name="current_client_ip" content="{{ request()->getClientIp() }}">
         <meta name="current_route_name" content="{{ request()->route()->getName() }}">
         <link rel="shortcut icon" href="{{ $console_configs['APP_SHORTCUT_ICON'] }}" />
         <link rel="stylesheet" href="{{ proxy_assets('themes/km8/css/common.css', 'abnermouke') }}">
-        @if($console_configs['CONSOLE_DEFAULT_THEME'] == 'dark')
+        @if($console_configs['CONSOLE_DEFAULT_THEME'] === 'dark')
             <link href="{{ proxy_assets('themes/km8/plugins/global/plugins.dark.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
             <link href="{{ proxy_assets('themes/km8/css/style.dark.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
-        @elseif($console_configs['CONSOLE_DEFAULT_THEME'] == 'light')
+        @elseif($console_configs['CONSOLE_DEFAULT_THEME'] === 'light')
             <link href="{{ proxy_assets('themes/km8/plugins/global/plugins.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
             <link href="{{ proxy_assets('themes/km8/css/style.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
         @else
@@ -45,7 +46,7 @@ Contact: abnermouke@outlook.com
         <script src="{{ proxy_assets('themes/km8/js/common.js', 'abnermouke') }}"></script>
         <script src="{{ proxy_assets('themes/km8/js/scripts.bundle.js', 'abnermouke') }}"></script>
     </head>
-    <body id="acb_body" class="{{ $console_configs['CONSOLE_DEFAULT_THEME'] == 'auto' ? (((int)date('H') >= 19 || (int)date('H') <= 6) ? 'dark-mode' : 'bg-body') : ($console_configs['CONSOLE_DEFAULT_THEME'] == 'dark' ? 'dark-mode' : 'bg-body') }}">
+    <body id="acb_body" data-H="{{ (int)date('H') }}" class="{{ $console_configs['CONSOLE_DEFAULT_THEME'] === 'auto' ? (((int)date('H') >= 19 || (int)date('H') <= 6) ? 'dark-mode' : 'bg-body') : ($console_configs['CONSOLE_DEFAULT_THEME'] === 'dark' ? 'dark-mode' : 'bg-body') }}">
         <div class="d-flex flex-column flex-root">
             <div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-image: url('{{ proxy_assets('themes/km8/media/illustrations/sketchy-1/14'.($console_configs['CONSOLE_DEFAULT_THEME'] == 'auto' ? ((date('H') >= 19 && date('H') <= 6) ? 'dark' : '') : ($console_configs['CONSOLE_DEFAULT_THEME'] == 'dark' ? '-dark' : '')).'.png', 'abnermouke') }}')">
             <div class="d-flex flex-center flex-column flex-column-fluid pb-lg-20">

@@ -11,7 +11,7 @@
                 <span class="d-flex align-items-center me-2">
                     <span class="symbol symbol-50px me-6">
                         @if(!\Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::link(data_get($extras, 'images.'.$value, '')))
-                            <div class="symbol-label bg-light-{{ \Illuminate\Support\Arr::random(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_THEME_ALIAS) }}">{{ data_get($extras, 'images.'.$value, '') }}</div>
+                            <div class="symbol-label bg-light-info">{{ data_get($extras, 'images.'.$value, '') }}</div>
                         @else
                             <img src="{{ data_get($extras, 'images.'.$value, '') }}" alt="image" />
                         @endif

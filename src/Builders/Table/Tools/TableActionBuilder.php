@@ -16,7 +16,7 @@ class TableActionBuilder
      * @var array
      */
     private $action = [
-        'type' => 'link', 'guard_name' => '', 'theme' => 'secondary', 'redirect_uri' => 'javascript:;', 'redirect_target' => false, 'icon' => '', 'method' => 'get', 'param_fields' => [], 'confirm_tip' => '', 'extras' => [], 'after_ajax' => ''
+        'type' => 'link', 'guard_name' => '', 'theme' => 'primary', 'redirect_uri' => 'javascript:;', 'redirect_target' => false, 'icon' => '', 'method' => 'get', 'param_fields' => [], 'confirm_tip' => '', 'extras' => [], 'after_ajax' => ''
     ];
 
     /**

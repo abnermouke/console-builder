@@ -45,8 +45,7 @@ class CreateAbnermoukeConsoleMenusTable extends Migration
             $table->string('redirect_uri', 255)->nullable(false)->default('')->comment('跳转链接');
             $table->longText('permission_nodes')->comment('权限节点');
             $table->string('icon', 100)->nullable(false)->default('')->comment('图标class');
-            $table->string('pulse_theme', 50)->nullable(false)->default('')->comment('pulse样式（white、primary、secondary、success、info、warning、danger、light、dark）');
-            $table->string('number_theme', 50)->nullable(false)->default('')->comment('数字提示样式（white、primary、secondary、success、info、warning、danger、light、dark）');
+            $table->integer('sort')->nullable(false)->default(50)->unsigned()->comment('排序值（越大越靠前展示）');
             $table->timestamp('created_at')->nullable()->comment('创建时间');
             $table->timestamp('updated_at')->nullable()->comment('更新时间');
             //索引配置

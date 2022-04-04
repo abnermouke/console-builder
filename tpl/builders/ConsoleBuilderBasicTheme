@@ -21,6 +21,17 @@ class ConsoleBuilderBasicTheme
     public const DEFAULT_THEME_ALIAS = ['primary', 'info', 'success', 'danger', 'warning', 'dark'];
 
 
+    //默认主题色（注释）
+    public const DEFAULT_THEME_NAMES = [
+        'primary' => '明亮',
+        'info' => '强调',
+        'success' => '成功',
+        'danger' => '错误',
+        'warning' => '警告',
+        'dark' => '暗色'
+    ];
+
+
     // 默认状态 status 主题
     public const DEFAULT_STATUS_THEME = [
         BaseModel::STATUS_ENABLED => 'success',

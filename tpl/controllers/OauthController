@@ -26,7 +26,7 @@ class OauthController extends BaseController
      * 登录页面
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
@@ -40,7 +40,7 @@ class OauthController extends BaseController
      * 普通登录
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param Request $request
      * @param OauthInterfaceService $service
      * @return \Illuminate\Http\JsonResponse
@@ -58,7 +58,7 @@ class OauthController extends BaseController
      * 退出登录
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -74,7 +74,7 @@ class OauthController extends BaseController
      * 微信授权登录
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param Request $request
      * @param OauthInterfaceService $service
      * @return \Illuminate\Http\JsonResponse
@@ -92,7 +92,7 @@ class OauthController extends BaseController
      * 微信授权登录
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $signature
      * @param Request $request
      * @param OauthInterfaceService $service
@@ -109,7 +109,7 @@ class OauthController extends BaseController
      * 微信授权回调
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $signature
      * @param Request $request
      * @param OauthInterfaceService $service
@@ -132,7 +132,7 @@ class OauthController extends BaseController
      * 微信授权状态检测
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $signature
      * @param Request $request
      * @param OauthInterfaceService $service
@@ -142,7 +142,7 @@ class OauthController extends BaseController
     public function wechat_qrcode_check($signature, Request $request, OauthInterfaceService $service)
     {
         //检测授权状态
-        $service->wechat_qrcode_check($service, $request);
+        $service->wechat_qrcode_check($signature, $request);
         //响应结果
         return responseService($service);
     }

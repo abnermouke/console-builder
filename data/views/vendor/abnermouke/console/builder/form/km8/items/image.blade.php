@@ -6,12 +6,12 @@
         @endif
     </label>
     <div class="fv-row" id="acbf_{{ $sign }}_item_{{ $field }}_upload_box">
-        <div class="h-{{ data_get($extras, 'box_height', 200) }}px w-{{ data_get($extras, 'box_width', 200) }}px bg-light-{{ \Illuminate\Support\Arr::random(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_THEME_ALIAS) }} mb-2" style="{{ $default_value ? 'background: url('.$default_value.');' : '' }}background-position: left;background-repeat: no-repeat" id="acbf_{{ $sign }}_item_{{ $field }}_wrapper">
+        <div class="h-{{ data_get($extras, 'box_height', 200) }}px w-{{ data_get($extras, 'box_width', 200) }}px bg-light-{{ \Illuminate\Support\Arr::random(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_THEME_ALIAS) }} mb-2" style="{{ $default_value ? 'background: url('.$default_value.');' : '' }}background-size: 100%;background-repeat: no-repeat" id="acbf_{{ $sign }}_item_{{ $field }}_wrapper">
         </div>
         <div class="fv-row mt-1">
             <input type="file" accept="{{ data_get($extras, 'accept', 'image/*') }}" data-width="{{ data_get($extras, 'width', 200) }}" data-height="{{ data_get($extras, 'height', 200) }}" class="d-none" id="acbf_{{ $sign }}_item_{{ $field }}_uploader" value="" autocomplete="off" {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }}>
             <input type="hidden" id="acbf_{{ $sign }}_item_{{ $field }}" autocomplete="off" value="{{ $default_value }}">
-            <button id="acbf_{{ $sign }}_item_{{ $field }}_trigger" class="btn btn-light-primary btn-sm me-3 my-3">更改图片</button>
+            <button id="acbf_{{ $sign }}_item_{{ $field }}_trigger" class="btn btn-light-primary btn-sm me-3 my-3">选择图片</button>
             <button id="acbf_{{ $sign }}_item_{{ $field }}_remover" class="btn btn-light-danger btn-sm me-3 my-3">移除图片</button>
         </div>
     </div>

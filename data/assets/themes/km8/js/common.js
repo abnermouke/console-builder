@@ -2,9 +2,10 @@
 var HOST_URL = $("meta[name='website-url']").attr('content'), ENABLE_ASIDE = $("meta[name='enable_aside']").attr('content'), ROUTE_NAME = $("meta[name='current_route_name']").attr('content'), MOBILE_DEVICE = $("meta[name='mobile_device']").attr('content'), AES_IV = $("meta[name='aes-iv']").attr('content'), AES_ENCRYPT_KEY = $("meta[name='aes-encrypt-key']").attr('content'), DEFAULT_THEME = $("meta[name='default-theme']").attr('content');
 //初始化ajax请求
 $.ajaxSetup({
+    //设置默认头部
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
+    },
 });
 //默认操作
 $(function () {
@@ -13,7 +14,7 @@ $(function () {
     initMenus();
 
     //获取信息
-    var aside_obj = $("#kt_aside");
+    var aside_obj = $("#kt_aside"), change_password = $("#kt-edit_admin_password"), change_password_modal = $("#kt-edit_admin_password_modal"), refresh_nodes = $("#kt-refresh_console_nodes");
 
     //判断存在侧边栏
     if (typeof (aside_obj) !== 'undefined' && aside_obj.length > 0) {
@@ -37,24 +38,98 @@ $(function () {
             $("#show_aside").prop('checked', true).change();
         }
     }
+    //判断是否存在刷新节点按钮
+    if (typeof refresh_nodes !== 'undefined' && refresh_nodes.length > 0) {
+        //点击监听
+        refresh_nodes.on('click', function () {
+            //提示确认
+            confirmPopup('刷新节点预计需要1-2分钟，确认后请耐心等待，是否继续？', function (res) {
+                //加载loading
+                var loading = loadingStart(refresh_nodes, $('body')[0], '正在刷新节点...');
+                //发起请求
+                buildRequest(refresh_nodes.attr('data-query-url'), {}, 'post', true, function (res) {
+                    //提示信息
+                    alertToast('刷新成功', 2000, 'success');
+                    //刷新页面
+                    window.location.reload();
+                }, function (res) {
+                    //提示信息
+                    alertToast(res.msg, 2000, 'error');
+                }, function () {
+                    //关闭loading
+                    loadingStop(loading, refresh_nodes);
+                })
+            });
+        });
+    }
+
+    //判断是否存在修改密码按钮
+    if (typeof change_password !== 'undefined' && change_password.length > 0) {
+        //实例modal
+        var change_password_modal_object;
+        //设置监听
+        change_password.on('click', function () {
+            //显示弹窗
+            change_password_modal_object = new bootstrap.Modal(change_password_modal[0], {backdrop: 'static', keyboard: false});
+            //显示弹窗
+            change_password_modal_object.show();
+        });
+        //提交确认
+        $("#kt-edit_admin_password_modal_confirm_button").on('click', function () {
+            //获取参数
+            var _this = $(this), password = $("#kt-edit_admin_password_modal_new_password"), password_confirmed = $("#kt-edit_admin_password_modal_new_password_confirmed"), password_value = password.val(), confirmed_password_value = password_confirmed.val();
+            //判断信息
+            if (typeof password_value === 'undefined' || password_value.length < 6) {
+                //新增提示
+                password.parents('.form_item').append('<div class="fs-7 fw-bold text-danger my-2 validator_tip">密码需设置至少6位，请更新此项内容后再试</span></div>');
+                //设置延时关闭
+                setTimeout(function () {
+                    password.parents('.form_item').find('.validator_tip').remove();
+                }, 5000);
+                //跳出循环
+                return false;
+            }
+            //判断信息
+            if (typeof confirmed_password_value === 'undefined' || confirmed_password_value.length < 6) {
+                //新增提示
+                password_confirmed.parents('.form_item').append('<div class="fs-7 fw-bold text-danger my-2 validator_tip">密码需设置至少6位，请更新此项内容后再试</span></div>');
+                //设置延时关闭
+                setTimeout(function () {
+                    password_confirmed.parents('.form_item').find('.validator_tip').remove();
+                }, 5000);
+                //跳出循环
+                return false;
+            }
+            //判断值是否一致
+            if (password_value !== confirmed_password_value) {
+                //新增提示
+                password_confirmed.parents('.form_item').append('<div class="fs-7 fw-bold text-danger my-2 validator_tip">前后密码不一致</span></div>');
+                //设置延时关闭
+                setTimeout(function () {
+                    password_confirmed.parents('.form_item').find('.validator_tip').remove();
+                }, 5000);
+                //跳出循环
+                return false;
+            }
+            //加载loading
+            var loading = loadingStart(_this, change_password_modal[0], '正在修改...');
+            //发起请求
+            buildRequest(change_password_modal.attr('data-query-url'), {password:password_value, password_confirmed:confirmed_password_value}, 'post', true, function (res) {
+                //提示信息
+                alertToast('修改成功', 2000, 'success');
+                //关闭弹窗
+                change_password_modal_object.hide();
+            }, function (res) {
+                //提示信息
+                alertToast(res.msg, 2000, 'error');
+            }, function () {
+                //关闭loading
+                loadingStop(loading, _this);
+            })
+        });
+    }
 
 });
-
-/**
- * 获取随机字符串
- * @param length
- * @returns {string}
- */
-function randomString(length) {
-    //设置字符集
-    var str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', result = '';
-    //循环长度
-    for (var i = length; i > 0; --i)
-        //设置内容
-        result += str[Math.floor(Math.random() * str.length)];
-    //返回结果
-    return result;
-}
 
 /**
  * 初始化菜单
@@ -62,27 +137,57 @@ function randomString(length) {
 function initMenus()
 {
     //查询第一个当前路由的item
-    var item = $("#kt_header_navs_wrapper").find('.menu-link[data-route-name="'+ROUTE_NAME+'"]').eq(0);
+    var item, title = $('title'), routers = $("#acb_routers"), acb_permissions = $("#acb_permissions"), kt_toolbar_breadcrumb_title = $("#kt_toolbar_breadcrumb_title");
+    //判断元素是否存在
+    if (typeof acb_permissions !== 'undefined' && acb_permissions.length > 0) {
+        //初始化信息
+        acb_permissions = JSON.parse(acb_permissions.text().trim());
+    }
+    //循环元素
+    $("#kt_header_navs_wrapper").find('.menu-link').each(function () {
+        //获取配置route_names
+        var route_names = $(this).attr('data-route-names');
+        //判断信息
+        if (typeof route_names !== 'undefined' && route_names.length > 0) {
+            //拆分信息
+            route_names = route_names.split(',');
+            //判断路由名是否存在
+            if ($.inArray(('get&'+ROUTE_NAME), route_names) >= 0) {
+                //设置ITEM
+                item = $(this);
+                //跳出循环
+                return false;
+            }
+        }
+    });
     //判断是否存在
     if (typeof (item) !== 'undefined' && item.length > 0) {
         //显示菜单
-        var breadcrumbs = showMenu(item.attr('data-did'), []), kt_toolbar_breadcrumb_title = $("#kt_toolbar_breadcrumb_title"), kt_toolbar_breadcrumbs = $("#kt_toolbar_breadcrumbs");
+        var breadcrumbs = showMenu(item.attr('data-did'), []), kt_toolbar_breadcrumbs = $("#kt_toolbar_breadcrumbs");
         //判断是否存在
         if (typeof (breadcrumbs) !== 'undefined' && breadcrumbs.length > 0) {
             //循环面包屑
             $.each(breadcrumbs, function (i, item) {
-               //判断索引值
-               if (parseInt(i) === 0) {
-                   //设置面包屑标题
-                   kt_toolbar_breadcrumb_title.text(item['name']);
-                   kt_toolbar_breadcrumbs.prepend('<li class="breadcrumb-item text-gray-500">'+item['name']+'</li>');
-               } else {
-                   //设置面包屑
-                   kt_toolbar_breadcrumbs.prepend('<li class="breadcrumb-item text-gray-600"><a href="'+item['link']+'" class="text-gray-600 text-hover-primary">'+item['name']+'</a></li>');
-               }
+                //判断索引值
+                if (parseInt(i) === 0) {
+                    //设置面包屑
+                    kt_toolbar_breadcrumbs.prepend('<li class="breadcrumb-item text-gray-500">'+item['name']+'</li>');
+                } else {
+                    //设置面包屑
+                    kt_toolbar_breadcrumbs.prepend('<li class="breadcrumb-item text-gray-600"><a href="'+item['link']+'" class="text-gray-600 text-hover-primary">'+item['name']+'</a></li>');
+                }
             });
         }
     }
+    //设置面包屑标题
+    kt_toolbar_breadcrumb_title.text(JSON.parse(routers.text().trim())['get&'+ROUTE_NAME]);
+    //判断是否存在标题
+    if (title.text().length <= 0) {
+        //设置标题
+        title.text(kt_toolbar_breadcrumb_title.text());
+    }
+    //移除路由信息
+    routers.remove();
 }
 
 /**
@@ -96,14 +201,22 @@ function showMenu(menu_did, breadcrumbs)
     //判断是否存在
     if (typeof (menu_did) !== 'undefined' && parseInt(menu_did) > 0) {
         //查询菜单ITEM
-        var item = $("#kt_header").find('.menu-obj[data-did="' + parseInt(menu_did) + '"]');
+        var item;
+        //判断手机设备还是电脑设备
+        if (parseInt(MOBILE_DEVICE) === 1) {
+            //查找元素
+            item = $("#kt_header_navs").find('.menu-obj[data-did="'+parseInt(menu_did)+'"]')
+        } else {
+            //查找元素
+            item = $("#kt_header").find('.menu-obj[data-did="'+parseInt(menu_did)+'"]')
+        }
         //判断是否存在
         if (typeof (item) !== 'undefined' && item.length > 0) {
             //根据目录类型处理
             switch (item.attr('data-menu-type')) {
                 case 'tab':
                     //选中菜单
-                    item.removeClass('here show').addClass('here show');``
+                    item.removeClass('here show').addClass('here show');
                     //选中菜单
                     $("#kt_header_navs_wrapper").find('.menu-link[data-did="'+menu_did+'"]').removeClass('active').addClass('active');
                     break;
@@ -133,16 +246,64 @@ function showMenu(menu_did, breadcrumbs)
     return breadcrumbs;
 }
 
+
 /**
- * 页面滑动至
- * @param o
+ * 将指定元素移至工具栏
+ * @param html
+ * @param remove_target
+ * @returns {boolean}
  */
-function scrollToObject(o)
+function moveToToolbar(html, remove_target)
 {
+    var toolbars = $("#kt_dashboard_toolbar_items");
+    //判断数据
+    if (typeof html !== 'undefined' && html.length > 0) {
+        //判断是否存在需要移除元素
+        if (typeof remove_target !== 'undefined' && remove_target.length > 0) {
+            //移除已存在项
+            toolbars.find(remove_target).remove();
+        }
+        //添加内容
+        toolbars.prepend(html);
+        //重置tooltip
+        KTApp.initBootstrapTooltips();
+    }
+    //返回成功
+    return true;
+}
+
+/**
+ * 获取随机字符串
+ * @param length
+ * @returns {string}
+ */
+function randomString(length) {
+    //设置字符集
+    var str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', result = '';
+    //循环长度
+    for (var i = length; i > 0; --i)
+        //设置内容
+        result += str[Math.floor(Math.random() * str.length)];
+    //返回结果
+    return result;
+}
+
+/**
+ * container滑动至
+ * @param o
+ * @param container
+ */
+function scrollToObject(o, container)
+{
+    //判断container
+    if (typeof container === 'undefined' || container.lenhth <= 0) {
+        //设置container
+        container = $('html , body');
+    }
     //获取高度
     var of = o.offset().top;
     //滚动页面
-    $('html , body').animate({scrollTop: parseInt(of > 200 ? (of - 160) : of)}, 1000)
+    container.animate({scrollTop: parseInt(of > 200 ? (of - 160) : of)}, 1000)
 }
 
 /**
@@ -241,6 +402,11 @@ function encryptFormData(encrypt_params)
 {
     //判断是否为对象
     if (typeof (encrypt_params) === 'object') {
+        //判断是否为空
+        if ($.isEmptyObject(encrypt_params)) {
+            //添加默认参数
+            encrypt_params['__RANDOM_STRING__'] = randomString(3);
+        }
         //转义信息
         var encrypt_string = JSON.stringify(encrypt_params);
         //返回信息
@@ -439,6 +605,8 @@ function buildRequest(query_url, params, method, is_ajax, callback, fail_callbac
         if (is_ajax) {
             //整理基础方法
             var func = function (res) {
+                //设置ajax同步请求
+                $.ajaxSettings.async = false;
                 //判断回调信息
                 if (typeof (after_ajax_callback) == 'function') {
                     //自定义方法调用
@@ -446,12 +614,16 @@ function buildRequest(query_url, params, method, is_ajax, callback, fail_callbac
                 }
                 //判断处理状态
                 if (res.state) {
+                    //恢复ajax异步请求
+                    $.ajaxSettings.async = true;
                     //判断回调信息
                     if (typeof (callback) == 'function') {
                         //自定义方法调用
                         return callback(res);
                     }
                 } else {
+                    //恢复ajax异步请求
+                    $.ajaxSettings.async = true;
                     //判断回调信息
                     if (typeof (fail_callback) == 'function') {
                         //自定义方法调用

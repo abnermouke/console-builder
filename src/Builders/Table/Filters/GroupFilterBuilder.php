@@ -18,7 +18,7 @@ class GroupFilterBuilder extends BasicFilterBuilder
     public function __construct()
     {
         //设置类型
-        $this->type('group')->col(4)->options()->default_value('__IGNORE__', false);
+        $this->type('group')->col(6)->options()->default_value('__IGNORE__', false);
     }
 
     /**

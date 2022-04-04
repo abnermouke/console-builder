@@ -16,7 +16,7 @@ class BasicFilterBuilder
      * @var array
      */
     protected $filter = [
-        'type' => '', 'field' => '', 'guard_name' => '', 'default_value' => '', 'custom' => false, 'extras' => [], 'col_number' => 2
+        'type' => '', 'field' => '', 'guard_name' => '', 'default_value' => '', 'custom' => false, 'extras' => [], 'col_number' => 4
     ];
 
     /**

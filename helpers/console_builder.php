@@ -36,6 +36,51 @@ if (!function_exists('decode_acbt_template')) {
     }
 }
 
+if (!function_exists('abbr_acbt_template')) {
+    /**
+     * 获取模版大写首字母
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 15:06:52
+     * @param $template
+     * @param $list
+     * @param $default
+     * @return string
+     * @throws Exception
+     */
+    function abbr_acbt_template($template, $list, $default)
+    {
+        //获取模版内容
+        $template = decode_acbt_template($template, $list, $default);
+        //获取首字母
+        return abbr_acbt_string($template);
+    }
+}
+
+if (!function_exists('abbr_acbt_string')) {
+    /**
+     * 获取文本大写首字母
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 18:37:58
+     * @param $string
+     * @return string
+     * @throws Exception
+     */
+    function abbr_acbt_string($string)
+    {
+        //获取第一位
+        $first = mb_substr($string, 0, 1);
+        //判断是否为中文
+        if (\Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::onlyZh($first)) {
+            //转为英文
+            $first = pinyin_abbr($first);
+        }
+        //返回大写首字母
+        return strtoupper($first);
+    }
+}
+
 if (!function_exists('get_acbt_link')) {
     /**
      * 获取构建器特质链接
@@ -51,13 +96,13 @@ if (!function_exists('get_acbt_link')) {
     function get_acbt_link($link, $list, $default_link = 'javascript:;')
     {
         //判断链接
-        if ($link && \Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::link($link) && strstr($link, '__')) {
+        if ($link && strstr($link, '__')) {
             //初始化链接信息
             $link = urldecode($link);
             //匹配信息
             if ($list && preg_match_all('~__(.*)__~Uuis', $link, $matched) >= 1) {
                 //判断匹配信息
-               if ($matched[1] && !empty($matched[1])) {
+                if ($matched[1] && !empty($matched[1])) {
                     //循环字段信息
                     foreach ($matched[1] as $field) {
                         //设置链接数据

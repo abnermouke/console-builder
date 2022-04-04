@@ -85,13 +85,13 @@ class TableContentBuilder
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
      * @Time 2022-03-21 00:54:06
-     * @param $data string 根据条件查询到的数据
+     * @param $lists array 根据条件查询到的数据
      * @return $this
      */
-    public function setData($data)
+    public function setLists($lists)
     {
         //设置查询内容
-        $this->builder['data'] = $data;
+        $this->builder['data'] = $lists;
         //返回当前实例对象
         return $this;
     }
@@ -113,7 +113,7 @@ class TableContentBuilder
             dd($this->builder);
         }
         //渲染页面
-        return view()->make($this->builder['template'], $this->builder)->render();
+        return ['html' => view()->make($this->builder['template'], $this->builder)->render()];
     }
 
 }

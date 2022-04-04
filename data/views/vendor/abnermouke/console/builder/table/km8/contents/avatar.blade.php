@@ -2,16 +2,24 @@
     <div class="symbol-group symbol-hover mb-1">
         @if($avatars = data_get($__data__, $field, []))
             @foreach($avatars as $ava)
-                <div class="symbol symbol-circle symbol-25px">
-                    @if($ava = get_acbt_link($ava, $__data__, '') && \Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::link($ava))
-                        <img src="{{ $ava }}" alt="{{ $ava }}" />
+                <div class="symbol symbol-circle symbol-40px">
+                    @if($ava = get_acbt_link($ava, $__data__, ''))
+                        @if(\Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::link($ava))
+                            <img src="{{ $ava }}" alt="{{ $ava }}" />
+                        @else
+                            <div class="symbol-label bg-light-primary">
+                                <span class="fs-7 text-info">{{ abbr_acbt_string($ava) }}</span>
+                            </div>
+                        @endif
                     @else
                         <div class="symbol-label bg-light-primary">
-                            <span class="fs-7 text-{{ \Illuminate\Support\Arr::random(array_values(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_STATUS_THEME)) }}"> {{ strtoupper(\Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::hasZh($thumb_abbr = mb_substr($thumb_link, 0, 1)) ? pinyin_abbr($thumb_abbr) : $thumb_abbr) }}</span>
+                            <span class="fs-7 text-info">UNKNOWN</span>
                         </div>
                     @endif
                 </div>
             @endforeach
+        @else
+            <span class="fs-7 text-info">{!! $empty_value ? $empty_value : '---' !!}</span>
         @endif
     </div>
     @if($description = decode_acbt_template($description_template, $__data__, ''))

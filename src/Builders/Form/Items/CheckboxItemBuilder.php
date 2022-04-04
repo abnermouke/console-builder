@@ -20,7 +20,7 @@ class CheckboxItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name)
     {
         //设置基础信息
-        $this->guard_name($guard_name)->field($field)->options();
+        $this->guard_name($guard_name)->field($field)->options()->value_type(BasicItemBuilder::VALUE_TYPE_OF_OBJECT);
     }
 
     /**
@@ -33,10 +33,26 @@ class CheckboxItemBuilder extends BasicItemBuilder
      * @return CheckboxItemBuilder
      * @throws \Exception
      */
-    public function options($options = [], $default_value = 0)
+    public function options($options = [], $default_value = [])
     {
         //设置选择项
         return $this->setParam('type', 'checkbox')->extra('options', $options)->default_value(is_array($default_value) ? $default_value : explode(',', $default_value));
+    }
+
+    /**
+     * 设置选项（分组展示）
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 14:32:24
+     * @param array $options
+     * @param array $default_value
+     * @return CheckboxItemBuilder
+     * @throws \Exception
+     */
+    public function options_with_groups($options = [], $default_value = [])
+    {
+        //设置选择项
+        return $this->setParam('type', 'group_checkbox')->extra('options', $options)->default_value(is_array($default_value) ? $default_value : explode(',', $default_value));
     }
 
     /**
@@ -73,7 +89,6 @@ class CheckboxItemBuilder extends BasicItemBuilder
         //设置选择项
         return $this->setParam('type', 'image_checkbox')->extra('options', $options)->extra('descriptions', $descriptions)->extra('images', $images)->default_value(is_array($default_value) ? $default_value : explode(',', $default_value));
     }
-
 
 
 }

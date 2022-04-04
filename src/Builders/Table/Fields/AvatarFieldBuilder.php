@@ -20,7 +20,7 @@ class AvatarFieldBuilder extends BasicFieldBuilder
     public function __construct($field, $guard_name)
     {
         //设置默认信息
-        $this->type('avatar')->field($field)->guard_name($guard_name)->empty([]);
+        $this->type('avatar')->field($field)->guard_name($guard_name)->empty('---');
     }
 
 }

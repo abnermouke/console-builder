@@ -36,7 +36,7 @@ return [
         //排除不检测路由（可指定多个路由）
         'ignore_route_names' => [],
         //默认必须存在的路由（可指定多个路由）
-        'default_node_aliases' => ['get&abnermouke.console.index'],
+        'default_node_aliases' => ['get&abnermouke.console.index', 'post&abnermouke.console.admins.change.password', 'post&abnermouke.console.uploader', 'get&abnermouke.console.uploader.ueditor'],
         //控制器组名后缀（可指定多个），移除后缀后所剩内容为该控制器权限组名
         'controller_group_name_suffix' => '基础控制器',
     ],

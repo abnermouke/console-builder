@@ -10,17 +10,17 @@ use Illuminate\Http\Request;
 
 /**
  * 上传基础控制器
- * Class uploadController
+ * Class UploadController
  * @package App\Http\Controllers\Abnermouke\Console
  */
-class uploadController extends BaseController
+class UploadController extends BaseController
 {
 
     /**
      * 上传文件
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-04-02 14:02:23
      * @param Request $request
      * @param UploadService $service
      * @return \Illuminate\Http\JsonResponse
@@ -38,7 +38,7 @@ class uploadController extends BaseController
      * 百度编辑器资源上传
      * @Author Abnermouke <abnermouke@gmail.com>
      * @Originate in Company <Macbook Pro>
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param Request $request
      * @param UploadService $service
      * @return \Illuminate\Http\JsonResponse

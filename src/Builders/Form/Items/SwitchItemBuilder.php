@@ -22,7 +22,7 @@ class SwitchItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name)
     {
         //设置基础信息
-        $this->setParam('type', 'switch')->guard_name($guard_name)->field($field)->description('是否允许开启'.$guard_name)->default_value(BaseModel::SWITCH_OFF)->allow_text()->on(BaseModel::SWITCH_ON)->off(BaseModel::SWITCH_OFF);
+        $this->setParam('type', 'switch')->guard_name($guard_name)->field($field)->description('是否允许开启'.$guard_name)->default_value(BaseModel::SWITCH_OFF)->allow_text()->on(BaseModel::SWITCH_ON)->off(BaseModel::SWITCH_OFF)->value_type(BasicItemBuilder::VALUE_TYPE_OF_INTEGRAL);
     }
 
     /**

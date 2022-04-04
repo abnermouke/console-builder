@@ -18,7 +18,7 @@ class SelectFilterBuilder extends BasicFilterBuilder
     public function __construct()
     {
         //设置类型
-        $this->type('select')->col(2)->options()->default_value('__WITHOUT_ANY_VALUE__', false);
+        $this->type('select')->col(4)->options()->default_value('__WITHOUT_ANY_VALUE__', false);
     }
 
     /**

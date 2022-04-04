@@ -27,9 +27,9 @@ class ConsoleBuilderBasicTool
             //循环参数信息
             foreach ($params as $k => $param) {
                 //判断信息
-                if (is_array($param) && !empty($param)) {
+                if (is_array($param)) {
                     //整理信息
-                    $param = Arr::query($param);
+                    $param = !empty($param) ? Arr::query($param) : '[]';
                 }
                 //判断信息
                 $param = Str::length($param) > 200 ? ('__LONG_TEXT__:'.Str::length($param)) : $param;

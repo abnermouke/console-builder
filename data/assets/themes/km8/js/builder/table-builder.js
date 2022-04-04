@@ -20,6 +20,8 @@ $.table_builder = {
         this.setColumnTrigger(table, sign);
         //设置导出触发
         this.setExportTrigger(table, sign);
+        //设置刷新触发
+        this.setRefreshTrigger(table, sign);
         //设置按钮
         this.setButtonTrigger(table, sign);
         //发起请求
@@ -64,7 +66,7 @@ $.table_builder = {
                 }
                 //恢复筛选条件
                 if (typeof cacheParams['search_mode'] !== 'undefined' && cacheParams['search_mode'].length > 0 && typeof cacheParams['filters'] !== 'undefined' && !$.isEmptyObject(cacheParams['filters'])) {
-                   //判断是否为基础筛选
+                    //判断是否为基础筛选
                     if (cacheParams['search_mode'] === 'basic') {
                         //获取对象
                         var basic_input = $("#acbt_"+sign+"_filter_of_basic");
@@ -140,12 +142,8 @@ $.table_builder = {
             table_content = $("#acbt_" + sign + "_content"), table_box = $("#acbt_" + sign + "_table");
         //判断对象是否存在
         if (typeof (buttons) !== 'undefined' && parseInt(buttons.length) > 0) {
-            //移除已存在项
-            toolbars.find('.acbt_button').remove();
-            //添加内容
-            toolbars.prepend(buttons.html());
-            //重置tooltip
-            KTApp.initBootstrapTooltips();
+            //转移内容
+            moveToToolbar(buttons.html(), '.acbt_button');
             //移除元素
             buttons.remove();
         }
@@ -179,6 +177,42 @@ $.table_builder = {
             var query_func = function () {
                 //根据类型处理
                 switch (type) {
+                    case 'form':
+                        //设置默认参数
+                        var param_fields = {}, body = $('body'), bind_modal_id = 'acbt_'+sign+'_modal_with_form_of_'+randomString(8);
+                        //添加标识
+                        param_fields['table_sign'] = sign;
+                        param_fields['bind_table_id'] = table.attr('id');
+                        param_fields['bind_modal_id'] = bind_modal_id;
+                        //加载loading
+                        var loading = loadingStart(table_box, table[0], '正在加载...');
+                        //创建请求
+                        buildRequest(query_url, param_fields, method, true, function (res) {
+                            //设置内容
+                            var modal_html = '<div class="modal fade acb_table_form_modal" id="'+bind_modal_id+'"><div class="modal-dialog modal-dialog-centered modal-'+extras['modal_size']+'" role="document"><div class="modal-content"><div class="modal-header py-5"><h5 class="modal-title"></h5><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2 acb_table_form_modal_close_icon" data-bs-dismiss="modal" aria-label="Close" id="'+bind_modal_id+'_close_icon"><i aria-hidden="true" class="fa fa-times"></i></button></div><div class="modal-body mh-700px overflow-auto">'+res.data['html']+'</div><div class="modal-footer" id="'+bind_modal_id+'_footer"></div></div></div></div>'
+                            //添加内容
+                            body.append(modal_html);
+                            //显示弹窗
+                            new bootstrap.Modal($("#"+bind_modal_id)[0], {backdrop: 'static', keyboard: false}).show();
+                            //引入实例对象
+                            createExtraJs(table.attr('data-source-path')+'/form-builder.js', $.form_builder, function () {
+                                //创建处理实例对象
+                                $.form_builder.init($("#"+bind_modal_id).find('.acb-form-builder.form').attr('data-sign'));
+                            });
+                            //触发关闭弹窗事件
+                            $("#"+bind_modal_id).on('hidden.bs.modal', function () {
+                                //删除弹窗
+                                $("#"+bind_modal_id).remove();
+                            });
+                            //添加
+                        }, function (res) {
+                            //提示错误
+                            alertToast(res.msg, 2000, 'error');
+                        }, function () {
+                            //关闭弹窗
+                            loadingStop(loading, table_box);
+                        })
+                        break;
                     case 'link':
                         //判断是否存在参数
                         if (typeof (extras['params']) !== 'undefined' && !$.isEmptyObject(extras['params'])) {
@@ -277,6 +311,15 @@ $.table_builder = {
             }
         });
     },
+    setRefreshTrigger: function (table, sign) {
+        //获取处理对象
+        var table_refresh = $("#acbt_"+sign+"_refresh"), _this = this;
+        //设置导出触发
+        table_refresh.on('click', function () {
+            // 刷新列表
+            _this.requestLists(table, sign);
+        });
+    },
     setExportTrigger: function (table, sign) {
         //获取处理对象
         var table_export = $("#acbt_"+sign+"_export");
@@ -306,7 +349,7 @@ $.table_builder = {
                     name: "ConsoleBuilderExport",
                     filename: sign,
                     preserveColors: true,
-                    exclude_img: false
+                    exclude_img: true
                 });
                 //删除非必要样式
                 table_box.find('.acbt_table_thead_th').removeClass('export_ignore');
@@ -562,17 +605,17 @@ $.table_builder = {
         if (typeof table_checkbox_select_all !== 'undefined' && table_checkbox_select_all.length > 0 && table_checkbox_trigger_buttons.length > 0) {
             //全选触发
             table_checkbox_select_all.on('change', function () {
-               //判断是否选中
-               if ($(this).is(':checked')) {
-                   //设置选中
-                   table_body.find('input.acbt_'+sign+'_table_select_item').prop('checked', true);
-                   //滑动页面
-                   scrollToObject($('body'));
-               } else {
-                   //设置全部不选中
-                   table_body.find('input.acbt_'+sign+'_table_select_item').prop('checked', false);
-               }
-               //触发
+                //判断是否选中
+                if ($(this).is(':checked')) {
+                    //设置选中
+                    table_body.find('input.acbt_'+sign+'_table_select_item').prop('checked', true);
+                    //滑动页面
+                    scrollToObject($('body'));
+                } else {
+                    //设置全部不选中
+                    table_body.find('input.acbt_'+sign+'_table_select_item').prop('checked', false);
+                }
+                //触发
                 table_body.find('input.acbt_'+sign+'_table_select_item').eq(0).change();
             });
             //整理按钮后缀
@@ -608,6 +651,11 @@ $.table_builder = {
             });
             //取消全选
             table_checkbox_select_all.prop('checked', false).change();
+            //隐藏触发按钮
+            $.each(table_checkbox_trigger_buttons, function (i, item) {
+                // 设置隐藏
+                $("#acbt_"+sign+"_button_"+item).removeClass('d-none').addClass('d-none');
+            });
         }
         //判断页码是否存在
         if (typeof table_pagination !== 'undefined' && table_pagination.length > 0) {
@@ -761,7 +809,7 @@ $.table_builder = {
         //执行请求
         buildRequest(query_url, __this.arrangeParams(table, sign), method, true, function (res) {
             //设置内容
-            table_content.empty().html(res.data);
+            table_content.empty().html(res.data['html']);
             //设置触发
             __this.setContentTrigger(table, sign);
             //滑动到列表顶端
@@ -812,25 +860,25 @@ $.table_builder = {
                                 params['filters'][filter_field] = [];
                                 //循环内容
                                 $.each(JSON.parse(filter_value), function (i, item) {
-                                   //新增字段
+                                    //新增字段
                                     params['filters'][filter_field].push(item.value);
                                 });
                             }
-                        break;
+                            break;
                         case 'date_range':
                             //判断值内容
                             if (typeof (filter_value) !== 'undefined' && filter_value.length > 0) {
                                 //设置条件
                                 params['filters'][filter_field] = filter_value.split(' 至 ');
                             }
-                        break;
+                            break;
                         case 'select':
                             //判断值内容
                             if (typeof (filter_value) !== 'undefined' && filter_value.length > 0 && filter_value !== '__WITHOUT_ANY_VALUE__') {
                                 //设置条件
                                 params['filters'][filter_field] = filter_value;
                             }
-                        break;
+                            break;
                         case 'group':
                             //重置值
                             filter_value = $(this).find(filter_target + ":checked").val();
@@ -839,28 +887,28 @@ $.table_builder = {
                                 //设置条件
                                 params['filters'][filter_field] = filter_value;
                             }
-                        break;
+                            break;
                         case 'dialer':
                             //判断值内容
                             if (typeof (filter_value) !== 'undefined' && filter_value.length > 0 && filter_value !== '0.0') {
                                 //设置条件
                                 params['filters'][filter_field] = filter_value;
                             }
-                        break;
+                            break;
                         case 'switch':
                             //判断是否选中
                             if ($(filter_target).is(':checked')) {
                                 //设置筛选条件
                                 params['filters'][filter_field] = $(filter_target).attr('data-on-value');
                             }
-                        break;
+                            break;
                         default:
                             //判断值内容
                             if (typeof (filter_value) !== 'undefined' && filter_value.trim().length > 0) {
                                 //设置条件
                                 params['filters'][filter_field] = filter_value;
                             }
-                        break;
+                            break;
                     }
                 });
             }

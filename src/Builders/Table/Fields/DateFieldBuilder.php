@@ -20,7 +20,7 @@ class DateFieldBuilder extends BasicFieldBuilder
     public function __construct($field, $guard_name)
     {
         //设置默认信息
-        $this->type('date')->field($field)->guard_name($guard_name)->format('Y-m-d');
+        $this->type('date')->field($field)->guard_name($guard_name)->format('Y-m-d H:i:s');
     }
 
     /**
@@ -31,10 +31,10 @@ class DateFieldBuilder extends BasicFieldBuilder
      * @param string $format 格式
      * @return DateFieldBuilder
      */
-    public function format($format = 'Y-m-d')
+    public function format($format = 'Y-m-d H:i:s')
     {
         //设置类型
-        return $this->extra('format', $format ? $format : 'Y-m-d');
+        return $this->extra('format', $format ? $format : 'Y-m-d H:i:s');
     }
 
     /**

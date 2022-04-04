@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\ConfigInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 系统配置基础控制器
@@ -19,6 +21,41 @@ use Abnermouke\EasyBuilder\Module\BaseController;
 class ConfigController extends BaseController
 {
 
-    //
+    /**
+     * 系统配置详情页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 01:44:06
+     * @param Request $request
+     * @param ConfigInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Exception
+     */
+    public function index(Request $request, ConfigInterfaceService $service)
+    {
+        //获取配置信息
+        $service->configs();
+        //渲染页面
+        return view('abnermouke.console.index.configs.index', $service->getResult());
+    }
+
+    /**
+     * 保存系统配置信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 01:44:25
+     * @param Request $request
+     * @param ConfigInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store(Request $request, ConfigInterfaceService $service)
+    {
+        //查询列表
+        $service->store($request);
+        //响应数据
+        return responseService($service);
+    }
+
 
 }

@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-body">
 @endif
-            <div id="acbf_{{ $sign }}" class="acb-form-builder form" data-bind-modal-id="{{ $bind_modal_id }}" data-bind-table-id="{{ $bind_table_id }}" data-sign="{{ $sign }}" data-builed="0" data-domain="{{ config('app.url') }}">
+            <div id="acbf_{{ $sign }}" class="acb-form-builder form" data-bind-modal-id="{{ $bind_modal_id }}" data-dropdown-modal-id="{{ $bind_modal_id }}" data-bind-table-id="{{ $bind_table_id }}" data-sign="{{ $sign }}" data-builed="0" data-domain="{{ config('app.url') }}">
                 @if($title)
                     <div id="acbf_{{ $sign }}_titles">
                         <h3 class="mb-5">{{ $title }}</h3>
@@ -55,7 +55,7 @@
                         @endif
                         @foreach($structure['fields'] as $field => $col)
                             @if($item = data_get($items, $field, false))
-                                <div class="col-md-{{ $col }} fv-row my-5">
+                                <div class="col-md-{{ $col }} fv-row my-5 acbf_col_row">
                                     @include('vendor.abnermouke.console.builder.form.km8.items.'.$item['type'], array_merge($item, ['sign' => $sign, 'group_alias' => md5(implode(',', $structure['fields']))]))
                                 </div>
                             @endif

@@ -1,0 +1,291 @@
+<?php
+
+
+namespace App\Interfaces\Abnermouke\Console;
+
+use Abnermouke\ConsoleBuilder\Builders\Form\ConsoleFormBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormButtonBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormItemsBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableContentBuilder;
+use Abnermouke\EasyBuilder\Library\CodeLibrary;
+use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Model\Abnermouke\Console\Admins;
+use App\Model\Abnermouke\Console\Roles;
+use App\Repository\Abnermouke\Console\AdminRepository;
+use App\Repository\Abnermouke\Console\RoleRepository;
+use App\Services\Abnermouke\Console\AdminLogService;
+use App\Services\Abnermouke\Console\AdminService;
+use App\Services\Abnermouke\Console\TemporaryFileService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
+
+/**
+ * 管理员接口服务容器
+ * Class AdminInterfaceService
+ * @package App\Interfaces\Abnermouke\Console
+ */
+class AdminInterfaceService extends BaseService
+{
+    /**
+     * 获取管理团队列表
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 14:32:41
+     * @param $request Request
+     * @return array|bool
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Exception
+     */
+    public function lists($request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '非法参数');
+        }
+        //整理查询条件
+        $conditions = $sort_rules = $lists = [];
+        //判断筛选条件
+        if ($filters = data_get($data, 'filters', [])) {
+            //循环筛选条件
+            foreach ($filters as $filter => $value) {
+                //根据筛选项设置条件
+                switch ($filter) {
+                    case '__keyword__':
+                        $value && $conditions[implode('|', [Admins::TABLE_NAME.'.id', Admins::TABLE_NAME.'.username', Admins::TABLE_NAME.'.nickname', Admins::TABLE_NAME.'.mobile', Admins::TABLE_NAME.'.email'])] = ['like', '%'.$value.'%'];
+                        break;
+                    case 'status':
+                        (int)$value > 0 && $conditions[Admins::TABLE_NAME.'.email'] = (int)$value;
+                        break;
+                    case 'role_id':
+                        (int)$value > 0 && $conditions[Admins::TABLE_NAME.'.role_id'] = (int)$value;
+                        break;
+                    case 'created_at':
+                        $value && $conditions[Admins::TABLE_NAME.'.created_at'] = ['between', $value];
+                        break;
+                    case 'updated_at':
+                        $value && $conditions[Admins::TABLE_NAME.'.updated_at'] = ['between', $value];
+                        break;
+                }
+            }
+        }
+        //判断排序方式
+        switch (data_get($data, 'sort_alias')) {
+            case 'login_count':
+                //登录次数
+                $sort_rules[Admins::TABLE_NAME.'.login_count'] = 'desc';
+                break;
+            case 'recently_created':
+                //最新创建
+                $sort_rules[Admins::TABLE_NAME.'.created_at'] = 'desc';
+                break;
+            case 'recently_updated':
+                //最近更新
+                $sort_rules[Admins::TABLE_NAME.'.updated_at'] = 'desc';
+                break;
+            default:
+                //默认排序
+                $sort_rules[Admins::TABLE_NAME.'.id'] = 'desc';
+                break;
+        }
+        //查询列表
+        $lists = (new AdminRepository())->lists($conditions, [Admins::TABLE_NAME.'.*', Roles::TABLE_NAME.'.guard_name as role_name'], [
+            ['left', Roles::TABLE_NAME, Admins::TABLE_NAME.'.role_id', '=', Roles::TABLE_NAME.'.id']
+        ], $sort_rules, '', (int)data_get($data, 'page', config('console_builder.table.default_page')), (int)data_get($data, 'page_size', config('console_builder.table.default_page_size')));
+        //获取结果
+        $render = (new TableContentBuilder($data))->setLists($lists)->render();
+        //返回结果
+        return $this->success($render);
+    }
+
+    /**
+     * 管理员详情
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 16:08:58
+     * @param $admin_id
+     * @param $request Request
+     * @return array|bool|\Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Exception
+     */
+    public function detail($admin_id, $request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '非法参数');
+        }
+        //获取结果
+        $html = ($builder = (new ConsoleFormBuilder()))
+            ->setTitle('管理员信息')
+            ->submit($builder->buildButton()->title('确认提交')->ajax(route('abnermouke.console.admins.store', ['id' => (int)$admin_id]), 'post', FormButtonBuilder::AJAX_AFTER_REFRESH_TABLE))
+            ->setItems(function () use ($admin_id) {
+                return ($formItemBuilder = (new FormItemsBuilder()))
+                    ->addItem($formItemBuilder->buildInput('username', '用户名')->description('管理员信息生成成功后将不支持修改用户名，请确认后输入')->readonly((int)$admin_id <= 0 ? false : true)->tip('用户名将作为登录账号使用')->required())
+                    ->addItem($formItemBuilder->buildInput('password', '登录密码', 'password')->description('如需修改登录密码请更改')->required())
+                    ->addItem($formItemBuilder->buildInput('nickname', '昵称')->required())
+                    ->addItem($formItemBuilder->buildInput('mobile', '手机号码')->max_length(11)->description('根据不同权限角色，将推送指定信息至绑定手机号码')->required())
+                    ->addItem($formItemBuilder->buildInput('email', '电子邮箱', 'email')->description('根据不同权限角色，将推送指定信息至电子邮箱')->required())
+                    ->addItem($formItemBuilder->buildSelect('status', '账户状态')->options(Admins::TYPE_GROUPS['__status__'])->description('账户禁用后将禁止此账户登录')->required())
+                    ->addItem($formItemBuilder->buildSelect('role_id', '权限角色')->options(array_column((new RoleRepository())->get([], ['id', 'guard_name']), 'guard_name', 'id'))->required())
+                    ->addItem($formItemBuilder->buildImage('avatar', '头像')->size('200x200')->required()->dictionary('abnermouke/console/builder/admins/avatars'));
+            })
+            ->setData((int)$admin_id > 0 ? (new AdminRepository())->row(['id' => (int)$admin_id]) : [])
+            ->bindTable(data_get($data, 'bind_table_id', ''), data_get($data, 'bind_modal_id', ''))
+            ->render();
+        //返回成功
+        return $this->success(compact('html'));
+    }
+
+    /**
+     * 更改管理员状态
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 15:32:00
+     * @param $admin_id
+     * @param $request Request
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function status($admin_id, $request)
+    {
+        //查询管理员信息
+        if (!$admin = (new AdminRepository())->row(['id' => (int)$admin_id], ['id', 'username', 'mobile', 'status'])) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '账户不存在');
+        }
+        //整理替换结构
+        $status_exchange_rules = [
+            Admins::STATUS_ENABLED => Admins::STATUS_DISABLED,
+            Admins::STATUS_DISABLED => Admins::STATUS_ENABLED,
+            Admins::STATUS_DELETED => Admins::STATUS_ENABLED,
+        ];
+        //更改状态
+        if (!(new AdminRepository())->update(['id' => (int)$admin_id], $data = ['status' => $status_exchange_rules[(int)$admin['status']], 'updated_at' => auto_datetime()])) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_UPDATE_FAIL, '更改失败');
+        }
+        //记录日志
+        (new AdminLogService())->record('更改管理员状态', array_merge(['id' => $admin_id], $data));
+        //返回成功
+        return $this->success(compact('admin_id'));
+    }
+
+    /**
+     * 保存管理员信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 16:24:28
+     * @param $admin_id
+     * @param $request Request
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function store($admin_id, $request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING,'非法参数');
+        }
+        //判断更改项
+        if (!($edited = $data['__edited__'])) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '信息无更新');
+        }
+        //获取更改项
+        $info = Arr::only($data['__data__'], $data['__edited__']);
+        //判断是否更改图片
+        if (in_array('avatar', $edited)) {
+            //设置图片可用
+            $info['avatar'] = (new TemporaryFileService())->pass(true)->enable($info['avatar']);
+        }
+        //添加修改时间
+        $info['updated_at'] = auto_datetime();
+        //判断是否为新增
+        if ((int)$admin_id <= 0) {
+            //判断用户名是否可用
+            if ((new AdminRepository())->exists(['username' => $info['username']])) {
+                //返回失败
+                return $this->fail(CodeLibrary::DATA_CREATE_FAIL, '用户名不可用');
+            }
+            //设置默认值
+            $info['login_ips'] = [$request->ip()];
+            //添加信息
+            $info['created_at'] = auto_datetime();
+            //添加信息
+            if (!$admin_id = (new AdminRepository())->insertGetId($info)) {
+                //返回失败
+                return $this->fail(CodeLibrary::DATA_UPDATE_FAIL, '信息创建失败');
+            }
+            //添加日志
+            (new AdminLogService())->record('新增管理员信息成功', compact('admin_id'));
+        } else {
+            //修改信息
+            if (!(new AdminRepository())->update(['id' => (int)$admin_id], $info)) {
+                //返回失败
+                return $this->fail(CodeLibrary::DATA_UPDATE_FAIL, '修改失败');
+            }
+            //添加日志
+            (new AdminLogService())->record('编辑管理员信息成功', array_merge(compact('admin_id'), $info));
+        }
+        //判断是否更改密码
+        if (in_array('password', $edited)) {
+            //更改密码
+            if (!($service = (new AdminService()))->change_password($admin_id, $info['password'])) {
+                //返回失败
+                return $this->fail($service->getCode(), $service->getMessage());
+            }
+        }
+        //返回成功
+        return $this->success(compact('admin_id'));
+    }
+
+    /**
+     * 修改密码
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 13:27:57
+     * @param $request
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function change_password($request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '非法参数');
+        }
+        //查询账户数据
+        $validation = Validator::make($data, [
+            'password' => 'required|min:6',
+            'password_confirmed' => 'required|min:6',
+        ], [], [
+            'password.required' => '请输入密码',
+            'password_confirmed' => '请再次输入密码',
+            'password.min' => '密码至少6位',
+        ]);
+        //判断是否验证错误
+        if ($validation->failed()) {
+            //返回错误
+            return $this->fail(CodeLibrary::VALIDATE_FAILED, $validation->errors()->first());
+        }
+        //判断密码是否相等
+        if ($data['password'] !== $data['password_confirmed']) {
+            //返回错误
+            return $this->fail(CodeLibrary::VALIDATE_FAILED, '前后密码不一致');
+        }
+        //更改密码
+        if (!($service = new AdminService())->change_password(current_auth('id', config('console_builder.session_prefix', 'abnermouke:console:auth')),$data['password'])) {
+            //返回错误
+            return $this->fail($service->getCode(), $service->getMessage());
+        }
+        //返回成功
+        return $this->success($service->getResult());
+    }
+
+}

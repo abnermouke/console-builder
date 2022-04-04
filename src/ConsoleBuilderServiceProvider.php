@@ -38,6 +38,7 @@ class ConsoleBuilderServiceProvider extends ServiceProvider
             __DIR__.'/../data/views/abnermouke/console' => resource_path('views/abnermouke/console'),
             __DIR__.'/../data/views/vendor/abnermouke/console' => resource_path('views/vendor/abnermouke/console'),
             __DIR__.'/Middlewares/ConsoleBaseMiddleware.php' => app_path('Http/Middleware/Abnermouke/ConsoleBuilder/ConsoleBaseMiddleware.php'),
+            __DIR__.'/Implementers/AmapAreaImplementers.php' => app_path('Implementers/Amap/AmapAreaImplementers.php'),
         ]);
         // 注册配置
         $this->commands('command.builder.console');

@@ -23,7 +23,7 @@ class FilesItemBuilder extends BasicItemBuilder
     public function __construct($filed, $guard_name)
     {
         //设置基础数据
-        $this->setParam('type', 'files')->guard_name($guard_name)->field($filed)->accept()->multiple(true)->uploader()->dictionary();
+        $this->setParam('type', 'files')->guard_name($guard_name)->field($filed)->accept()->multiple(true)->uploader()->dictionary()->value_type(BasicItemBuilder::VALUE_TYPE_OF_OBJECT);
     }
 
 

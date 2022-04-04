@@ -1,0 +1,86 @@
+<?php
+
+
+namespace App\Interfaces\Abnermouke\Console;
+
+
+use Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableContentBuilder;
+use Abnermouke\EasyBuilder\Library\CodeLibrary;
+use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Model\Abnermouke\Console\AdminLogs;
+use App\Model\Abnermouke\Console\Admins;
+use App\Repository\Abnermouke\Console\AdminLogRepository;
+
+/**
+ * 管理员日志接口服务容器
+ * Class AdminLogInterfaceService
+ * @package App\Interfaces\Abnermouke\Console
+ */
+class AdminLogInterfaceService extends BaseService
+{
+    /**
+     * 获取管理员日志列表
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 17:40:05
+     * @param $request
+     * @return array|bool
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function lists($request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '非法参数');
+        }
+        //整理查询条件
+        $conditions = $sort_rules = $lists = [];
+        //判断筛选条件
+        if ($filters = data_get($data, 'filters', [])) {
+            //循环筛选条件
+            foreach ($filters as $filter => $value) {
+                //根据筛选项设置条件
+                switch ($filter) {
+                    case '__keyword__':
+                        $value && $conditions[implode('|', [Admins::TABLE_NAME.'.nickname', AdminLogs::TABLE_NAME.'.content', Admins::TABLE_NAME.'.username'])] = ['like', '%'.$value.'%'];
+                        break;
+                    case 'admin_id':
+                        (int)$value > 0 && $conditions[AdminLogs::TABLE_NAME.'.admin_id'] = (int)$value;
+                        break;
+                    case 'created_at':
+                        $value && $conditions[AdminLogs::TABLE_NAME.'.created_at'] = ['between', $value];
+                        break;
+                    case 'updated_at':
+                        $value && $conditions[AdminLogs::TABLE_NAME.'.updated_at'] = ['between', $value];
+                        break;
+                }
+            }
+        }
+        //判断排序方式
+        switch (data_get($data, 'sort_alias')) {
+            case 'recently_created':
+                //最新创建
+                $sort_rules[AdminLogs::TABLE_NAME.'.created_at'] = 'desc';
+                break;
+            case 'recently_updated':
+                //最近更新
+                $sort_rules[AdminLogs::TABLE_NAME.'.updated_at'] = 'desc';
+                break;
+            default:
+                //默认排序
+                $sort_rules[AdminLogs::TABLE_NAME.'.id'] = 'desc';
+                break;
+        }
+        //查询列表
+        $lists = (new AdminLogRepository())->lists($conditions, [AdminLogs::TABLE_NAME.'.*', Admins::TABLE_NAME.'.nickname'], [
+            ['left', Admins::TABLE_NAME, AdminLogs::TABLE_NAME.'.admin_id', '=', Admins::TABLE_NAME.'.id']
+        ], $sort_rules, '', (int)data_get($data, 'page', config('console_builder.table.default_page')), (int)data_get($data, 'page_size', config('console_builder.table.default_page_size')));
+        //获取结果
+        $render = (new TableContentBuilder($data))->setLists($lists)->render();
+        //返回结果
+        return $this->success($render);
+    }
+
+}

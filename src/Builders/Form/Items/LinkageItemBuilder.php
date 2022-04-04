@@ -21,7 +21,7 @@ class LinkageItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name, $json_file_url)
     {
         //设置基础信息
-        $this->setParam('type', 'linkage')->guard_name($guard_name)->field($field)->extra('json_path', $json_file_url)->names()->level()->default_key_value()->placeholder('请选择'.$guard_name);
+        $this->setParam('type', 'linkage')->guard_name($guard_name)->field($field)->extra('json_path', $json_file_url)->names()->level()->default_key_value()->placeholder('请选择'.$guard_name)->value_type(BasicItemBuilder::VALUE_TYPE_OF_OBJECT);
     }
 
     /**

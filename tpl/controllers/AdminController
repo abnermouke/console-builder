@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\AdminInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 管理员基础控制器
@@ -19,6 +21,113 @@ use Abnermouke\EasyBuilder\Module\BaseController;
 class AdminController extends BaseController
 {
 
-    //
+    /**
+     * 管理员列表页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 14:18:33
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index(Request $request, AdminInterfaceService $service)
+    {
+        //渲染页面
+        return view('abnermouke.console.admins.index');
+    }
+
+    /**
+     * 获取管理员列表
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 14:20:58
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function lists(Request $request, AdminInterfaceService $service)
+    {
+        //查询列表
+        $service->lists($request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 管理员详情页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 16:11:11
+     * @param $id
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Exception
+     */
+    public function detail($id, Request $request, AdminInterfaceService $service)
+    {
+        //获取详情
+        $service->detail($id, $request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 保存管理员信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 17:28:41
+     * @param $id
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store($id, Request $request, AdminInterfaceService $service)
+    {
+        //保存信息
+        $service->store($id, $request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 更改管理员状态
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 15:27:06
+     * @param $id
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function status($id, Request $request, AdminInterfaceService $service)
+    {
+        //处理管理员状态
+        $service->status($id, $request);
+        //响应结果
+        return responseService($service);
+    }
+
+    /**
+     * 修改密码
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 13:14:30
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function change_password(Request $request, AdminInterfaceService $service)
+    {
+        //修改密码
+        $service->change_password($request);
+        //响应结果
+        return responseService($service);
+    }
 
 }

@@ -33,7 +33,7 @@ class OauthInterfaceService extends BaseService
      * 登录账户
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $request Request
      * @return array|bool
      * @throws \Exception
@@ -81,7 +81,7 @@ class OauthInterfaceService extends BaseService
      * 登录账户
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $admin_id int 管理员ID
      * @param bool $update_log 是否更新日志
      * @return array|bool
@@ -95,7 +95,7 @@ class OauthInterfaceService extends BaseService
             return $this->fail(CodeLibrary::DATA_MISSING, '账户无效');
         }
         //查询角色相关信息
-        $auth = array_merge($auth, (new RoleRepository())->row(['id' => (int)$auth['role_id']], ['guard_name as role_name', "alias as role_alias"]));
+        $auth = array_merge($auth, (new RoleRepository())->row(['id' => (int)$auth['role_id']], ['guard_name as role_name', "alias as role_alias", 'is_full_permission as role_full_permission']));
         //初始化累积登录IP
         $auth['login_ips'] = object_2_array($auth['login_ips']);
         //设置常用IP
@@ -131,7 +131,7 @@ class OauthInterfaceService extends BaseService
      * 获取微信授权二维码
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $request Request
      * @return array|bool
      * @throws \Exception
@@ -164,7 +164,7 @@ class OauthInterfaceService extends BaseService
      * 跳转微信授权
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $signature
      * @param $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -187,7 +187,7 @@ class OauthInterfaceService extends BaseService
      * 检测微信授权状态
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $signature string 授权签名
      * @param $requerst
      * @return array|bool
@@ -223,7 +223,7 @@ class OauthInterfaceService extends BaseService
      * 微信授权登录回调
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $signature
      * @param $code
      * @return array|bool

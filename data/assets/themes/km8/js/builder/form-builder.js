@@ -11,6 +11,8 @@ $.form_builder = {
         this.setFieldTriggers(form, sign);
         //设置构建完成
         form.attr('data-build', 1);
+        //重置tooltip
+        KTApp.initBootstrapTooltips();
         //debug
         console.log('Console Builder - Form [' + sign + '] build success!');
     },
@@ -21,10 +23,8 @@ $.form_builder = {
         if (typeof (buttons) !== 'undefined' && parseInt(buttons.length) > 0) {
             //判断是否为modal
             if (typeof (bind_modal_id) === 'undefined' || bind_modal_id.length <= 0) {
-                //移除已存在项
-                toolbars.find('.acbf_button').remove();
-                //添加内容
-                toolbars.prepend(buttons.html());
+                //转移内容
+                moveToToolbar(buttons.html(), '.acbf_button');
             } else {
                 $("#"+bind_modal_id).find('.modal-footer').empty().html(buttons.html());
                 //移除元素
@@ -49,6 +49,11 @@ $.form_builder = {
         this.setActionTrigger(form, sign);
         //触发按钮操作
         this.setButtonTrigger(form, sign);
+        //判断是否为modal
+        if (typeof (bind_modal_id) !== 'undefined' && bind_modal_id.length > 0) {
+            //删除最后一栏结构下划线
+            $("#acbf_" + sign + "_structure_" + form.find(".acbf_" + sign + "_structure_group:last").attr('data-group-alias') + "_separator").remove();
+        }
     },
     setFieldTriggers: function (form, sign) {
         //设置结构触发
@@ -140,6 +145,7 @@ $.form_builder = {
                     case 'checkbox':
                     case 'normal_checkbox':
                     case 'image_checkbox':
+                    case 'group_checkbox':
                         //设置默认值
                         target_value = [];
                         //怒换对象
@@ -209,6 +215,8 @@ $.form_builder = {
     },
     buildItems: function (form, sign)
     {
+        //获取绑定对象
+        var dropdown_modal_id = form.attr('data-dropdown-modal-id');
         //循环表单对象信息
         form.find('.acbf_'+sign+'_item_box').each(function () {
              //获取基础数据
@@ -539,8 +547,58 @@ $.form_builder = {
                     }
                     break;
                 case 'tags':
+                    //初始化参数
+                    var tagify_options = {}, whitelist = JSON.parse(_this.attr('data-whitelist'));
+                    //判断白名单
+                    if (!$.isEmptyObject(whitelist)) {
+                        //设置白名单
+                        tagify_options['whitelist'] = whitelist;
+                        tagify_options['dropdown'] = {
+                            maxItems: 20,
+                            classname: "tagify__inline__suggestions",
+                            enabled: 0,
+                            closeOnSelect: false
+                        };
+                    }
                     //实例化标签
-                    new Tagify($(target)[0]);
+                    new Tagify($(target)[0], tagify_options);
+                    break;
+                case 'select':
+                    //设置参数
+                    var select2_options = {};
+                    //判断是否为modal
+                    if (typeof (dropdown_modal_id) !== 'undefined' && dropdown_modal_id.length > 0) {
+                        //添加参数
+                        select2_options.dropdownParent = $("#"+dropdown_modal_id);
+                    }
+                    //设置select2
+                    $(target).select2(select2_options);
+                    break;
+                case 'icon':
+                    //设置参数
+                    var optionFormat = (item) => {
+                        //未知项
+                        if (!item.id || item.id === '__WITHOUT_SELECTED_OPTION__') {
+                            //直接返回
+                            return item.text;
+                        }
+                        //创建对象
+                        var span = document.createElement('span');
+                        //设置内容
+                        span.innerHTML = '<i class="fa '+item.text+' me-2"></i> fa '+item.text;
+                        //返回对象
+                        return $(span);
+                    }, icon_options = {
+                        templateSelection: optionFormat,
+                        templateResult: optionFormat,
+                    };
+                    //判断是否为modal
+                    if (typeof (dropdown_modal_id) !== 'undefined' && dropdown_modal_id.length > 0) {
+                        //添加参数
+                        icon_options.dropdownParent = $("#"+dropdown_modal_id);
+                    }
+                    //设置select2
+                    $(target).select2(icon_options);
                     break;
                 case 'values':
                     //整理基础数据
@@ -727,9 +785,22 @@ $.form_builder = {
                         $(target).val(JSON.stringify(item_keys)).change();
                     });
                     break;
+                case 'group_checkbox':
+                    //设置按钮点击
+                    $("#acbf_"+sign+"_item_aliases_checkbox_item_button_trigger_select_all").on('click', function () {
+                       //设置全部选中
+                       $(target).prop('checked', true);
+                       $(target).eq(0).change();
+                    });
+                    $("#acbf_"+sign+"_item_aliases_checkbox_item_button_trigger_select_none").on('click', function () {
+                       //设置全部选中
+                       $(target).prop('checked', false);
+                       $(target).eq(0).change();
+                    });
+                    break;
             }
             //判断是否存在maxlength
-            if (typeof $(target).attr('maxlength') && parseInt($(target).attr('maxlength')) > 0) {
+            if (typeof $(target).attr('maxlength') !== 'undefined' && parseInt($(target).attr('maxlength')) > 0) {
                 //设置maxlength
                 $(target).maxlength({
                     warningClass: "badge badge-warning",
@@ -943,15 +1014,32 @@ $.form_builder = {
     },
     arrangeParams: function (form, sign) {
         //整理参数
-        var params = {}, edited = [], validator_trigger = function (this_item) {
-            //滑动页面
-            scrollToObject(this_item);
-            //新增提示
-            this_item.append('<div class="fs-7 fw-bold text-danger my-2 validator_tip">此项为必填项( * )，请更新此项内容后再试</span></div>');
-            //设置延时关闭
-            setTimeout(function () {
-                this_item.find('.validator_tip').remove();
-            }, 5000);
+        var params = {}, edited = [], bind_modal_id = form.attr('data-bind-modal-id'), bind_table_id = form.attr('data-bind-table-id'), validator_trigger = function (this_item, tip) {
+            //判断是否为modal
+            if (typeof (bind_modal_id) === 'undefined' || bind_modal_id.length <= 0) {
+                //滑动页面
+                scrollToObject(this_item);
+            } else {
+                //滑动modal
+                scrollToObject(this_item, $('#'+bind_modal_id).find('.modal-body'))
+            }
+            //判断提示内容
+            if (typeof tip === 'undefined' || tip.length <= 0) {
+                //设置提示
+                tip = '此项为必填项( * )，请更新此项内容后再试';
+            }
+            //判断是否为表单整体提示
+            if (this_item === form) {
+                //提示信息
+                alertToast(tip, 3000, 'warning');
+            } else {
+                //新增提示
+                this_item.append('<div class="fs-7 fw-bold text-danger my-2 validator_tip">'+tip+'</div>');
+                //设置延时关闭
+                setTimeout(function () {
+                    this_item.find('.validator_tip').remove();
+                }, 5000);
+            }
             //跳出循环
             return false;
         };
@@ -990,6 +1078,7 @@ $.form_builder = {
                         params[field] = tag_item_value;
                         break;
                     case 'select':
+                    case 'icon':
                         //获取值
                         var select_item_value = $(target).val();
                         //判断信息
@@ -1059,6 +1148,7 @@ $.form_builder = {
                     case 'checkbox':
                     case 'normal_checkbox':
                     case 'image_checkbox':
+                    case 'group_checkbox':
                         //设置默认值
                         var checkbox_item_value = [];
                         //怒换对象
@@ -1091,6 +1181,11 @@ $.form_builder = {
                 }
             }
         });
+        //判断是否存在更改
+        if (params && $.isEmptyObject(edited)) {
+            //验证提示
+            return (params = validator_trigger(form, '信息无更新'));
+        }
         //返回参数
         return params ? {'__data__': params, '__edited__': edited} : false;
     }

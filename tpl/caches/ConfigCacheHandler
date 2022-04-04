@@ -36,7 +36,7 @@ class ConfigCacheHandler extends BaseCacheHandler
      * 刷新当前缓存
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Yunni Technology Co Ltd.
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @return array
      * @throws \Exception
      */
@@ -52,7 +52,7 @@ class ConfigCacheHandler extends BaseCacheHandler
      * 初始化缓存
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Yunni Technology Co Ltd.
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @return array
      * @throws \Exception
      */

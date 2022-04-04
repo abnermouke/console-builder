@@ -34,6 +34,22 @@ class TableButtonBuilder
     }
 
     /**
+     * 设置form表单触发（modal弹窗）
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-03-31 17:10:14
+     * @param $url
+     * @param $method
+     * @param array $param_fields
+     * @return $this
+     */
+    public function form($url, $method, $param_fields = [])
+    {
+        //设置form表单触发
+        return $this->setParams('type', 'form')->setParams('redirect_uri', $url)->setParams('redirect_target', false)->setParams('method', $method)->extra('modal_size', 'lg');
+    }
+
+    /**
      * 设置ID后缀
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP

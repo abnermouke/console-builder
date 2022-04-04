@@ -37,7 +37,7 @@ class CreateAbnermoukeConsoleSmsLogsTable extends Migration
             //配置字段
             $table->increments('id')->comment('表ID');
             //其他字段配置
-            $table->string('gateway', 100)->nullable(false)->default('ali_sms')->comment('网管');
+            $table->string('gateway', 100)->nullable(false)->default('ali_sms')->comment('网关');
             $table->char('mobile', 15)->nullable(false)->default('')->comment('手机号码');
             $table->string('sign_name', 100)->nullable(false)->default('')->comment('短信签名');
             $table->string('template_id', 200)->nullable(false)->default('')->comment('模版ID');

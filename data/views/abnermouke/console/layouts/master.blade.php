@@ -27,10 +27,10 @@ Contact: abnermouke@outlook.com
         <meta name="mobile_device" content="{{ \Abnermouke\EasyBuilder\Library\Currency\DeviceLibrary::mobile() ? 1 : 0 }}">
         <link rel="shortcut icon" href="{{ $console_configs['APP_SHORTCUT_ICON'] }}" />
         <link rel="stylesheet" href="{{ proxy_assets('themes/km8/css/common.css', 'abnermouke') }}">
-        @if($console_configs['CONSOLE_DEFAULT_THEME'] == 'dark')
+        @if($console_configs['CONSOLE_DEFAULT_THEME'] === 'dark')
             <link href="{{ proxy_assets('themes/km8/plugins/global/plugins.dark.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
             <link href="{{ proxy_assets('themes/km8/css/style.dark.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
-        @elseif($console_configs['CONSOLE_DEFAULT_THEME'] == 'light')
+        @elseif($console_configs['CONSOLE_DEFAULT_THEME'] === 'light')
             <link href="{{ proxy_assets('themes/km8/plugins/global/plugins.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
             <link href="{{ proxy_assets('themes/km8/css/style.bundle.css', 'abnermouke') }}" rel="stylesheet" type="text/css" />
         @else
@@ -51,7 +51,9 @@ Contact: abnermouke@outlook.com
         {{--自定义样式--}}
         @yield('styles')
     </head>
-    <body id="acb_body" class="{{ $console_configs['CONSOLE_DEFAULT_THEME'] == 'auto' ? (((int)date('H') >= 19 || (int)date('H') <= 6) ? 'dark-mode' : '') : ($console_configs['CONSOLE_DEFAULT_THEME'] == 'dark' ? 'dark-mode' : '') }} header-extended header-fixed header-tablet-and-mobile-fixed">
+    <body id="acb_body" class="{{ $console_configs['CONSOLE_DEFAULT_THEME'] === 'auto' ? (((int)date('H') >= 19 || (int)date('H') <= 6) ? 'dark-mode' : '') : ($console_configs['CONSOLE_DEFAULT_THEME'] === 'dark' ? 'dark-mode' : '') }} header-extended header-fixed header-tablet-and-mobile-fixed">
+        <div id="acb_routers" class="d-none">{!! json_encode(array_column((new \App\Handler\Cache\Data\Abnermouke\Console\NodeCacheHandler())->get(), 'guard_name', 'alias'), JSON_UNESCAPED_UNICODE) !!}</div>
+        <div id="acb_permissions" class="d-none">{!! json_encode((new \App\Handler\Cache\Data\Abnermouke\Console\RoleCacheHandler(current_auth('role_id', config('console_builder.session_prefix'))))->currentPermissions(), JSON_UNESCAPED_UNICODE) !!}</div>
         <div class="d-flex flex-column flex-root">
             <div class="page d-flex flex-row flex-column-fluid">
                 <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
@@ -77,6 +79,8 @@ Contact: abnermouke@outlook.com
         </div>
         {{--引入滚动到顶部--}}
         @include('abnermouke.console.layouts.scroll')
+        {{--引入系统弹窗--}}
+        @include('abnermouke.console.layouts.popups')
         {{--自定义弹窗--}}
         @yield('popups')
         {{--手机设备访问--}}

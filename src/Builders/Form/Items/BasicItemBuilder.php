@@ -11,11 +11,19 @@ namespace Abnermouke\ConsoleBuilder\Builders\Form\Items;
 class BasicItemBuilder
 {
 
+    //字符串结果类型
+    public const VALUE_TYPE_OF_STRING = 'string';
+    //INT结果类型
+    public const VALUE_TYPE_OF_INTEGRAL = 'integral';
+    //对象结果类型
+    public const VALUE_TYPE_OF_OBJECT = 'object';
+
+
     //表单项基础内容
     protected $item = [
         'type' => '', 'guard_name' => '', 'tip' => '', 'description' => false, 'required' => false,
         'field' => '', 'extras' => [], 'default_value' => '', 'readonly' => false,
-        'disabled' => false, 'hidden' => false, 'triggers' => []
+        'disabled' => false, 'hidden' => false, 'triggers' => [], 'value_type' => BasicItemBuilder::VALUE_TYPE_OF_STRING
     ];
 
     /**
@@ -209,6 +217,19 @@ class BasicItemBuilder
         }
         //返回当前实例
         return $this;
+    }
+
+    /**
+     * 设置该项值的属性
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 11:56:45
+     * @param string $type
+     * @return $this
+     */
+    public function value_type($type = BasicItemBuilder::VALUE_TYPE_OF_STRING) {
+        //设置value类型
+        return $this->setParam('value_type', $type);
     }
 
     /**

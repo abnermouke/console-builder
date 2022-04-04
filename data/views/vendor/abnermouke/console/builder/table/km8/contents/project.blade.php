@@ -2,7 +2,7 @@
     <div class="symbol {{ data_get($extras, 'circle', false) ? 'symbol-circle' : '' }} {{ data_get($extras, 'thumb_class', 'symbol-50px') }} overflow-hidden me-3">
         <a href="{{ get_acbt_link($link, $__data__) }}">
             <div class="symbol-label">
-                @if($thumb_link = get_acbt_link($extras['thumb_link'], $__data__, ''))
+                @if($thumb_link = get_acbt_link($extras['thumb_link'], $__data__, abbr_acbt_template($template, $__data__, $empty_value)))
                     @if(\Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary::link($thumb_link))
                         <img src="{{ $thumb_link }}" alt="{{ $thumb_link }}" class="w-100" />
                     @else

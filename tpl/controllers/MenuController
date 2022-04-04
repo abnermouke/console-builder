@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Http\Controllers\Abnermouke\Console;
+
+use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\MenuInterfaceService;
+use Illuminate\Http\Request;
+
+/**
+ * 菜单基础控制器
+ * Class MenuController
+ * @package App\Http\Controllers\Abnermouke\Console
+ */
+class MenuController extends BaseController
+{
+
+    /**
+     * 菜单配置页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 01:38:33
+     * @param Request $request
+     * @param MenuInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Exception
+     */
+    public function index(Request $request, MenuInterfaceService $service)
+    {
+        //获取菜单信息
+        $service->menus();
+        //渲染页面
+        return view('abnermouke.console.index.menus.index', $service->getResult());
+    }
+
+    /**
+     * 菜单详情
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 02:44:48
+     * @param $parent_id
+     * @param $id
+     * @param Request $request
+     * @param MenuInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function detail($parent_id, $id, Request $request, MenuInterfaceService $service)
+    {
+        //获取详情
+        $service->detail($parent_id, $id, $request);
+        //响应结果
+        return responseService($service);
+
+    }
+
+    /**
+     * 保存菜单信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 02:45:46
+     * @param $parent_id
+     * @param $id
+     * @param Request $request
+     * @param MenuInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store($parent_id, $id, Request $request, MenuInterfaceService $service)
+    {
+        //保存菜单信息
+        $service->store($parent_id, $id, $request);
+        //响应结果
+        return responseService($service);
+    }
+
+    /**
+     * 删除菜单信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 02:46:25
+     * @param $id
+     * @param Request $request
+     * @param MenuInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function delete($id, Request $request, MenuInterfaceService $service)
+    {
+        //删除菜单信息
+        $service->delete($id, $request);
+        //响应结果
+        return responseService($service);
+    }
+
+}

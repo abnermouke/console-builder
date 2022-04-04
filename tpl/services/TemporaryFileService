@@ -31,10 +31,54 @@ class TemporaryFileService extends BaseService
     public function __construct($pass = false) { parent::__construct($pass); }
 
     /**
+     * 设置临时文件可用
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 16:33:14
+     * @param $links string|array 文件地址
+     * @param string $storage_disk  储存驱动
+     * @param mixed $return 返回类型 array 数组   string 字符串
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function enable($links, $storage_disk = 'public', $return = false)
+    {
+        //获取类型
+        $return = $return ? $return : (is_array($links) ? 'array' : 'string');
+        //整理信息
+        if ($links) {
+            //处理链接
+            $links = is_string($links) ? explode(',', $links) : $links;
+            //循环链接
+            foreach ($links as $k => $link) {
+                //获取地址
+                $storage_name = str_replace(($storage_base_path = Storage::disk($storage_disk)->url('')), '', $link);
+                //判断文件是否存在
+                if (Storage::disk($storage_disk)->exists($storage_name)) {
+                    //移除临时文件（不再删除）
+                    (new TemporaryFileRepository())->delete(compact('storage_disk', 'storage_name'));
+
+                    //TODO：判断是否自动上传七牛云
+//                    $links[$k] = '__QINIU_FILE_LINK__'
+                } else {
+                    //判断是否为本地地址（非本站地址不处理）
+                    if (strstr($link, $storage_base_path)) {
+                        //删除当前文件
+                        unset($links[$k]);
+                    }
+                }
+            }
+        }
+        //返回成功
+        return $this->success($return === 'array' ? $links : implode(',', $links));
+    }
+
+
+    /**
      * 创建临时文件信息
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $storage_name string 文件路径
      * @param string $storage_disk 驱动
      * @param int $expire_second 过期秒数

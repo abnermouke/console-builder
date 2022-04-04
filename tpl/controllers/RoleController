@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\RoleInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 管理员角色基础控制器
@@ -18,7 +20,93 @@ use Abnermouke\EasyBuilder\Module\BaseController;
  */
 class RoleController extends BaseController
 {
+    /**
+     * 管理员角色列表页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-01 18:15:08
+     * @param Request $request
+     * @param RoleInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index(Request $request, RoleInterfaceService $service)
+    {
+        //渲染页面
+        return view('abnermouke.console.admins.roles.index');
+    }
 
-    //
+    /**
+     * 获取管理员角色列表
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 13:06:22
+     * @param Request $request
+     * @param RoleInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function lists(Request $request, RoleInterfaceService $service)
+    {
+        //查询列表
+        $service->lists($request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 管理员角色详情页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 13:28:58
+     * @param $id
+     * @param Request $request
+     * @param RoleInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function detail($id, Request $request, RoleInterfaceService $service)
+    {
+        //获取详情
+        $service->detail($id, $request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 保存管理员角色信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 13:34:05
+     * @param $id
+     * @param Request $request
+     * @param RoleInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store($id, Request $request, RoleInterfaceService $service)
+    {
+        //保存信息
+        $service->store($id, $request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 删除管理员角色信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 13:20:57
+     * @param Request $request
+     * @param RoleInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function delete(Request $request, RoleInterfaceService $service)
+    {
+        //处理管理员状态
+        $service->delete($request);
+        //响应结果
+        return responseService($service);
+    }
 
 }

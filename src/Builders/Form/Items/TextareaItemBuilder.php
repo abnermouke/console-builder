@@ -20,7 +20,7 @@ class TextareaItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name)
     {
         //设置基础信息
-        $this->setParam('type', 'textarea')->guard_name($guard_name)->field($field)->placeholder('请输入'.$guard_name)->row();
+        $this->setParam('type', 'textarea')->guard_name($guard_name)->field($field)->placeholder('请输入'.$guard_name)->row()->value_type(BasicItemBuilder::VALUE_TYPE_OF_STRING);
     }
 
 

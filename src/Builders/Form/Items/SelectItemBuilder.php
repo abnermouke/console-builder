@@ -21,7 +21,7 @@ class SelectItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name)
     {
         //设置基础信息
-        $this->setParam('type', 'select')->field($field)->guard_name($guard_name)->multiple()->options()->searchable(false)->placeholder('请选择'.$guard_name);;
+        $this->setParam('type', 'select')->field($field)->guard_name($guard_name)->multiple()->options()->placeholder('请选择'.$guard_name)->value_type(BasicItemBuilder::VALUE_TYPE_OF_STRING);
     }
 
     /**
@@ -43,7 +43,7 @@ class SelectItemBuilder extends BasicItemBuilder
      * @Originate in Abnermouke's MBP
      * @Time 2022-03-23 00:36:02
      * @param string $placeholder
-     * @return InputItemBuilder
+     * @return SelectItemBuilder
      */
     public function placeholder($placeholder = '')
     {
@@ -70,20 +70,6 @@ class SelectItemBuilder extends BasicItemBuilder
         }
         //设置选择项
         return $this->extra('options', $options)->default_value($default_value);
-    }
-
-    /**
-     * 设置是否可搜索
-     * @Author Abnermouke <abnermouke@outlook.com>
-     * @Originate in Abnermouke's MBP
-     * @Time 2022-03-23 01:01:37
-     * @param false $searchable
-     * @return SelectItemBuilder
-     */
-    public function searchable($searchable = true)
-    {
-        //设置是否可搜索
-        return $this->extra('searchable', $searchable);
     }
 
 }

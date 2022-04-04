@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\AmapAreaInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 高德地图行政地区基础控制器
@@ -19,6 +21,38 @@ use Abnermouke\EasyBuilder\Module\BaseController;
 class AmapAreaController extends BaseController
 {
 
-    //
+    /**
+     * 高德地图行政地区展示页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 23:00:22
+     * @param Request $request
+     * @param AmapAreaInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index(Request $request, AmapAreaInterfaceService $service)
+    {
+        //渲染页面
+        return view('abnermouke.console.index.amap.index');
+    }
+
+    /**
+     * 在线同步最新高德地图行政地区数据
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 23:04:03
+     * @param Request $request
+     * @param AmapAreaInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function sync(Request $request, AmapAreaInterfaceService $service)
+    {
+        //同步最新数据
+        $service->sync($request);
+        //响应数据
+        return responseService($service);
+    }
 
 }

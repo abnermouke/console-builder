@@ -13,12 +13,15 @@
                 <a href="{{ route('abnermouke.console.index') }}" class="d-flex align-items-center">
                     <img alt="Logo" src="{{ $console_configs['APP_LOGO'] }}" class="h-30px h-lg-30px" />
                 </a>
-                @include('abnermouke.console.layouts.headers.tabs')
+                @if(\Abnermouke\EasyBuilder\Library\Currency\DeviceLibrary::pc())
+                    <div class="align-self-end overflow-auto" id="kt_brand_tabs">
+                        @include('abnermouke.console.layouts.headers.tabs')
+                    </div>
+                @endif
             </div>
             <div class="d-flex align-items-center flex-row-auto">
-
                 <div class="d-flex align-items-center ms-1">
-                    <a href="javascript:;" class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-35px h-35px h-md-40px w-md-40px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="刷新系统权限节点">
+                    <a href="javascript:;" id="kt-refresh_console_nodes" data-query-url="{{ route('abnermouke.console.refresh.nodes') }}" class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-35px h-35px h-md-40px w-md-40px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="刷新系统权限节点">
                         <i class="fonticon-repeat fs-2"></i>
                     </a>
                 </div>
@@ -58,7 +61,7 @@
                         </div>
                         <div class="separator my-2"></div>
                         <div class="menu-item px-5">
-                            <a href="javascript:;" id="edit_admin_password" class="menu-link px-5">修改密码</a>
+                            <a href="javascript:;" id="kt-edit_admin_password" class="menu-link px-5">修改密码</a>
                         </div>
                         <div class="menu-item px-5">
                             <a href="javascript:;" class="menu-link px-5">
@@ -77,5 +80,7 @@
             </div>
         </div>
     </div>
-    @include('abnermouke.console.layouts.headers.navs')
+    @if(\Abnermouke\EasyBuilder\Library\Currency\DeviceLibrary::pc())
+        @include('abnermouke.console.layouts.headers.navs')
+    @endif
 </div>

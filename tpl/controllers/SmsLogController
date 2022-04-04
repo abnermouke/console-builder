@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\SmsLogInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 短信发送记录基础控制器
@@ -19,6 +21,55 @@ use Abnermouke\EasyBuilder\Module\BaseController;
 class SmsLogController extends BaseController
 {
 
-    //
+    /**
+     * 短信发送记录列表页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 01:16:44
+     * @param Request $request
+     * @param SmsLogInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index(Request $request, SmsLogInterfaceService $service)
+    {
+        //渲染页面
+        return view('abnermouke.console.index.sms.index');
+    }
+
+    /**
+     * 获取短信发送记录列表
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 01:17:17
+     * @param Request $request
+     * @param SmsLogInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function lists(Request $request, SmsLogInterfaceService $service)
+    {
+        //查询列表
+        $service->lists($request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 保存阿里云短信服务配置
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 01:17:55
+     * @param Request $request
+     * @param SmsLogInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store(Request $request, SmsLogInterfaceService $service)
+    {
+        //保存配置
+        $service->store($request);
+        //响应数据
+        return responseService($service);
+    }
 
 }

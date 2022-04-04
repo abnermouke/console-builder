@@ -48,9 +48,9 @@
         @foreach($buttons as $button)
             <a class="btn btn-light btn-{{ $button['theme'] }} btn-flex h-35px h-lg-40px me-2 @if($checkbox_trigger_buttons && in_array($button['id_suffix'], $checkbox_trigger_buttons)) d-none @endif acbt_button" data-bind-checkbox="{{ $checkbox_trigger_buttons && in_array($button['id_suffix'], $checkbox_trigger_buttons) ? 1 : 0 }}" id="acbt_{{ $sign }}_button{{ $button['id_suffix'] ? ('_'.$button['id_suffix']) : '' }}" data-ajax-after="{{ $button['after_ajax'] }}" data-method="{{ $button['method'] }}" data-type="{{ $button['type'] }}" data-bs-toggle="tooltip" data-bs-dismiss="click" data-bs-trigger="hover" data-bs-original-title="{{ $button['guard_name'] }}" href="javascript:;" data-query-url="{{ $button['redirect_uri'] }}" data-target-redirect="{{ (int)$button['redirect_target'] }}" data-confirm-tip="{{ $button['confirm_tip'] }}" data-params="[]" data-extras="{{ json_encode($button['extras']) }}">
                 @if($button['only_show_icon'])
-                    <i class="{{ $button['icon'] }} fs-1"></i>
+                    <i class="{{ $button['icon'] }} fs-7"></i>
                 @else
-                    @if($button['icon']) <i class="{{ $button['icon'] }} fs-1"></i> @endif {{ $button['guard_name'] }}
+                    @if($button['icon']) <i class="{{ $button['icon'] }} fs-7"></i> @endif {{ $button['guard_name'] }}
                 @endif
             </a>
         @endforeach
@@ -61,6 +61,11 @@
         </div>
         <div class="d-flex flex-wrap my-1">
             <ul class="nav nav-pills me-2 mb-2 mb-sm-0">
+                <li class="nav-item m-0 ms-2">
+                    <a class="btn btn-sm btn-icon btn-light btn-secondary" id="acbt_{{ $sign }}_refresh" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="刷新当前列表最新内容">
+                        <i class="la la-refresh"></i>
+                    </a>
+                </li>
                 <li class="nav-item m-0 ms-2">
                     <a class="btn btn-sm btn-icon btn-light btn-secondary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="自定义列表显示项">
                         <i class="fonticon-pause"></i>

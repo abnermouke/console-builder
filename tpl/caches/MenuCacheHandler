@@ -51,7 +51,7 @@ class MenuCacheHandler extends BaseCacheHandler
      * 刷新当前缓存
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Yunni Technology Co Ltd.
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @return array
      * @throws \Exception
      */
@@ -67,7 +67,7 @@ class MenuCacheHandler extends BaseCacheHandler
      * 自定义菜单显示
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @return bool
      * @throws \Exception
      */
@@ -93,14 +93,14 @@ class MenuCacheHandler extends BaseCacheHandler
      * 初始化缓存
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Yunni Technology Co Ltd.
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @return array
      * @throws \Exception
      */
     private function init()
     {
         //获取缓存
-        $cache = $this->cache;
+        $cache = $this->cache = false;
         //判断缓存信息
         if (!$cache || empty($this->cache)) {
             //初始化缓存数据
@@ -117,7 +117,7 @@ class MenuCacheHandler extends BaseCacheHandler
      * 获取子菜单信息
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param int $menu_id
      * @param array $sub_menus
      * @return array|mixed|string
@@ -126,9 +126,15 @@ class MenuCacheHandler extends BaseCacheHandler
     private function getSubMenus($menu_id = 0, $sub_menus = [])
     {
         //查询子菜单
-        if ($menus = (new MenuRepository())->get(['parent_id' => (int)$menu_id], ['id', 'alias', 'guard_name', 'parent_id', 'type', 'route_name', 'redirect_uri', 'icon', 'pulse_theme', 'number_theme'])) {
+        if ($menus = (new MenuRepository())->get(['parent_id' => (int)$menu_id], ['id', 'alias', 'guard_name', 'parent_id', 'type', 'route_name', 'redirect_uri', 'icon' , 'permission_nodes'], [], ['sort' => 'desc'])) {
             //循环子菜单
             foreach ($menus as $k => $menu) {
+                //整理信息
+                $menus[$k]['permission_nodes'] = object_2_array($menu['permission_nodes']);
+                //初始化信息
+                $menu['route_name'] && array_push($menus[$k]['permission_nodes'], $menu['route_name']);
+                //判断信息
+                $menus[$k]['permission_nodes'] && $menus[$k]['permission_nodes'] = array_unique($menus[$k]['permission_nodes']);
                 //查询子集
                 if ($subs = $this->getSubMenus((int)$menu['id'], [])) {
                     //设置子集信息

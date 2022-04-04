@@ -22,7 +22,7 @@ class ImageItemBuilder extends BasicItemBuilder
     public function __construct($filed, $guard_name)
     {
         //设置基础数据
-        $this->setParam('type', 'image')->guard_name($guard_name)->field($filed)->accept()->size('200x200')->uploader()->dictionary();
+        $this->setParam('type', 'image')->guard_name($guard_name)->field($filed)->accept()->size('200x200')->uploader()->dictionary()->value_type(BasicItemBuilder::VALUE_TYPE_OF_STRING);
     }
 
     /**

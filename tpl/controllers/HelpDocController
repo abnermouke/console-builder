@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\HelpDocInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 帮助中心文档基础控制器
@@ -19,6 +21,93 @@ use Abnermouke\EasyBuilder\Module\BaseController;
 class HelpDocController extends BaseController
 {
 
-    //
+    /**
+     * 帮助中心文档列表页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 00:24:45
+     * @param Request $request
+     * @param HelpDocInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index(Request $request, HelpDocInterfaceService $service)
+    {
+        //渲染页面
+        return view('abnermouke.console.index.help_docs.index');
+    }
+
+    /**
+     * 获取帮助中心文档列表
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 00:25:13
+     * @param Request $request
+     * @param HelpDocInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function lists(Request $request, HelpDocInterfaceService $service)
+    {
+        //查询列表
+        $service->lists($request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 帮助中心文档详情页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 00:25:36
+     * @param $id
+     * @param Request $request
+     * @param HelpDocInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function detail($id, Request $request, HelpDocInterfaceService $service)
+    {
+        //获取详情
+        $service->detail($id, $request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 保存帮助中心文档信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 00:25:57
+     * @param $id
+     * @param Request $request
+     * @param HelpDocInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store($id, Request $request, HelpDocInterfaceService $service)
+    {
+        //保存信息
+        $service->store($id, $request);
+        //响应数据
+        return responseService($service);
+    }
+
+    /**
+     * 删除帮助中心文档信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-04 00:26:33
+     * @param Request $request
+     * @param HelpDocInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function delete(Request $request, HelpDocInterfaceService $service)
+    {
+        //删除文档
+        $service->delete($request);
+        //响应结果
+        return responseService($service);
+    }
 
 }

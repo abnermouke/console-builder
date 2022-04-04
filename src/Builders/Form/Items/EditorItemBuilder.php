@@ -26,7 +26,7 @@ class EditorItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name, $editor = self::CK_EDITOR)
     {
         //设置基础信息
-        $this->setParam('type', $editor)->guard_name($guard_name)->field($field)->row();
+        $this->setParam('type', $editor)->guard_name($guard_name)->field($field)->row()->value_type(BasicItemBuilder::VALUE_TYPE_OF_STRING);
     }
 
     /**

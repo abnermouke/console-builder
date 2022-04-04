@@ -6,6 +6,7 @@ namespace Abnermouke\ConsoleBuilder\Builders\Form\Tools;
 use Abnermouke\ConsoleBuilder\Builders\Form\Items\CheckboxItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Items\EditorItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Items\FilesItemBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Form\Items\IconItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Items\ImageItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Items\InputItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Items\LinkageItemBuilder;
@@ -188,6 +189,22 @@ class FormItemsBuilder
     {
         //返回实例对象
         return new SelectItemBuilder($field, $guard_name);
+    }
+
+    /**
+     * 生成Icon图标选择构建对象
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-03-23 02:55:04
+     * @param $field
+     * @param $guard_name
+     * @return IconItemBuilder
+     * @throws \Exception
+     */
+    public function buildIcon($field, $guard_name)
+    {
+        //返回实例对象
+        return new IconItemBuilder($field, $guard_name);
     }
 
     /**

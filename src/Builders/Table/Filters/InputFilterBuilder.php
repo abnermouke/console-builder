@@ -91,7 +91,7 @@ class InputFilterBuilder extends BasicFilterBuilder
     public function date($format = 'Y-m-d')
     {
         //更改类型
-        return $this->type('date')->extra('format', $format ? $format : 'Y-m-d')->col(4);
+        return $this->type('date')->extra('format', $format ? $format : 'Y-m-d')->col(4)->placeholder('点击选择时间');
     }
 
     /**
@@ -105,7 +105,7 @@ class InputFilterBuilder extends BasicFilterBuilder
     public function date_range($format = 'Y-m-d H:i:ss')
     {
         //更改类型
-        return $this->type('date_range')->extra('format', $format ? $format : 'Y-m-d H:i:ss')->col(6);
+        return $this->type('date_range')->extra('format', $format ? $format : 'Y-m-d H:i:ss')->col(6)->placeholder('点击选择时间');
     }
 
 }

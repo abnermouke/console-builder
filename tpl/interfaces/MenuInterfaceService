@@ -1,0 +1,218 @@
+<?php
+
+namespace App\Interfaces\Abnermouke\Console;
+
+use Abnermouke\ConsoleBuilder\Builders\Form\ConsoleFormBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormButtonBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormItemsBuilder;
+use Abnermouke\EasyBuilder\Library\CodeLibrary;
+use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme;
+use App\Handler\Cache\Data\Abnermouke\Console\MenuCacheHandler;
+use App\Model\Abnermouke\Console\Menus;
+use App\Repository\Abnermouke\Console\AdminRepository;
+use App\Repository\Abnermouke\Console\MenuRepository;
+use App\Repository\Abnermouke\Console\NodeRepository;
+use App\Services\Abnermouke\Console\AdminLogService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+
+/**
+ * 菜单逻辑服务容器
+ * Class MenuInterfaceService
+ * @package App\Interfaces\Abnermouke\Console
+ */
+class MenuInterfaceService extends BaseService
+{
+
+    /**
+     * 获取菜单信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 02:16:17
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function menus()
+    {
+        //查询菜单信息
+        if ($menus = (new MenuRepository())->get(['parent_id' => 0], ['id', 'parent_id', 'guard_name', 'alias'], [], ['sort' => 'desc'])) {
+            //循环菜单信息
+            foreach ($menus as $k => $menu) {
+                //设置层级
+                $menus[$k]['level'] = 0;
+                //设置子菜单信息
+                if ($subs = (new MenuRepository())->get(['parent_id' => (int)$menu['id']], ['id', 'parent_id', 'guard_name', 'alias'], [], ['sort' => 'desc'])) {
+                    //循环子菜单信息
+                    foreach ($subs as $kk => $sub) {
+                        //设置层级
+                        $subs[$kk]['level'] = 1;
+                        //设置子菜单信息
+                        if ($childs = (new MenuRepository())->get(['parent_id' => (int)$sub['id']], ['id', 'parent_id', 'guard_name', 'alias'], [], ['sort' => 'desc'])) {
+                            //循环子菜单信息
+                            foreach ($childs as $kkk => $child) {
+                                //设置层级
+                                $subs[$kk]['level'] = 2;
+                            }
+                        }
+                        //设置子菜单
+                        $subs[$kk]['sub_menus'] = $childs;
+                    }
+                 }
+                //设置菜单信息
+                $menus[$k]['sub_menus'] = $subs;
+            }
+        }
+        //返回菜单信息
+        return $this->success(compact('menus'));
+    }
+
+    /**
+     * 菜单详情
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 02:52:34
+     * @param $parent_id
+     * @param $id
+     * @param $request Request
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function detail($parent_id, $id, $request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '非法参数');
+        }
+        //查询所有get节点
+        $nodes = array_column((new NodeRepository())->get(['method' => 'get'], ['alias', 'guard_name']), null, 'alias');
+        //循环节点
+        foreach ($nodes as $k => $node) {
+            //设置信息
+            $nodes[$k] = implode(' ', [$node['guard_name'], $node['alias']]);
+        }
+        //获取结果
+        $html = ($builder = (new ConsoleFormBuilder()))
+            ->submit($builder->buildButton()->title('确认提交')->ajax(route('abnermouke.console.menus.store', ['parent_id' => $parent_id, 'id' => (int)$id]), 'post', FormButtonBuilder::AJAX_AFTER_RELOAD))
+            ->setItems(function () use ($nodes) {
+                return ($formItemBuilder = (new FormItemsBuilder()))
+                    ->addItem($formItemBuilder->buildInput('guard_name', '菜单显示名称')->description('菜单字数不宜过多，建议2-6字即可')->required())
+                    ->addItem($formItemBuilder->buildInput('alias', '菜单标识')->description('开发人员辨识使用，如无此需求请忽略')->max_length(20)->clipboard())
+                    ->addItem($formItemBuilder->buildRadio('type', '跳转类型')->options_with_descriptions(Menus::TYPE_GROUPS['types'], [
+                        Menus::TYPE_OF_REDIRECT_WITH_NONE => '点击菜单仅显示下级菜单，不进行跳转操作',
+                        Menus::TYPE_OF_REDIRECT_WITH_ROUTE => '跳转本站链接，选择对应路由名即可',
+                        Menus::TYPE_OF_REDIRECT_WITH_LINK => '设置自定义跳转链接，可为站内或站外链接，点击菜单即前往指定站点',
+                    ], Menus::TYPE_OF_REDIRECT_WITH_NONE)->trigger(Menus::TYPE_OF_REDIRECT_WITH_ROUTE, ['route_name'])->trigger(Menus::TYPE_OF_REDIRECT_WITH_LINK, ['redirect_uri'])->required())
+                    ->addItem($formItemBuilder->buildSelect('route_name', '跳转路由')->options($nodes))
+                    ->addItem($formItemBuilder->buildInput('redirect_uri', '跳转链接', 'url'))
+                    ->addItem($formItemBuilder->buildTags('permission_nodes', '包含节点')->whitelist(array_keys($nodes))->description('如存在部分节点不展示在菜单中时，可将此类节点挂载到某个菜单上，如管理员新增/编辑时可将当前页面挂载到管理员列表上，即在管理员新增/编辑页面时管理员列表菜单将被选中'))
+                    ->addItem($formItemBuilder->buildIcon('icon', '图标')->description('请选择图标'))
+                    ->addItem($formItemBuilder->buildInput('sort', '排序值', 'number')->description('排序值越大菜单展示越靠前')->required()->default_value(50)->min(0))
+                    ;
+            })
+            ->setData((int)$id > 0 ? (new MenuRepository())->row(['id' => (int)$id]) : [])
+            ->render();
+        //返回成功
+        return $this->success(compact('html'));
+    }
+
+    /**
+     * 保存菜单信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 03:33:17
+     * @param $parent_id
+     * @param $id
+     * @param $request
+     * @return bool
+     * @throws \Exception
+     */
+    public function store($parent_id, $id, $request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING,'非法参数');
+        }
+        //判断更改项
+        if (!($edited = $data['__edited__'])) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING, '信息无更新');
+        }
+        //获取更改项
+        $info = Arr::only($data['__data__'], $data['__edited__']);
+        //判断跳转类型
+        switch ((int)$data['__data__']['type']) {
+            case Menus::TYPE_OF_REDIRECT_WITH_NONE:
+                //移除信息
+                $info['redirect_uri'] = $info['route_name'] = '';
+                break;
+            case Menus::TYPE_OF_REDIRECT_WITH_ROUTE:
+                //移除信息
+                $info['redirect_uri'] = $data['__data__']['route_name'] ? route(Arr::last(explode('&', $data['__data__']['route_name']))) : '';
+                break;
+            case Menus::TYPE_OF_REDIRECT_WITH_LINK:
+                //移除信息
+                $info['route_name'] = '';
+                break;
+        }
+        //添加修改时间
+        $info['updated_at'] = auto_datetime();
+        //判断是否为新增
+        if ((int)$id <= 0) {
+            //整理基本信息
+            $info['parent_id'] = (int)$parent_id;
+            $info['permission_nodes'] = object_2_array($data['__data__']['permission_nodes']) ? $data['__data__']['permission_nodes'] : [];
+            //添加信息
+            $info['created_at'] = auto_datetime();
+            //添加信息
+            if (!$admin_id = (new MenuRepository())->insertGetId($info)) {
+                //返回失败
+                return $this->fail(CodeLibrary::DATA_UPDATE_FAIL, '信息创建失败');
+            }
+            //添加日志
+            (new AdminLogService())->record('新增菜单信息成功', compact('id', 'parent_id'));
+        } else {
+            //修改信息
+            if (!(new MenuRepository())->update(['id' => (int)$id], $info)) {
+                //返回失败
+                return $this->fail(CodeLibrary::DATA_UPDATE_FAIL, '修改失败');
+            }
+            //添加日志
+            (new AdminLogService())->record('编辑菜单信息成功', array_merge(compact('parent_id', 'id'), $info));
+        }
+        //刷新菜单节点
+        (new MenuCacheHandler())->refresh();
+        //返回成功
+        return $this->success(compact('id', 'parent_id'));
+    }
+
+    /**
+     * 删除菜单信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 02:51:59
+     * @param $id
+     * @param $request Request
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function delete($id, $request)
+    {
+        //删除当前菜单信息
+        (new MenuRepository())->delete(['id' => (int)$id]);
+        //判断存在子菜单
+        if ($sub_ids = (new MenuRepository())->pluck('id', ['parent_id' => (int)$id])) {
+            //删除子菜单信息
+            (new MenuRepository())->delete(['id' => ['in', object_2_array($sub_ids)]]);
+            //删除当前子菜单的子菜单信息
+            (new MenuRepository())->delete(['parent_id' => object_2_array($sub_ids)]);
+        }
+        //记录日志
+        (new AdminLogService())->record('删除菜单及其子菜单信息', compact('id'));
+        //返回成功
+        return $this->success(compact('id'));
+    }
+}

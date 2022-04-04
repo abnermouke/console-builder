@@ -17,3 +17,9 @@ tags.tagify--noTags.tagify--empty {
 .edui-default .edui-dialog-buttons .edui-button .edui-button-body, .edui-default .edui-menuitem-body, .edui-default .edui-toolbar .edui-combox .edui-combox-body, .edui-default .edui-for-customstyle .edui-listitem-label, .edui-default .edui-for-customstyle .edui-listitem-label > h1, .edui-popup div {
     color: #000000;
 }
+/**
+    modal打开时，层级不够
+ */
+span.bootstrap-maxlength {
+    z-index: 1100 !important;
+}

@@ -20,7 +20,7 @@ class RadioItemBuilder extends BasicItemBuilder
     public function __construct($field, $guard_name)
     {
         //设置基础信息
-        $this->guard_name($guard_name)->field($field)->options();
+        $this->guard_name($guard_name)->field($field)->options()->value_type(BasicItemBuilder::VALUE_TYPE_OF_STRING);
     }
 
     /**
@@ -78,10 +78,10 @@ class RadioItemBuilder extends BasicItemBuilder
      * 设置触发
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time 2022-04-01 02:53:32
+     * @Time 2022-03-23 02:32:06
      * @param $value mixed 触发值
      * @param array $trigger_show_fields 显示字段
-     * @return RadioItemBuilder
+     * @return $this
      */
     public function trigger($value, $trigger_show_fields = [])
     {

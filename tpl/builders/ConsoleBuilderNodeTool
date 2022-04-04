@@ -23,7 +23,7 @@ class ConsoleBuilderNodeTool
      * 开始检测节点并自动处理
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param bool|array $configs
      * @return array
      * @throws \ReflectionException
@@ -60,7 +60,7 @@ class ConsoleBuilderNodeTool
      * 初始化路由信息
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $route_name
      * @param $methods
      * @param $action
@@ -105,7 +105,7 @@ class ConsoleBuilderNodeTool
      * 获取类描述
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $controller
      * @return string|string[]
      * @throws \ReflectionException
@@ -134,7 +134,7 @@ class ConsoleBuilderNodeTool
      * 获取方法注释
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
-     * @Time __TIME__
+     * @Time 2022-03-31 17:43:35
      * @param $controller
      * @return mixed
      * @throws \ReflectionException

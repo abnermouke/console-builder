@@ -10,6 +10,8 @@
 namespace App\Http\Controllers\Abnermouke\Console;
 
 use Abnermouke\EasyBuilder\Module\BaseController;
+use App\Interfaces\Abnermouke\Console\NodeInterfaceService;
+use Illuminate\Http\Request;
 
 /**
  * 管理员权限节点基础控制器
@@ -19,6 +21,42 @@ use Abnermouke\EasyBuilder\Module\BaseController;
 class NodeController extends BaseController
 {
 
-    //
+    /**
+     * 管理员权限节点详情页面
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 14:12:21
+     * @param $id
+     * @param Request $request
+     * @param NodeInterfaceService $service
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Exception
+     */
+    public function index($id, Request $request, NodeInterfaceService $service)
+    {
+        //获取节点信息
+        $service->nodes($id);
+        //渲染页面
+        return view('abnermouke.console.admins.nodes.index', $service->getResult());
+    }
+
+    /**
+     * 保存管理员权限节点信息
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-02 13:51:22
+     * @param $id
+     * @param Request $request
+     * @param NodeInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store($id, Request $request, NodeInterfaceService $service)
+    {
+        //保存信息
+        $service->store($id, $request);
+        //响应数据
+        return responseService($service);
+    }
 
 }

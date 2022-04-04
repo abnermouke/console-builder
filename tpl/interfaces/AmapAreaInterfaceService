@@ -1,0 +1,57 @@
+<?php
+
+
+namespace App\Interfaces\Abnermouke\Console;
+
+
+use Abnermouke\EasyBuilder\Library\CodeLibrary;
+use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
+use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler;
+use App\Repository\Abnermouke\Console\ConfigRepository;
+use App\Services\Abnermouke\Console\AdminLogService;
+use App\Services\Abnermouke\Console\AmapAreaService;
+
+/**
+ * 高德行政地区逻辑服务容器
+ * Class AmapAreaInterfaceService
+ * @package App\Interfaces\Abnermouke\Console
+ */
+class AmapAreaInterfaceService extends BaseService
+{
+    /**
+     * 同步最新数据
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-03 00:24:54
+     * @param $request
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function sync($request)
+    {
+        //获取加密信息
+        if (!$data = AesLibrary::decryptFormData($request->all())) {
+            //返回失败
+            return $this->fail(CodeLibrary::DATA_MISSING,'非法参数');
+        }
+        //判断是否上传key
+        if ($amap_web_server_api_key = trim(data_get($data, 'amap_web_server_api_key', ''))) {
+            //保存配置
+            (new ConfigRepository())->update(['alias' => 'AMAP_WEB_SERVER_API_KEY'], ['content' => $amap_web_server_api_key, 'updated_at' => auto_datetime()]);
+            //添加日志
+            (new AdminLogService())->record('高德地图WEB服务API KEY', compact('amap_web_server_api_key'));
+            //刷新缓存
+            (new ConfigCacheHandler())->refresh();
+        }
+        //继续同步
+        if (!($service = new AmapAreaService())->sync()) {
+            //返回错误
+            return $this->fail($service->getCode(), $service->getMessage());
+        }
+        //返回成功
+        return $this->success($service->getResult());
+    }
+
+}
