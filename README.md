@@ -1,4 +1,4 @@
-# console-builder - 一款完整的管理后台/控制面板构建工具包
+# console-builder - 一款优秀的管理后台/控制面板构建工具包
 
  Power By Abnermouke <abnermouke@outlook.com>
 
