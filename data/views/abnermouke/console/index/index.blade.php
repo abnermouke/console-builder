@@ -83,6 +83,41 @@
             </div>
         @endif
     </div>
+    <div class="separator separator-dashed"></div>
+    <div class="row py-10">
+        <div class="fs-1 fw-bold mb-3">
+            console-builder - 一款优秀的管理后台/控制面板构建工具包
+        </div>
+        <div class="fs-4 fw-bold mb-3">
+            此工具包由 Abnermouke abnermouke@outlook.com 开发并维护。
+        </div>
+        <div class="fs-4 fw-bold mb-3">
+            最后更新时间：2022年04月06日，持续更新中！！！
+        </div>
+        <div class="separator separator-dashed my-5"></div>
+        <div class="fs-1 fw-bold my-5">
+            Requirement - 环境要求
+        </div>
+        <div class="highlight px-3">
+            PHP >= 7.2（建议安装7.4）<br><br>
+            Composer<br><br>
+            abnermouke/easy-builder<br><br>
+            Laravel Framework 6+
+        </div>
+        <div class="fs-1 fw-bold my-5">
+            Installation - 安装方法
+        </div>
+        <div class="highlight px-3">
+            $ composer require "abnermouke/console-builder"
+        </div>
+        <div class="fs-1 fw-bold my-5">
+            More - 详细信息
+        </div>
+        <div class="highlight px-3">
+            GITHUB：<a href="https://github.com/abnermouke/console-builder" target="_blank">https://github.com/abnermouke/console-builder</a><br><br>
+            PACKAGIST：<a href="https://packagist.org/packages/abnermouke/console-builder" target="_blank">https://packagist.org/packages/abnermouke/console-builder</a>
+        </div>
+    </div>
 @endsection
 
 {{--自定义弹窗--}}
