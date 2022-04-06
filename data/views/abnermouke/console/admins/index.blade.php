@@ -34,6 +34,7 @@
         ->addFilter($builder->filterAsInput()->date_range('Y-m-d H:i:00')->field('created_at')->guard_name('创建时间'))
         ->addFilter($builder->filterAsInput()->date_range('Y-m-d H:i:00')->field('updated_at')->guard_name('更新时间'))
         ->addAction($builder->buildAction()->form(route('abnermouke.console.admins.detail', ['id' => '__ID__']), 'post')->text('编辑信息')->icon('fa fa-edit'))
+        ->addAction($builder->buildAction()->modal('admin_wechat_oauth_qrcode_modal', ((int)(new \App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler())->get('CONSOLE_WECHAT_OAUTH') === \App\Model\Abnermouke\Console\Configs::SWITCH_ON ? route('abnermouke.console.admins.qrcode', ['id' => '__ID__']) : ''), 'post')->text('微信授权码')->icon('fa fa-qrcode')->theme('info'))
         ->addAction($builder->buildAction()->ajax(route('abnermouke.console.admins.status', ['id' => '__ID__']), 'post')->text('更改状态')->icon('fa fa-exchange-alt')->confirm_before_query('更改状态后，原本已禁用账户将重新开放，启用中的用户将禁止使用，是否继续?')->theme('success'))
         ->addSort('login_count', '登录次数')
         ->render()
@@ -42,7 +43,22 @@
 
 {{--自定义弹窗--}}
 @section('popups')
+    <div class="modal fade acb_table_form_modal" id="admin_wechat_oauth_qrcode_modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog mw-650px">
+                <div class="modal-content">
+                    <div class="modal-header pb-0 border-0 justify-content-end">
+                        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal" id="admin_wechat_oauth_qrcode_modal_close_icon">
+                            <i class="fa fa-times"></i>
+                        </div>
+                    </div>
+                    <div class="modal-body scroll-y mx-5 mx-xl-18 pt-0 pb-15">
 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 {{--自定义javascript--}}

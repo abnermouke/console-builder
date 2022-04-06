@@ -32,7 +32,7 @@ class ConsoleBuilderServiceProvider extends ServiceProvider
         // 发布配置文件
         $this->publishes([
             __DIR__.'/../config/console_builder.php' => config_path('console_builder.php'),
-            __DIR__.'/../data/routes/abnermouke/console.php' => base_path('routes/abnermouke/console.php'),
+            __DIR__ . '/../data/routes/abnermouke/console' => base_path('routes/abnermouke/console.php'),
             __DIR__.'/../data/assets' => public_path('abnermouke'),
             __DIR__.'/../helpers/console_builder.php' => app_path('Helpers/console_builder.php'),
             __DIR__.'/../data/views/abnermouke/console' => resource_path('views/abnermouke/console'),

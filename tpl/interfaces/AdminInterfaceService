@@ -9,16 +9,21 @@ use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormItemsBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableContentBuilder;
 use Abnermouke\EasyBuilder\Library\CodeLibrary;
 use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
+use Abnermouke\EasyBuilder\Library\Currency\QrLibrary;
 use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler;
+use App\Model\Abnermouke\Console\AdminOauthSignatures;
 use App\Model\Abnermouke\Console\Admins;
 use App\Model\Abnermouke\Console\Roles;
 use App\Repository\Abnermouke\Console\AdminRepository;
 use App\Repository\Abnermouke\Console\RoleRepository;
 use App\Services\Abnermouke\Console\AdminLogService;
+use App\Services\Abnermouke\Console\AdminOauthSignatureService;
 use App\Services\Abnermouke\Console\AdminService;
 use App\Services\Abnermouke\Console\TemporaryFileService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -286,6 +291,42 @@ class AdminInterfaceService extends BaseService
         }
         //返回成功
         return $this->success($service->getResult());
+    }
+
+    /**
+     * 获取授权绑定二维码
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-06 23:14:10
+     * @param $id
+     * @param $request
+     * @return array|bool
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function qrcode($id, $request)
+    {
+        //创建授权记录
+        $signature = (new AdminOauthSignatureService(true))->create(AdminOauthSignatures::TYPE_OF_BIND, ['id' => (int)$id]);
+        //整理授权链接
+        $oauth_uri = route('abnermouke.console.oauth.wechat.signature', compact('signature'));
+        //判断环境
+        if (config('app.env', 'local') == 'production') {
+            //生成二维码
+            $qrcode = QrLibrary::create($oauth_uri, 'admins/oauth/wechat/qrcode/'.$signature.'.png', 300, true);
+            //设置临时文件（两小时后到期）
+            (new TemporaryFileService())->temporary($qrcode['storage_name'], $qrcode['storage_disk'], 7200);
+            //获取访问链接
+            $qrcode_link = Storage::disk($qrcode['storage_disk'])->url($qrcode['storage_name']);
+        } else {
+            //线下获取LOGO
+            $qrcode_link = (new ConfigCacheHandler())->get('APP_LOGO', proxy_assets('medias/logos/logo@1x.png', 'abnermouke'));
+        }
+        //生成检测链接
+        $check_link = route('abnermouke.console.oauth.wechat.signature.check', ['signature' => $signature]);
+        //渲染modal内容
+        $html = view()->make('vendor.abnermouke.console.hooks.admins.qrcode', compact('qrcode_link', 'check_link', 'signature'))->render();
+        //返回结构
+        return $this->success(compact('html'));
     }
 
 }

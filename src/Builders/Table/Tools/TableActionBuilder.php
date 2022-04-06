@@ -87,6 +87,24 @@ class TableActionBuilder
     }
 
     /**
+     * 设置modal模态框请求（modal弹窗）
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-03-19 15:44:25
+     * @param $bind_modal_target string 绑定现成的模态框ID(不存在将自动生成随机模态框加载动态内容)
+     * @param $url string 请求链接
+     * @param $method string 请求方式
+     * @param $param_fields array 将某些字段的值做为默认参数
+     * @param string $after ajax执行完毕后表格操作 refresh：刷新当前列表（当前条件）；reload：页面刷新；其他：请给链接（执行完毕后跳转到对应链接）
+     * @return TableActionBuilder
+     */
+    public function modal($bind_modal_target, $url, $method, $param_fields = [], $after = 'refresh')
+    {
+        //设置ajax请求
+        return $this->setParams('type', 'modal')->setParams('redirect_uri', $url)->setParams('redirect_target', false)->setParams('method', $method)->setParams('after_ajax', $after)->param_fields($param_fields)->extra('modal_size', 'lg')->extra('modal_target', $bind_modal_target);
+    }
+
+    /**
      * 设置form表单触发（modal弹窗）
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP

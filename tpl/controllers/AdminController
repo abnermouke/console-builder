@@ -130,4 +130,23 @@ class AdminController extends BaseController
         return responseService($service);
     }
 
+    /**
+     * 获取管理员微信授权绑定二维码
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-06 23:08:36
+     * @param $id
+     * @param Request $request
+     * @param AdminInterfaceService $service
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function qrcode($id, Request $request, AdminInterfaceService $service)
+    {
+        //获取授权绑定二维码
+        $service->qrcode($id, $request);
+        //响应结果
+        return responseService($service);
+    }
+
 }

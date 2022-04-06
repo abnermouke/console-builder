@@ -724,6 +724,64 @@ $.table_builder = {
                                 loadingStop(loading, table_box);
                             })
                             break;
+                        case 'modal':
+                            //判断参数默认是否存在
+                            if (typeof (param_fields) == 'undefined' || $.isEmptyObject(param_fields)) {
+                                //设置默认参数
+                                param_fields = {};
+                            }
+                            //生成modal内容
+                            var body = $('body'), bind_modal_target = 'acbt_'+sign+'_modal_with_modal_of_'+randomString(8);
+                            //判断是否设置target
+                            if (typeof extras['modal_target'] !== 'undefined' && extras['modal_target'].length > 0) {
+                                //设置绑定ID
+                                bind_modal_target = extras['modal_target'];
+                            } else {
+                                //设置内容
+                                var modal_html = '<div class="modal fade acb_table_bind_modal" id="'+bind_modal_target+'" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-'+extras['modal_size']+'" role="document"><div class="modal-content"><div class="modal-header pb-0 border-0 justify-content-end"><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2 acb_table_form_modal_close_icon" data-bs-dismiss="modal" aria-label="Close" id="'+bind_modal_target+'_close_icon"><i aria-hidden="true" class="fa fa-times"></i></button></div><div class="modal-body mh-700px overflow-auto"></div></div></div></div>'
+                                //添加内容
+                                body.append(modal_html);
+                            }
+                            //加载loading
+                            var loading = loadingStart(table_box, table[0], '正在加载...');
+                            //创建请求
+                            buildRequest(query_url, param_fields, method, true, function (res) {
+                                //设置内容
+                                $("#"+bind_modal_target).find('.modal-body').empty().html(res.data['html']);
+                                //显示弹窗
+                                new bootstrap.Modal($("#"+bind_modal_target)[0], {backdrop: 'static', keyboard: false}).show();
+                                //触发关闭弹窗事件
+                                $("#"+bind_modal_target).on('hidden.bs.modal', function () {
+                                    //判断是否设置target
+                                    if (typeof extras['modal_target'] === 'undefined' || extras['modal_target'].length <= 0) {
+                                        //删除当前modal
+                                        $("#"+bind_modal_target).remove();
+                                    }
+                                    //根据配置处理
+                                    switch (ajax_after) {
+                                        case 'refresh':
+                                            //刷新当前列表
+                                            __this.requestLists(table, sign);
+                                            break;
+                                        case 'reload':
+                                            //刷新当前页面
+                                            window.location.reload();
+                                            break;
+                                        default:
+                                            //跳转页面
+                                            window.location.href = ajax_after;
+                                            break;
+                                    }
+                                });
+                                //添加
+                            }, function (res) {
+                                //提示错误
+                                alertToast(res.msg, 2000, 'error');
+                            }, function () {
+                                //关闭弹窗
+                                loadingStop(loading, table_box);
+                            })
+                            break;
                         case 'link':
                             //判断是否存在参数
                             if (typeof (param_fields) !== 'undefined' && !$.isEmptyObject(param_fields)) {

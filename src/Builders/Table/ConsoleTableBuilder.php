@@ -144,8 +144,11 @@ class ConsoleTableBuilder
     {
         //判断是否传入对象
         $action = is_object($action) ? $action->get() : $action;
-        //设置筛选项
-        $this->builder['actions'][] = $action;
+        //判断信息
+        if (!empty($action['redirect_uri'])) {
+            //设置筛选项
+            $this->builder['actions'][] = $action;
+        }
         //返回当前实例对象
         return $this;
     }
