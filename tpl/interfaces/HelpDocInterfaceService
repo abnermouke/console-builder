@@ -3,12 +3,14 @@
 namespace App\Interfaces\Abnermouke\Console;
 
 use Abnermouke\ConsoleBuilder\Builders\Form\ConsoleFormBuilder;
+use Abnermouke\ConsoleBuilder\Builders\Form\Items\BasicItemBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormButtonBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Form\Tools\FormItemsBuilder;
 use Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableContentBuilder;
 use Abnermouke\EasyBuilder\Library\CodeLibrary;
 use Abnermouke\EasyBuilder\Library\Cryptography\AesLibrary;
 use Abnermouke\EasyBuilder\Module\BaseService;
+use App\Model\Abnermouke\Console\HelpDocs;
 use App\Repository\Abnermouke\Console\HelpDocRepository;
 use App\Services\Abnermouke\Console\AdminLogService;
 use Illuminate\Support\Arr;
@@ -48,6 +50,9 @@ class HelpDocInterfaceService extends BaseService
                 switch ($filter) {
                     case '__keyword__':
                         $value && $conditions[implode('|', ['title', 'alias', 'content'])] = ['like', '%'.$value.'%'];
+                        break;
+                    case 'type':
+                        (int)$value > 0 && $conditions['type'] = (int)$value;
                         break;
                     case 'created_at':
                         $value && $conditions['created_at'] = ['between', $value];
@@ -114,6 +119,7 @@ class HelpDocInterfaceService extends BaseService
                 return ($formItemBuilder = (new FormItemsBuilder()))
                     ->addItem($formItemBuilder->buildInput('title', '文档标题')->required())
                     ->addItem($formItemBuilder->buildInput('alias', '文档标识')->description('文档标识可用于快速检索，请尽量保持其唯一性')->required())
+                    ->addItem($formItemBuilder->buildSelect('type', '文档类型')->options(HelpDocs::TYPE_GROUPS['type'])->required()->value_type(BasicItemBuilder::VALUE_TYPE_OF_INTEGRAL))
                     ->addItem($formItemBuilder->buildEditor('content', '文档内容')->required());
             })
             ->setData((int)$doc_id > 0 ? (new HelpDocRepository())->row(['id' => (int)$doc_id]) : [])

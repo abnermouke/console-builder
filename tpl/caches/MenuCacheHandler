@@ -82,8 +82,6 @@ class MenuCacheHandler extends BaseCacheHandler
 
         //设置缓存
         $this->cache['customs'] = $this->custom_params;
-        //保存缓存
-        $this->save();
 
         //返回成功
         return true;
@@ -109,6 +107,8 @@ class MenuCacheHandler extends BaseCacheHandler
                 $this->save();
             }
         }
+        //设置自定义参数
+        $this->customs();
         //返回缓存信息
         return $cache;
     }

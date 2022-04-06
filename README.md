@@ -82,7 +82,7 @@ protected $middlewareGroups = [
 - 注册路由
 - 移除 app/Http/Kernel.php 默认中间件：\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
 
-Laravel 6 与 Laravel 7 中配置路由服务
+Laravel 6 与 Laravel 7 中配置路由服务 app/Providers/RouteServiceProvider.php
 
 ```
   public function map()

@@ -39,6 +39,7 @@ class CreateAbnermoukeConsoleHelpDocsTable extends Migration
             //其他字段配置
             $table->string('title', 200)->nullable(false)->default('')->comment('标题');
             $table->string('alias', 100)->nullable(false)->default('')->comment('标识');
+            $table->tinyInteger('type')->nullable(false)->default(HelpDocs::TYPE_OF_NORMAL)->unsigned()->comment('文档类型');
             $table->longText('content')->comment('帮助内容');
             $table->timestamp('created_at')->nullable()->comment('创建时间');
             $table->timestamp('updated_at')->nullable()->comment('更新时间');

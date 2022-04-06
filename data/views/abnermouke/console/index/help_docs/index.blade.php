@@ -22,10 +22,12 @@
             return ($fieldBuilder = new \Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableFieldsBuilder())
                 ->addField($fieldBuilder->buildTexts('project', '文档信息')->bold()->template('{title}')->description('{description}'))
                 ->addField($fieldBuilder->buildString('alias', '标识')->bold()->theme('primary'))
+                ->addField($fieldBuilder->buildOption('type', '文档类型')->bold()->theme_options(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_STATUS_THEME)->options(\App\Model\Abnermouke\Console\HelpDocs::TYPE_GROUPS['type']))
                  ->addField($fieldBuilder->buildDate('created_at', '创建时间')->show(false))
                 ->addField($fieldBuilder->buildDate('updated_at', '更新时间')->friendly());
         })
         ->addFilter($builder->filterAsInput()->field('__keyword__')->guard_name('关键词搜索')->placeholder('请输入标题/标识/内容等关键词检索')->col(6))
+        ->addFilter($builder->filterAsSelect()->field('type')->guard_name('文档类型')->options(\App\Model\Abnermouke\Console\HelpDocs::TYPE_GROUPS['type'])->col(6))
         ->addFilter($builder->filterAsInput()->date_range('Y-m-d H:i:00')->field('created_at')->guard_name('创建时间'))
         ->addFilter($builder->filterAsInput()->date_range('Y-m-d H:i:00')->field('updated_at')->guard_name('更新时间'))
         ->addAction($builder->buildAction()->form(route('abnermouke.console.help.docs.detail', ['id' => '__ID__']), 'post')->text('编辑文档')->icon('fa fa-edit'))

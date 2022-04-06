@@ -40,7 +40,7 @@ class ConsoleBuilderMenuTemplateTool
                             <span class="menu-link py-3 '.(isset($sub_menu['pulse_theme']) ? 'pulse pulse-'.$sub_menu['pulse_theme'] : '').'" data-route-names="" data-parent-did="'.$sub_menu['parent_id'].'" data-redirect-uri="'.$sub_menu['redirect_uri'].'" data-sub-count="0" href="'.$sub_menu['redirect_uri'].'" data-did="'.$sub_menu['id'].'">
                                 '.(!empty($sub_menu['icon']) ? ' <span class="menu-icon"><i class="'.$sub_menu['icon'].'"></i></span>' : ' <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>').'
                                 <span class="menu-title">
-                                '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-light-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' bg-hover-'.($sub_menu['number_theme'] ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
+                                '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
                                 </span>
                                 <span class="menu-arrow"></span>
                                 '.(isset($sub_menu['pulse_theme']) ? ' <span class="pulse-ring"></span>' : '').'
@@ -53,7 +53,7 @@ class ConsoleBuilderMenuTemplateTool
                             <a class="menu-link py-3 '.(isset($sub_menu['pulse_theme']) ? 'pulse pulse-'.$sub_menu['pulse_theme'] : '').'" data-menu-type="link" href="'.$sub_menu['redirect_uri'].'"  data-route-names="'.implode(',', $sub_menu['permission_nodes']).'" data-parent-did="'.$sub_menu['parent_id'].'" data-redirect-uri="'.$sub_menu['redirect_uri'].'" data-sub-count="0" href="'.$sub_menu['redirect_uri'].'" data-did="'.$sub_menu['id'].'">
                                 '.(!empty($sub_menu['icon']) ? ' <span class="menu-icon"><i class="'.$sub_menu['icon'].'"></i></span>' : ' <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>').'
                                 <span class="menu-title">
-                               '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-light-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' bg-hover-'.($sub_menu['number_theme'] ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
+                               '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
                                 </span>
                                  '.(isset($sub_menu['pulse_theme']) ? ' <span class="pulse-ring"></span>' : '').'
                             </a>
@@ -94,7 +94,7 @@ class ConsoleBuilderMenuTemplateTool
                                 <span class="menu-link '.(isset($sub_menu['pulse_theme']) ? 'pulse pulse-'.$sub_menu['pulse_theme'] : '').'">
                                     '.(!empty($sub_menu['icon']) ? '<span class="menu-icon"><span class="svg-icon svg-icon-2"><i class="'.$sub_menu['icon'].' fs-3"></i></span></span>' : '').'
                                     <span class="menu-title">
-                                        '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-light-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' bg-hover-'.($sub_menu['number_theme'] ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
+                                        '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
                                     </span>
                                     '.(isset($sub_menu['pulse_theme']) ? ' <span class="pulse-ring"></span>' : '').'
                                     <span class="menu-arrow"></span>
@@ -108,7 +108,7 @@ class ConsoleBuilderMenuTemplateTool
                                 <a class="menu-link '.(isset($sub_menu['pulse_theme']) ? 'pulse pulse-'.$sub_menu['pulse_theme'] : '').'" href="'.$sub_menu['redirect_uri'].'">
                                     '.(!empty($sub_menu['icon']) ? '<span class="menu-icon"><span class="svg-icon svg-icon-2"><i class="'.$sub_menu['icon'].' fs-3"></i></span></span>' : '').'
                                     <span class="menu-title">
-                                        '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-light-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' bg-hover-'.($sub_menu['number_theme'] ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
+                                        '.$sub_menu['guard_name'].((int)data_get($sub_menu, 'number', 0) > 0 ? (' <span class="badge badge-'.(isset($sub_menu['number_theme']) ? $sub_menu['number_theme'] : 'primary').' badge-circle fw-bold fs-9 px-2 ms-2">'.(int)data_get($sub_menu, 'number', 0).'</span>') : '').'
                                     </span>
                                     '.(isset($sub_menu['pulse_theme']) ? ' <span class="pulse-ring"></span>' : '').'
                                 </a>
