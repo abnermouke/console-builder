@@ -40,9 +40,10 @@ class ConsoleBuildCommand extends Command
     public function handle()
     {
         //创建表
-        $this->createTables();
-        //打印信息
-        $this->output->success('Console 构建器初始化完成！');
+        if ($this->createTables()) {
+            //打印信息
+            $this->output->success('Console 构建器初始化完成！');
+        }
         //返回成功
         return true;
     }
@@ -57,6 +58,13 @@ class ConsoleBuildCommand extends Command
      */
     private function createTables()
     {
+        //确认信息
+        if (!$this->confirm('请确认是否已在.env中正确配置DB数据库链接信息？')) {
+            //提示信息
+            $this->output->warning('等待数据库配置完毕后继续...');
+            //返回失败
+            return false;
+        }
         //打印命令
         $this->output->title('开始创建 Abnermouke/ConsoleBuilder 基础数据库表信息...');
         //整理生成内容

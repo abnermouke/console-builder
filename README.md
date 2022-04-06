@@ -36,7 +36,7 @@ $ composer require "abnermouke/console-builder"
 - 在`config/app.php`的`providers`注册服务提供者
 
 ```php
-Abnermouke\ConsoleBuilder\ConsoleBuilderServiceProvider::class
+Abnermouke\ConsoleBuilder\ConsoleBuilderServiceProvider::class,
 ```
 - 如果你想只在非`production`的模式中使用构建器功能，可在`AppServiceProvider`中进行`register()`配置
 

@@ -49,6 +49,8 @@ Route::group(['as' => 'abnermouke.console.', 'prefix' => 'abnermouke/console'], 
             Route::post('{id}/store', 'AdminController@store')->name('store')->where('id', '\d+');
             //操作管理员状态
             Route::post('status/{id}', 'AdminController@status')->name('status')->where('id', '\d+');
+            //获取管理员授权
+            Route::post('qrcode/{id}', 'AdminController@qrcode')->name('qrcode')->where('id', '\d+');
             //修改密码
             Route::post('change/password', 'AdminController@change_password')->name('change.password');
             //管理员日志相关路由
