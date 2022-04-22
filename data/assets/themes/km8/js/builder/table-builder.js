@@ -184,6 +184,12 @@ $.table_builder = {
                         param_fields['table_sign'] = sign;
                         param_fields['bind_table_id'] = table.attr('id');
                         param_fields['bind_modal_id'] = bind_modal_id;
+                        param_fields['params'] = {};
+                        //判断参数默认是否存在
+                        if (typeof (extras['params']) !== 'undefined') {
+                            //设置默认参数
+                            param_fields['params'] = extras['params'];
+                        }
                         //加载loading
                         var loading = loadingStart(table_box, table[0], '正在加载...');
                         //创建请求
@@ -854,6 +860,8 @@ $.table_builder = {
         }
         //重置下拉选择
         KTMenu.createInstances();
+        //重置tooltip
+        KTApp.initBootstrapTooltips();
     },
     resetPagination: function (table, sign) {
         //设置页码
@@ -932,7 +940,7 @@ $.table_builder = {
                             break;
                         case 'select':
                             //判断值内容
-                            if (typeof (filter_value) !== 'undefined' && filter_value.length > 0 && filter_value !== '__WITHOUT_ANY_VALUE__') {
+                            if (typeof (filter_value) !== 'undefined' && filter_value && filter_value.length > 0 && filter_value !== '__WITHOUT_ANY_VALUE__') {
                                 //设置条件
                                 params['filters'][filter_field] = filter_value;
                             }

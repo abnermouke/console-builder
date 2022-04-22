@@ -32,6 +32,7 @@ class ConsoleFormBuilder
         'structures' => [],
         'triggers' => [],
         'data' => [],
+        'space' => 10,
         'bind_modal_id' => '',
         'bind_table_id' => ''
     ];
@@ -44,7 +45,7 @@ class ConsoleFormBuilder
     public function __construct($theme = '')
     {
         //配置基础信息
-        $this->setSign(Str::random(10))->setTheme($theme ? $theme : config('console_builder.default_theme'));
+        $this->setSign(Str::random(10))->setSpace()->setTheme($theme ? $theme : config('console_builder.default_theme'));
     }
 
     /**
@@ -148,6 +149,22 @@ class ConsoleFormBuilder
             //设置筛选项
             $this->builder['submit'] = $submit;
         }
+        //返回当前实例对象
+        return $this;
+    }
+
+    /**
+     * 设置Structure之间上下间距
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-22 13:10:04
+     * @param int $space
+     * @return $this
+     */
+    public function setSpace($space = 10)
+    {
+        //设置上下间距
+        $this->builder['space'] = (int)$space;
         //返回当前实例对象
         return $this;
     }
@@ -312,6 +329,17 @@ class ConsoleFormBuilder
                         $config['default_value'] = is_string($data) ? explode(',', $data) : $data;
                     }
                     break;
+                case 'input':
+                    //设置默认值信息
+                    $default_value = data_get($this->builder['data'], $field, $config['default_value']);;
+                    //判断是否为金额
+                    if ($config['extras']['input_type'] === 'number' && data_get($config, 'extras.ratio', 0) > 0 && (int)$default_value > 0) {
+                        //设置默认信息
+                        $default_value = $default_value/(int)$config['extras']['ratio'];
+                    }
+                    //设置默认信息
+                    $config['default_value'] = $default_value;
+                    break;
                 default:
                     //设置默认信息
                     $config['default_value'] = data_get($this->builder['data'], $field, $config['default_value']);
@@ -322,6 +350,10 @@ class ConsoleFormBuilder
                 case BasicItemBuilder::VALUE_TYPE_OF_INTEGRAL:
                     //设置int值
                     $config['default_value'] = (int)$config['default_value'];
+                    break;
+                case BasicItemBuilder::VALUE_TYPE_OF_FLOAT:
+                    //设置float值
+                    $config['default_value'] = (float)$config['default_value'];
                     break;
             }
             //设置信息

@@ -1,7 +1,7 @@
 <td class="acbt_table_tbody_td @if(!in_array($field, $__default_show_fields__)) d-none @endif text-{{ $theme_options && $theme_options_trigger_field ? data_get($theme_options, data_get($__data__, $theme_options_trigger_field, ''), $theme) : $theme }} {{ $bold ? 'fw-bold' : '' }}" data-field="{{ $field }}">
     @php
         if ($price_value = decode_acbt_template($template, $__data__, false)) {
-            if ($ratio = (int)data_get($extras, 'ratio', 0) > 0) {
+            if (($ratio = (int)data_get($extras, 'ratio', 0)) > 0) {
                 $price_value = floatval($price_value) / $ratio;
             }
             $price_value = number_format(floatval($price_value), data_get($extras, 'decimal', 2));

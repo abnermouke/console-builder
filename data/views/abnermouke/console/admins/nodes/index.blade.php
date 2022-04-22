@@ -5,7 +5,7 @@
 @section('title', '管理员权限节点')
 
 {{--是否显示侧边栏--}}
-@section('enable_aside', 1)
+@section('enable_aside', 0)
 
 {{--自定义样式--}}
 @section('styles')

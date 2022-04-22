@@ -41,6 +41,7 @@ class ConsoleTableBuilder
         'checkbox_trigger_buttons' => '',
         'default_show_fields' => [],
         'show_fields' => [],
+        'hidden_tools' => [],
         'advance_search' => false,
         'custom_filter' => false,
     ];
@@ -54,7 +55,7 @@ class ConsoleTableBuilder
     public function __construct($query_url, $theme = '')
     {
         //配置基础信息
-        $this->setSign(Str::random(10))->setTheme($theme ? $theme : config('console_builder.default_theme'))->setQueryUrl($query_url, 'post')->setDefaultPage((int)config('console_builder.table.default_page', 1))->setDefaultPageSize((int)config('console_builder.table.default_page_size', 20))->setDefaultSearchField()->addSort('default', '默认排序')->addSort('recently_created', '最近创建')->addSort('recently_updated', '最近更新');
+        $this->setSign(Str::random(10))->setHiddenTools()->setTheme($theme ? $theme : config('console_builder.default_theme'))->setQueryUrl($query_url, 'post')->setDefaultPage((int)config('console_builder.table.default_page', 1))->setDefaultPageSize((int)config('console_builder.table.default_page_size', 20))->setDefaultSearchField()->addSort('default', '默认排序')->addSort('recently_created', '最近创建')->addSort('recently_updated', '最近更新');
     }
 
     /**
@@ -65,10 +66,26 @@ class ConsoleTableBuilder
      * @param $sign string 唯一标识
      * @return $this
      */
-    protected function setSign($sign)
+    public function setSign($sign)
     {
         //设置表格唯一标示
         $this->builder['sign'] = $sign;
+        //返回当前实例对象
+        return $this;
+    }
+
+    /**
+     * 设置需隐藏的工具（filters：搜索工具，toolbars：操作工具）
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-22 01:36:06
+     * @param array $tools
+     * @return $this
+     */
+    public function setHiddenTools($tools = [])
+    {
+        //设置表格显示模式
+        $this->builder['hidden_tools'] = $tools;
         //返回当前实例对象
         return $this;
     }

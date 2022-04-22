@@ -65,6 +65,13 @@ class ConsoleBuildCommand extends Command
             //返回失败
             return false;
         }
+        //确认信息
+        if (!$this->confirm('请确认 '.config('app.url').' 为项目访问域名并已配置可访问（错误可能导致默认图片、链接不正确）？')) {
+            //提示信息
+            $this->output->warning('等待域名访问配置完毕后继续...');
+            //返回失败
+            return false;
+        }
         //打印命令
         $this->output->title('开始创建 Abnermouke/ConsoleBuilder 基础数据库表信息...');
         //整理生成内容

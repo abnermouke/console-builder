@@ -70,7 +70,7 @@ class CreateAbnermoukeConsoleConfigsTable extends Migration
             ['alias' => 'APP_TITLE', 'description' => '应用标题', 'content' => 'Console控制台', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'APP_DESCRIPTION', 'description' => '应用描述', 'content' => 'Power By https://github.com/abnermouke', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'APP_KEYWORDS', 'description' => '应用关键词', 'content' => ['abnermouke@outlook.com', 'abnermouke/console-builder', '控制台', '构建器'], 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
-            ['alias' => 'APP_LOGO', 'description' => '应用LOGO图片', 'content' => proxy_assets('medias/logos/logo.png', 'abnermouke', false), 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
+            ['alias' => 'APP_LOGO', 'description' => '应用LOGO图片', 'content' => proxy_assets('medias/logos/logo.png', 'abnermouke'), 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'APP_SHORTCUT_ICON', 'description' => '应用浏览器导航小图标', 'content' => proxy_assets('medias/logos/favicon.png', 'abnermouke'), 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'CONSOLE_DEFAULT_THEME', 'description' => '控制台主题（auto:自动 <default:light;19：00-06：00 dark>, light:明亮主题;dark:暗黑主题）', 'content' => 'auto', 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],
             ['alias' => 'CONSOLE_WECHAT_OAUTH', 'description' => '控制台启动微信授权登录', 'content' => 2, 'created_at' => auto_datetime(), 'updated_at' => auto_datetime()],

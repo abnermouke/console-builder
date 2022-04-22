@@ -20,7 +20,7 @@
         ->addButton($builder->buildBotton()->ajax(route('abnermouke.console.help.docs.delete'), 'post')->text('删除选中文档')->icon('fa fa-trash')->theme('danger')->id_suffix('delete_selected')->confirm_before_query('帮助文档删除后不可恢复，是否继续？'))
         ->setFields(function () {
             return ($fieldBuilder = new \Abnermouke\ConsoleBuilder\Builders\Table\Tools\TableFieldsBuilder())
-                ->addField($fieldBuilder->buildTexts('project', '文档信息')->bold()->template('{title}')->description('{description}'))
+                ->addField($fieldBuilder->buildTexts('project', '文档信息')->bold()->template('{title}')->description('{description}')->theme_options(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_STATUS_THEME, 'type'))
                 ->addField($fieldBuilder->buildString('alias', '标识')->bold()->theme('primary'))
                 ->addField($fieldBuilder->buildOption('type', '文档类型')->bold()->theme_options(\App\Builders\Abnermouke\Console\ConsoleBuilderBasicTheme::DEFAULT_STATUS_THEME)->options(\App\Model\Abnermouke\Console\HelpDocs::TYPE_GROUPS['type']))
                  ->addField($fieldBuilder->buildDate('created_at', '创建时间')->show(false))

@@ -58,6 +58,23 @@ class InputItemBuilder extends BasicItemBuilder
     }
 
     /**
+     * 设置金额格式
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-22 13:18:06
+     * @param int $decimal
+     * @param int $ratio
+     * @param string $prefix
+     * @param string $suffix
+     * @return InputItemBuilder
+     */
+    public function price($decimal = 2, $ratio = 0, $prefix = '¥', $suffix = '元')
+    {
+        //更改类型
+        return $this->extra('input_type', 'number')->min(0)->extra('decimal', (int)$decimal)->extra('ratio', (int)$ratio)->append($suffix)->prepend($prefix)->value_type(BasicItemBuilder::VALUE_TYPE_OF_FLOAT);
+    }
+
+    /**
      * 设置占位符信息
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP

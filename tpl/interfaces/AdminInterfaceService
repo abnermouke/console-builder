@@ -62,7 +62,7 @@ class AdminInterfaceService extends BaseService
                         $value && $conditions[implode('|', [Admins::TABLE_NAME.'.id', Admins::TABLE_NAME.'.username', Admins::TABLE_NAME.'.nickname', Admins::TABLE_NAME.'.mobile', Admins::TABLE_NAME.'.email'])] = ['like', '%'.$value.'%'];
                         break;
                     case 'status':
-                        (int)$value > 0 && $conditions[Admins::TABLE_NAME.'.email'] = (int)$value;
+                        (int)$value > 0 && $conditions[Admins::TABLE_NAME.'.status'] = (int)$value;
                         break;
                     case 'role_id':
                         (int)$value > 0 && $conditions[Admins::TABLE_NAME.'.role_id'] = (int)$value;

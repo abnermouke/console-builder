@@ -77,7 +77,7 @@ class TemporaryFileService extends BaseService
             }
         }
         //返回成功
-        return $this->success($return === 'array' ? $links : implode(',', $links));
+        return $this->success($return === 'array' ? $links : ($links ? implode(',', $links) : $links));
     }
 
 

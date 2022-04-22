@@ -17,7 +17,7 @@
     <div class="d-flex flex-column">
         <a href="{{ get_acbt_link($link, $__data__) }}" class="text-{{ $theme_options && $theme_options_trigger_field ? data_get($theme_options, data_get($__data__, $theme_options_trigger_field, ''), $theme) : $theme }} mb-1">{{ decode_acbt_template($template, $__data__, $empty_value) }}</a>
         @if($description = decode_acbt_template($description_template, $__data__, ''))
-            <span class="fs-7">{{ $description }}</span>
+            <span class="fs-7">{!! $description !!}</span>
         @endif
     </div>
 </td>

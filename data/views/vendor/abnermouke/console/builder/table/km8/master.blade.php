@@ -1,5 +1,5 @@
 <div id="acbt_{{ $sign }}" class="acb-table-builder" data-source-path="{{ proxy_assets('themes/km8/js/builder', 'abnermouke') }}" data-sign="{{ $sign }}" data-action="{{ $query_url }}" data-method="{{ $query_method }}" data-page="{{ $page }}" data-page-size="{{ $page_size }}" data-search-mode="{{ $advance_search ? 'advance' : 'basic' }}" data-custom-filter="{{ $custom_filter ? 1 : 0 }}" data-build="0" data-checkbox-trigger-buttons="{{ $checkbox_trigger_buttons ? implode(',', $checkbox_trigger_buttons) : '' }}">
-    <div class="card mb-3" id="acbt_{{ $sign }}_filters_box">
+    <div class="card mb-3 {{ $hidden_tools && in_array('filters', $hidden_tools, true) ? 'd-none' : '' }}" id="acbt_{{ $sign }}_filters_box">
         <div class="card-body">
             <div class="d-flex align-items-center">
                 <div class="d-flex align-items-center fs-4 me-5 {{ !$advance_search ? 'd-none' : '' }}" id="acbt_{{ $sign }}_filter_of_advance_using">
@@ -55,7 +55,7 @@
             </a>
         @endforeach
     </div>
-    <div class="d-flex flex-wrap flex-stack pb-3">
+    <div class="d-flex flex-wrap flex-stack pb-3 {{ $hidden_tools && in_array('toolbars', $hidden_tools, true) ? 'd-none' : '' }}" id="acbt_{{ $sign }}_toolbars">
         <div class="d-flex flex-wrap align-items-center my-1">
             <h6 class="text-muted font-weight-bold me-5 my-1">总共 <span class="text-dark" id="acbt_{{ $sign }}_data_total_count"> --- </span> 条数据，符合筛选条件的有 <span class="text-dark" id="acbt_{{ $sign }}_data_matched_count"> --- </span> 条</h6>
         </div>
@@ -75,7 +75,7 @@
                             <div class="fs-7 text-dark fw-bolder">自定义显示字段</div>
                         </div>
                         <div class="separator border-gray-200"></div>
-                        <div class="px-7 py-5 pt-1" id="acbt_{{ $sign }}_fields">
+                        <div class="px-7 py-5 pt-1 h-400px overflow-auto" id="acbt_{{ $sign }}_fields">
                             @foreach($show_fields as $field => $guard_name)
                                 <div class="form-check form-check-custom form-check-solid form-check-sm my-3">
                                     <input type="checkbox" name="acbt_{{ $sign }}_field" id="acbt_{{ $sign }}_field_{{ $field }}" class="form-check-input" value="{{ $field }}">

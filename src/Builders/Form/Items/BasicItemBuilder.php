@@ -15,6 +15,8 @@ class BasicItemBuilder
     public const VALUE_TYPE_OF_STRING = 'string';
     //INT结果类型
     public const VALUE_TYPE_OF_INTEGRAL = 'integral';
+    //FLOAT结果类型
+    public const VALUE_TYPE_OF_FLOAT = 'float';
     //对象结果类型
     public const VALUE_TYPE_OF_OBJECT = 'object';
 
