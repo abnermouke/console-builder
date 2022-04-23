@@ -23,6 +23,6 @@
         @endif
     </div>
     @if($description = decode_acbt_template($description_template, $__data__, ''))
-        <div class="fs-7 text-muted">{{ $description }}</div>
+        <div class="fs-7 text-muted">{!! $description !!}</div>
     @endif
 </td>

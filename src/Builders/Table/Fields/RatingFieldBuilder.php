@@ -20,7 +20,7 @@ class RatingFieldBuilder extends BasicFieldBuilder
     public function __construct($field, $guard_name)
     {
         //设置默认信息
-        $this->type('rating')->field($field)->guard_name($guard_name)->empty(0);
+        $this->type('rating')->field($field)->guard_name($guard_name)->description('{'.$field.'}')->empty(0);
     }
 
 }

@@ -9,6 +9,6 @@
     @endphp
     @if($pre_image = data_get($extras, 'pre_image', false))<img src="{{ get_acbt_link($pre_image, $__data__) }}" class="{{ data_get($extras, 'image_class', 'w-20px') }} me-3" alt="">@endif{{ $price_value ? ((data_get($extras, 'prefix', '')).' '.$price_value.' '.(data_get($extras, 'suffix', ''))) : $empty_value }}
     @if($description = decode_acbt_template($description_template, $__data__, ''))
-        <div class="fs-7 text-muted mt-1">{{ $description }}</div>
+        <div class="fs-7 text-muted mt-1">{!! $description !!}</div>
     @endif
 </td>

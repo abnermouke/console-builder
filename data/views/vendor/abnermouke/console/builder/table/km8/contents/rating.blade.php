@@ -10,6 +10,6 @@
         @endfor
     </div>
     @if($description = decode_acbt_template($description_template, $__data__, ''))
-        <span class="text-muted text-muted d-block fs-7 mt-1">{{ $description }}</span>
+        <span class="text-muted text-muted d-block fs-7 mt-1">{!! $description !!}</span>
     @endif
 </td>

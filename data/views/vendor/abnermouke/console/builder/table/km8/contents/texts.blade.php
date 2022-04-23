@@ -3,7 +3,7 @@
         <div class="position-absolute start-0 top-0 w-4px h-100 rounded-2 bg-{{ $theme_options && $theme_options_trigger_field ? data_get($theme_options, data_get($__data__, $theme_options_trigger_field, ''), $theme) : $theme }}"></div>
         <a href="{{ get_acbt_link($link, $__data__) }}" class="mb-1 text-{{ $theme }} text-hover-primary fw-bolder">{{ decode_acbt_template($template, $__data__, $empty_value) }}</a>
         @if($description = decode_acbt_template($description_template, $__data__, ''))
-            <div class="fs-7 text-muted">{{ $description }}</div>
+            <div class="fs-7 text-muted">{!! $description !!}</div>
         @endif
     </div>
 </td>
