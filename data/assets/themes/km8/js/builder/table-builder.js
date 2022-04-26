@@ -300,7 +300,7 @@ $.table_builder = {
             fields.find('#acbt_' + sign + '_field_' + item).prop('checked', true).change();
         });
         //循环th
-        table_box.find('.acbt_table_thead_th').each(function () {
+        table_box.find('.acbt_table_thead_th_master').each(function () {
             //获取字段
             var field = $(this).attr('data-field');
             //判断是否显示
@@ -308,12 +308,12 @@ $.table_builder = {
                 //显示对象
                 $(this).removeClass('d-none');
                 //显示内容
-                table_box.find('.acbt_table_tbody_td[data-field="'+field+'"]').removeClass('d-none');
+                table_box.find('.acbt_table_tbody_td_master[data-field="'+field+'"]').removeClass('d-none');
             } else {
                 //显示对象
                 $(this).removeClass('d-none').addClass('d-none');
                 //显示内容
-                table_box.find('.acbt_table_tbody_td[data-field="'+field+'"]').removeClass('d-none').addClass('d-none');
+                table_box.find('.acbt_table_tbody_td_master[data-field="'+field+'"]').removeClass('d-none').addClass('d-none');
             }
         });
     },
@@ -604,7 +604,7 @@ $.table_builder = {
     },
     handleSubContent: function (table, sign, angle) {
         //获取处理对象
-       var target = angle.attr('data-target'), __this = this;
+        var target = angle.attr('data-target'), __this = this;
         //判断是否展开
         if (angle.attr('data-direction') === 'down') {
             //刷新子列表信息

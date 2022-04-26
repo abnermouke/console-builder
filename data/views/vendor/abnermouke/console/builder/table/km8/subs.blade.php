@@ -45,7 +45,7 @@
                     @endforeach
                     @if($actions)
                         <td class="acbt_{{ $sign }}_table_tbody_td_actions text-end export_ignore">
-                            @if($action_group || count($actions) >= 5)
+                            @if($action_group)
                                 <a href="javascript:;" class="btn btn-light btn-active-light-primary btn-sm acbt_{{ $sign }}_table_action_box" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" id="acbt_{{ $sign }}_table_action_box_{{ $k }}">操作 <i class="la la-angle-down"></i></a>
                                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4 acbt_{{ $sign }}_table_action_menu" id="acbt_{{ $sign }}_table_action_menu_{{ $k }}" data-kt-menu="true">
                                     @foreach($actions as $action)

@@ -67,8 +67,6 @@ class TableContentBuilder
             //设置签名
             $this->builder['table_signature'] = $signature;
         }
-        //整理栏目数量
-        $this->builder['column_count'] = count($this->builder['fields']) + ($this->builder['actions'] ? 1 : 0) + ($this->builder['checkbox'] ? 1 : 0) + ($this->builder['sub_query_url'] ? 1 : 0);
         //返回当前实例对象
         return $this;
     }
@@ -148,6 +146,8 @@ class TableContentBuilder
             //打印参数
             dd($this->builder);
         }
+        //整理栏目数量
+        $this->builder['column_count'] = count($this->builder['fields']) + ($this->builder['actions'] ? 1 : 0) + ($this->builder['checkbox'] ? 1 : 0) + ($this->builder['sub_query_url'] ? 1 : 0);
         //加密核心配置（字段、标识、主题等）为签名，用于与后台通讯
         $this->builder['signature'] = Crypt::encryptString(json_encode(Arr::only($this->builder, ['sign', 'theme', 'fields', 'actions', 'sub_level', 'column_count', 'default_show_fields', 'action_group', 'sub_max_level'])));
         //渲染页面
