@@ -1,4 +1,4 @@
-<td class="acbt_table_tbody_td @if(!in_array($field, $__default_show_fields__)) d-none @endif d-flex align-items-center" data-field="{{ $field }}">
+<td class="acbt_table_tbody_td {{ !$__custom_field__ ? 'acbt_table_tbody_td_master' : '' }} @if(!in_array($field, $__default_show_fields__)) d-none @endif d-flex align-items-center" data-field="{{ $field }}">
     <div class="symbol {{ data_get($extras, 'circle', false) ? 'symbol-circle' : '' }} {{ data_get($extras, 'thumb_class', 'symbol-50px') }} overflow-hidden me-3">
         <a href="{{ get_acbt_link($link, $__data__) }}">
             <div class="symbol-label">

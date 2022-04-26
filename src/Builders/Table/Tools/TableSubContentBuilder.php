@@ -38,6 +38,7 @@ class TableSubContentBuilder
         'column_count' => 0,
         'action_group' => false,
         'custom_actions' => false,
+        'custom_field' => false,
         'sub_bind_filed' => '',
     ];
 
@@ -196,6 +197,8 @@ class TableSubContentBuilder
         $this->builder['fields'] = $fields()->get();
         //设置默认显示字段
         $this->builder['default_show_fields'] = array_keys($this->builder['fields']);
+        //设置自定义字段
+        $this->builder['custom_field'] = true;
         //返回当前实例对象
         return $this;
     }

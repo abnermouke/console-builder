@@ -10,10 +10,10 @@
                     </th>
                 @endif
             @else
-                <th class="export_ignore">@</th>
+                <th class="export_ignore"></th>
             @endif
             @foreach($fields as $field => $setting)
-                <th class="acbt_table_thead_th @if(!in_array($field, $default_show_fields)) d-none @endif" data-field="{{ $field }}">{{ $setting['guard_name'] }}</th>
+                <th class="acbt_table_thead_th {{ !isset($custom_field) || !$custom_field ? 'acbt_table_thead_th_master' : '' }} @if(!in_array($field, $default_show_fields)) d-none @endif" data-field="{{ $field }}">{{ $setting['guard_name'] }}</th>
             @endforeach
             @if($actions)
                 <th class="text-end export_ignore">操作</th>
@@ -41,7 +41,7 @@
                         @endif
                     @endif
                     @foreach($fields as $field => $setting)
-                        @include('vendor.abnermouke.console.builder.table.km8.contents.'.$setting['type'], array_merge($setting, ['__data__' => $list, '__sign__' => $sign, '__checkbox__' => $checkbox, '__default_show_fields__' => $default_show_fields]))
+                        @include('vendor.abnermouke.console.builder.table.km8.contents.'.$setting['type'], array_merge($setting, ['__data__' => $list, '__sign__' => $sign, '__checkbox__' => $checkbox, '__default_show_fields__' => $default_show_fields, '__custom_field__' => (!isset($custom_field) ? false : $custom_field)]))
                     @endforeach
                     @if($actions)
                         <td class="acbt_{{ $sign }}_table_tbody_td_actions text-end export_ignore">

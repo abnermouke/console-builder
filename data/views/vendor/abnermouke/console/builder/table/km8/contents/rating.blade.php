@@ -1,4 +1,4 @@
-<td class="acbt_table_tbody_td @if(!in_array($field, $__default_show_fields__)) d-none @endif" data-field="{{ $field }}">
+<td class="acbt_table_tbody_td {{ !$__custom_field__ ? 'acbt_table_tbody_td_master' : '' }} @if(!in_array($field, $__default_show_fields__)) d-none @endif" data-field="{{ $field }}">
     <div class="rating">
         @php
             $rating_value = (int)data_get($__data__, $field, 0);
