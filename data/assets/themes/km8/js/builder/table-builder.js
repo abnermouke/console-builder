@@ -335,6 +335,8 @@ $.table_builder = {
             table_export.on('click', function () {
                 //获取对象
                 var table_box = $("#acbt_"+sign+"_table_box"), loading = loadingStart(table_box, table[0], '正在导出数据...');
+                //隐藏子列表
+                table_box.find('.acbt_'+sign+'_table_tbody_tr_subs').removeClass('export_ignore').addClass('export_ignore');
                 //忽略隐藏项
                 table_box.find('.acbt_table_thead_th').each(function () {
                     //判断是否存在隐藏
@@ -360,6 +362,8 @@ $.table_builder = {
                 //删除非必要样式
                 table_box.find('.acbt_table_thead_th').removeClass('export_ignore');
                 table_box.find('.acbt_table_tbody_td').removeClass('export_ignore');
+                //显示子列表
+                table_box.find('.acbt_'+sign+'_table_tbody_tr_subs_td').removeClass('export_ignore');
                 //关闭弹窗
                 loadingStop(loading, table_box);
                 //提示信息
@@ -598,9 +602,75 @@ $.table_builder = {
             });
         }
     },
+    handleSubContent: function (table, sign, angle) {
+        //获取处理对象
+       var target = angle.attr('data-target'), __this = this;
+        //判断是否展开
+        if (angle.attr('data-direction') === 'down') {
+            //刷新子列表信息
+            __this.querySubContentLists(table, sign, angle);
+        } else {
+            //更改为收起状态
+            angle.attr('data-direction', 'down');
+            //设置按钮
+            angle.find('.fa').removeClass('fa-angle-double-down').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+            //清空内容
+            $(target).removeClass('d-none').addClass('d-none');
+            $(target).find('.table-responsive').empty();
+            //移除状态
+            angle.removeClass('btn-primary');
+        }
+    },
+    querySubContentLists: function (table, sign, angle) {
+        //获取处理对象
+        var table_box = $("#acbt_"+sign+"_table_box"), target = angle.attr('data-target'), __this = this, signature = $(angle.attr('data-sub-signature-target')).text().trim(), query_url = angle.attr('data-query-url'), loading = loadingStart(angle, table_box[0], '正在获取子列表...'), fields = $("#acbt_" + sign + "_fields"), params = {signature: signature, shows: []};
+        //循环字段
+        fields.find('input:checkbox').each(function () {
+            //判断是否选中
+            if ($(this).is(':checked')) {
+                //添加默认字段
+                params['shows'].push($(this).val());
+            }
+        });
+        //尝试发起请求
+        buildRequest(query_url, params, 'post', true, function (res) {
+            //更改为展开状态
+            angle.attr('data-direction', 'up');
+            //设置按钮
+            angle.find('.fa').removeClass('fa-angle-double-down').removeClass('fa-angle-double-up').addClass('fa-angle-double-up');
+            //设置状态
+            angle.removeClass('btn-primary').addClass('btn-primary');
+            //显示内容
+            $(target).removeClass('d-none');
+            //设置呃逆容
+            $(target).find('.table-responsive').empty().html(res.data['html']);
+            //设置内容触发
+            __this.setContentTrigger(table, sign);
+            //设置子集触发
+            __this.setSubContentTrigger(table, sign);
+        }, function (res) {
+            //提示失败
+            alertToast(res.msg, 2000, 'error');
+        }, function () {
+            //关闭加载
+            loadingStop(loading, angle);
+        });
+    },
+    setSubContentTrigger: function (table, sign) {
+        //获取处理对象
+        var table_body = $("#acbt_"+sign+"_table_tbody"), table_angle = table_body.find('.acbt_'+sign+'_table_tbody_td_sub_angle'), __this = this;
+        //判断是否存在子集加载
+        if (typeof table_angle !== 'undefined' && table_angle.length > 0) {
+            //监听点击
+            table_angle.off('click').on('click', function () {
+                //处理子列表内容
+                __this.handleSubContent(table, sign, $(this));
+            });
+        }
+    },
     setContentTrigger: function (table, sign) {
         //获取处理对象
-        var table_box = $("#acbt_"+sign+"_table_box"), table_body = $("#acbt_"+sign+"_table_tbody"), total_count = $("#acbt_"+sign+"_data_total_count"), matched_count = $("#acbt_"+sign+"_data_matched_count"), table_checkbox_select_all = table_box.find('#acbt_'+sign+'_table_select_all'), table_checkbox_trigger_buttons = table.attr('data-checkbox-trigger-buttons'), table_pagination= $("#acbt_"+sign+"_table_pagination"), table_actions =  table_body.find('.acbt_'+sign+'_table_tbody_td_actions'), __this = this;
+        var table_box = $("#acbt_"+sign+"_table_box"), table_body = $("#acbt_"+sign+"_table_tbody"), total_count = $("#acbt_"+sign+"_data_total_count"), matched_count = $("#acbt_"+sign+"_data_matched_count"), table_checkbox_select_all = table_box.find('#acbt_'+sign+'_table_select_all'), table_checkbox_trigger_buttons = table.attr('data-checkbox-trigger-buttons'), table_pagination= $("#acbt_"+sign+"_table_pagination"), table_actions =  table_body.find('.acbt_'+sign+'_table_tbody_td_actions'), table_angle = table_body.find('.acbt_'+sign+'_table_tbody_td_sub_angle'), __this = this;
         //判断是否存在对象
         if (typeof (table_box) !== 'undefined' && parseInt(table_box.length) > 0) {
             //设置统计数值
@@ -681,7 +751,7 @@ $.table_builder = {
             //点击操作
             table_actions.find('.acbt_'+sign+'_table_action_item').on('click', function () {
                 //获取对象配置
-                var confirm_tip = $(this).attr('data-confirm-tip'), query_url = $(this).attr('data-query-url'),
+                var sub_level = $(this).attr('data-sub-level'), sub_sign = $(this).attr('data-sub-sign'), table_angle = table.find('.acbt_'+sign+'_table_tbody_td_sub_angle[data-sub-sign="'+$(this).attr('data-sub-sign')+'"]'), confirm_tip = $(this).attr('data-confirm-tip'), query_url = $(this).attr('data-query-url'),
                     method = $(this).attr('data-method'), type = $(this).attr('data-type'),
                     target_redirect = $(this).attr('data-target-redirect'),
                     extras = JSON.parse($(this).attr('data-extras')), ajax_after = $(this).attr('data-ajax-after'), param_fields = JSON.parse($(this).attr('data-param-fields'));
@@ -701,6 +771,7 @@ $.table_builder = {
                             param_fields['table_sign'] = sign;
                             param_fields['bind_table_id'] = table.attr('id');
                             param_fields['bind_modal_id'] = bind_modal_id;
+                            param_fields['bind_table_parent_sign'] = table_angle.attr('data-parent-sign');
                             //加载loading
                             var loading = loadingStart(table_box, table[0], '正在加载...');
                             //创建请求
@@ -766,8 +837,14 @@ $.table_builder = {
                                     //根据配置处理
                                     switch (ajax_after) {
                                         case 'refresh':
-                                            //刷新当前列表
-                                            __this.requestLists(table, sign);
+                                            //判断层级
+                                            if (sub_level > 1 && typeof table_angle !== 'undefined' && table_angle.length > 0) {
+                                                //刷新子列表
+                                                __this.querySubContentLists(table, sign, table.find('.acbt_'+sign+'_table_tbody_td_sub_angle[data-sub-sign="'+table_angle.attr('data-parent-sign')+'"]'));
+                                            } else {
+                                                //刷新当前列表
+                                                __this.requestLists(table, sign);
+                                            }
                                             break;
                                         case 'reload':
                                             //刷新当前页面
@@ -823,8 +900,14 @@ $.table_builder = {
                                 //根据配置处理
                                 switch (ajax_after) {
                                     case 'refresh':
-                                        //刷新当前列表
-                                        __this.requestLists(table, sign);
+                                        //判断层级
+                                        if (sub_level > 1 && typeof table_angle !== 'undefined' && table_angle.length > 0) {
+                                            //刷新子列表
+                                            __this.querySubContentLists(table, sign, table.find('.acbt_'+sign+'_table_tbody_td_sub_angle[data-sub-sign="'+table_angle.attr('data-parent-sign')+'"]'));
+                                        } else {
+                                            //刷新当前列表
+                                            __this.requestLists(table, sign);
+                                        }
                                         break;
                                     case 'reload':
                                         //刷新当前页面
@@ -878,6 +961,8 @@ $.table_builder = {
             table_content.empty().html(res.data['html']);
             //设置触发
             __this.setContentTrigger(table, sign);
+            //设置下拉子列表触发
+            __this.setSubContentTrigger(table, sign);
             //滑动到列表顶端
             scrollToObject(table);
         }, function (res) {

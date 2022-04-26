@@ -150,11 +150,11 @@ $.form_builder = {
                         target_value = [];
                         //怒换对象
                         $(target).each(function () {
-                            //判断是否选中
-                            if ($(this).is(':checked')) {
-                                //添加值
-                                target_value.push($(this).val());
-                            }
+                           //判断是否选中
+                           if ($(this).is(':checked')) {
+                               //添加值
+                               target_value.push($(this).val());
+                           }
                         });
                         //获取值
                         target_value = JSON.stringify(target_value);
@@ -219,7 +219,7 @@ $.form_builder = {
         var dropdown_modal_id = form.attr('data-dropdown-modal-id');
         //循环表单对象信息
         form.find('.acbf_'+sign+'_item_box').each(function () {
-            //获取基础数据
+             //获取基础数据
             var _this = $(this), type = _this.attr('data-type'), target = _this.attr('data-target'), field = _this.attr('data-field');
             //根据类型处理
             switch (type) {
@@ -248,7 +248,7 @@ $.form_builder = {
                         $(target).flatpickr(filter_date_params);
                         break;
                     }
-                    break;
+                break;
                 case 'files':
                     //整理信息
                     var box = $("#acbf_"+sign+"_item_"+field+"_upload_box"), empty_box = $("#acbf_"+sign+"_item_"+field+"_upload_without_item"), items = $("#acbf_"+sign+"_item_"+field+"_upload_items"), trigger_btn = $("#acbf_"+sign+"_item_"+field+"_trigger"), input_uploader = $("#acbf_"+sign+"_item_"+field+"_uploader"), upload_item_template = '<div class="dropzone-item acbf_'+sign+'_item_'+field+'_upload_item" data-link="__LINK__"><div class="dropzone-file"><div class="dropzone-filename"><span>__FILE_NAME__</span></div></div><div class="dropzone-toolbar acbf_'+sign+'_item_'+field+'_upload_item_toolbar"><span class="dropzone-start acbf_'+sign+'_item_'+field+'_upload_item_trigger" data-trigger="preview" data-bs-toggle="tooltip" data-bs-dismiss="click" title="预览/查看文件内容"><i class="bi bi-eye fs-3"></i></span><span class="dropzone-start acbf_'+sign+'_item_'+field+'_upload_item_trigger" data-trigger="prev" data-bs-toggle="tooltip" data-bs-dismiss="click" title="上移文件排序"><i class="bi bi-arrow-up fs-3"></i></span><span class="dropzone-start acbf_'+sign+'_item_'+field+'_upload_item_trigger" data-trigger="next" data-bs-toggle="tooltip" data-bs-dismiss="click" title="下移文件排序"><i class="bi bi-arrow-down fs-3"></i></span><span class="dropzone-delete acbf_'+sign+'_item_'+field+'_upload_item_trigger" data-trigger="remove" data-bs-toggle="tooltip" data-bs-dismiss="click" data-bs-delay-hide="500" title="删除当前文件"><i class="bi bi-x fs-1"></i></span></div></div>', file_input_trigger = function () {
@@ -399,9 +399,9 @@ $.form_builder = {
                         });
                         //移除图片触发
                         remover_btn.on('click', function () {
-                            //清空内容
-                            $(target).val('').change();
-                            //设置图片地址
+                           //清空内容
+                           $(target).val('').change();
+                           //设置图片地址
                             wrapper.css('background', 'unset');
                         });
                         //设置上传触发
@@ -641,16 +641,16 @@ $.form_builder = {
                     };
                     //监听添加
                     insert_btn.on('click', function () {
-                        //添加基础结构
-                        box.append(template);
-                        //重置触发
+                       //添加基础结构
+                       box.append(template);
+                       //重置触发
                         values_change_trigger();
                     });
                     //监听删除全部
                     delete_all_btn.on('click', function () {
-                        //删除基础结构
-                        box.find('.acbf_'+sign+'_item_'+field+'_values_row').remove();
-                        //重置触发
+                       //删除基础结构
+                       box.find('.acbf_'+sign+'_item_'+field+'_values_row').remove();
+                       //重置触发
                         values_change_trigger();
                     });
                     //单个删除触发
@@ -704,8 +704,8 @@ $.form_builder = {
                             });
                             //设置监听
                             ue.addListener('contentChange', function (editor) {
-                                //设置内容
-                                $(target).val(ue.getContent().trim()).change();
+                               //设置内容
+                               $(target).val(ue.getContent().trim()).change();
                             });
                         });
                     });
@@ -746,15 +746,15 @@ $.form_builder = {
                     }, clear_options_trigger = function (level) {
                         //循环内容
                         box.find('.acbf_'+sign+'_item_'+field+'_linkage_item').each(function () {
-                            //判断当前层级
-                            if (parseInt($(this).attr('data-level')) > parseInt(level)) {
-                                //删除动态option
-                                $(this).find('option.action_option').remove();
-                                //设置默认选中
-                                $(this).find('option.default_option').prop('selected', true);
-                                //设置keys
-                                $(this).attr('data-keys', '[]');
-                            }
+                           //判断当前层级
+                           if (parseInt($(this).attr('data-level')) > parseInt(level)) {
+                               //删除动态option
+                               $(this).find('option.action_option').remove();
+                               //设置默认选中
+                               $(this).find('option.default_option').prop('selected', true);
+                               //设置keys
+                               $(this).attr('data-keys', '[]');
+                           }
                         });
                     }, default_options_trigger = function () {
                         //判断长度
@@ -799,14 +799,14 @@ $.form_builder = {
                 case 'group_checkbox':
                     //设置按钮点击
                     $("#acbf_"+sign+"_item_aliases_checkbox_item_button_trigger_select_all").on('click', function () {
-                        //设置全部选中
-                        $(target).prop('checked', true);
-                        $(target).eq(0).change();
+                       //设置全部选中
+                       $(target).prop('checked', true);
+                       $(target).eq(0).change();
                     });
                     $("#acbf_"+sign+"_item_aliases_checkbox_item_button_trigger_select_none").on('click', function () {
-                        //设置全部选中
-                        $(target).prop('checked', false);
-                        $(target).eq(0).change();
+                       //设置全部选中
+                       $(target).prop('checked', false);
+                       $(target).eq(0).change();
                     });
                     break;
             }
@@ -862,7 +862,7 @@ $.form_builder = {
     },
     setButtonTrigger: function (form, sign) {
         //整理信息
-        var __THIS__ = this, buttons = $("#acbf_" + sign + "_buttons"), toolbars = $("#kt_dashboard_toolbar_items"), bind_modal_id = form.attr('data-bind-modal-id'), bind_table_id = form.attr('data-bind-table-id'), button_trigger = function (_this, param_fields) {
+        var __THIS__ = this, buttons = $("#acbf_" + sign + "_buttons"), toolbars = $("#kt_dashboard_toolbar_items"), bind_table_parent_sign = form.attr('data-bind-table-parent-sign'), bind_modal_id = form.attr('data-bind-modal-id'), bind_table_id = form.attr('data-bind-table-id'), button_trigger = function (_this, param_fields) {
             //获取对象配置
             var confirm_tip = _this.attr('data-confirm-tip'), query_url = _this.attr('data-query-url'),
                 method = _this.attr('data-method'), type = _this.attr('data-type'),
@@ -946,7 +946,7 @@ $.form_builder = {
                                     break;
                                 case 'refresh_table_after_modal_close':
                                     //获取对象
-                                    var table = $("#"+bind_table_id), table_sign = table.attr('data-sign'), modal = $("#"+bind_modal_id);
+                                    var modal = $("#"+bind_modal_id), table = $("#"+bind_table_id), table_sign = table.attr('data-sign'), table_angle = table.find('.acbt_'+table_sign+'_table_tbody_td_sub_angle[data-sub-sign="'+bind_table_parent_sign+'"]');
                                     //判断弹窗是否存在
                                     if (typeof (modal) !== 'undefined' && modal.length > 0) {
                                         //关闭弹窗
@@ -954,8 +954,14 @@ $.form_builder = {
                                     }
                                     //判断表格是否存在
                                     if (typeof (table) !== 'undefined' && table.length > 0) {
-                                        //创建处理实例对象
-                                        $.table_builder.requestLists(table, table_sign);
+                                        //判断是否存在触发对象
+                                        if (typeof table_angle !== 'undefined' && table_angle.length > 0) {
+                                            //刷新表格子列表
+                                            $.table_builder.querySubContentLists(table, table_sign, table_angle);
+                                        } else {
+                                            //刷新表格
+                                            $.table_builder.requestLists(table, table_sign);
+                                        }
                                     }
                                     break;
                                 default:

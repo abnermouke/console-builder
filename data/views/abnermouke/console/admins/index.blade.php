@@ -35,7 +35,8 @@
         ->addFilter($builder->filterAsInput()->date_range('Y-m-d H:i:00')->field('updated_at')->guard_name('更新时间'))
         ->addAction($builder->buildAction()->form(route('abnermouke.console.admins.detail', ['id' => '__ID__']), 'post')->text('编辑信息')->icon('fa fa-edit'))
         ->addAction($builder->buildAction()->modal('admin_wechat_oauth_qrcode_modal', ((int)(new \App\Handler\Cache\Data\Abnermouke\Console\ConfigCacheHandler())->get('CONSOLE_WECHAT_OAUTH') === \App\Model\Abnermouke\Console\Configs::SWITCH_ON ? route('abnermouke.console.admins.qrcode', ['id' => '__ID__']) : ''), 'post')->text('微信授权码')->icon('fa fa-qrcode')->theme('info'))
-        ->addAction($builder->buildAction()->ajax(route('abnermouke.console.admins.status', ['id' => '__ID__']), 'post')->text('更改状态')->icon('fa fa-exchange-alt')->confirm_before_query('更改状态后，原本已禁用账户将重新开放，启用中的用户将禁止使用，是否继续?')->theme('success'))
+        ->addAction($builder->buildAction()->ajax(route('abnermouke.console.admins.status', ['id' => '__ID__']), 'post')->text('启用管理员')->icon('fa fa-check')->confirm_before_query('启用管理员后，该管理员可正常登陆后台，是否继续?')->theme('success')->condition('status', '=', \App\Model\Abnermouke\Console\Admins::STATUS_DISABLED, \Abnermouke\ConsoleBuilder\Builders\Table\ConsoleTableBuilder::VALUE_TYPE_OF_INTEGRAL))
+        ->addAction($builder->buildAction()->ajax(route('abnermouke.console.admins.status', ['id' => '__ID__']), 'post')->text('禁用管理员')->icon('fa fa-ban')->confirm_before_query('禁用管理员后，该管理员将不可登陆并操作后台，是否继续?')->theme('danger')->condition('status', '=', \App\Model\Abnermouke\Console\Admins::STATUS_ENABLED, \Abnermouke\ConsoleBuilder\Builders\Table\ConsoleTableBuilder::VALUE_TYPE_OF_INTEGRAL))
         ->addSort('login_count', '登录次数')
         ->render()
     !!}

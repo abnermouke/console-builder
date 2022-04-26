@@ -4,6 +4,8 @@
 namespace Abnermouke\ConsoleBuilder\Builders\Table\Tools;
 
 
+use Abnermouke\ConsoleBuilder\Builders\Table\ConsoleTableBuilder;
+
 /**
  * 表格构建器数据操作构建处理器
  * Class TableActionBuilder
@@ -16,7 +18,7 @@ class TableActionBuilder
      * @var array
      */
     private $action = [
-        'type' => 'link', 'guard_name' => '', 'theme' => 'primary', 'redirect_uri' => 'javascript:;', 'redirect_target' => false, 'icon' => '', 'method' => 'get', 'param_fields' => [], 'confirm_tip' => '', 'extras' => [], 'after_ajax' => ''
+        'type' => 'link', 'guard_name' => '', 'theme' => 'primary', 'redirect_uri' => 'javascript:;', 'redirect_target' => false, 'icon' => '', 'method' => 'get', 'param_fields' => [], 'confirm_tip' => '', 'extras' => [], 'after_ajax' => '', 'conditions' => [], 'condition_mode' => '&&'
     ];
 
     /**
@@ -175,6 +177,38 @@ class TableActionBuilder
     {
         //设置参数
         $this->action[$key] = $value;
+        //返回当前实例
+        return $this;
+    }
+
+    /**
+     * 设置显示条件连接关系
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-25 10:48:45
+     * @param string $mode （&&、||）
+     * @return $this
+     */
+    public function condition_mode($mode = '&&') {
+        //返回当前实例
+        return $this->setParams('condition_mode', $mode);
+    }
+
+    /**
+     * 新增显示条件
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-25 10:47:45
+     * @param $field string 字段名
+     * @param $operator string 运算符（=, >=, >, <=, <, in, not-in）
+     * @param $value mixed 条件值（in, not-in为数组）
+     * @param string $type 值类型（int：整形，string：字符串，float：浮点型）
+     * @return $this\
+     */
+    public function condition($field, $operator, $value, $type = ConsoleTableBuilder::VALUE_TYPE_OF_STRING)
+    {
+        //添加显示条件
+        $this->action['conditions'][] = compact('field', 'operator', 'value', 'type');
         //返回当前实例
         return $this;
     }

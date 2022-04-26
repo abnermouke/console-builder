@@ -3,6 +3,8 @@
 
 namespace Abnermouke\ConsoleBuilder\Builders\Table\Tools;
 
+use Abnermouke\EasyBuilder\Library\Currency\ValidateLibrary;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 
 /**
@@ -14,6 +16,7 @@ class TableContentBuilder
 {
 
     private $builder = [
+        'signature' => '',
         'sign' => '',
         'theme' => '',
         'template' => '',
@@ -23,7 +26,13 @@ class TableContentBuilder
         'page_size' => 0,
         'checkbox' => '',
         'default_show_fields' => [],
-        'data' => []
+        'data' => [],
+        'sub_query_url' => '',
+        'sub_level' => 1,
+        'sub_max_level' => 0,
+        'sub_sign' => '',
+        'sub_bind_filed' => '',
+        'column_count' => 0,
     ];
 
     /**
@@ -55,7 +64,11 @@ class TableContentBuilder
             $this->builder = array_merge($this->builder, $builder);
             //设置渲染对象
             $this->builder['template'] = 'vendor.abnermouke.console.builder.table.'.strtolower($this->builder['theme']).'.content';
+            //设置签名
+            $this->builder['table_signature'] = $signature;
         }
+        //整理栏目数量
+        $this->builder['column_count'] = count($this->builder['fields']) + ($this->builder['actions'] ? 1 : 0) + ($this->builder['checkbox'] ? 1 : 0) + ($this->builder['sub_query_url'] ? 1 : 0);
         //返回当前实例对象
         return $this;
     }
@@ -97,6 +110,29 @@ class TableContentBuilder
     }
 
     /**
+     * 获取子列表表单
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-26 14:24:24
+     * @param $query_url
+     * @param string $bind_field
+     * @param int $max_level 0：不限制层级；>0具体层级
+     * @return $this
+     * @throws \Exception
+     */
+    public function setSubTable($query_url, $bind_field = '', $max_level = 0)
+    {
+        //设置子列表操作
+        $this->builder['sub_query_url'] = ValidateLibrary::link($query_url) ? $query_url : '';
+        //设置子列表绑定ID
+        $this->builder['sub_bind_filed'] = $bind_field;
+        //设置子列表绑定ID
+        $this->builder['sub_max_level'] = (int)$max_level;
+        //返回当前实例对象
+        return $this;
+    }
+
+    /**
      * 渲染构建对象
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
@@ -112,6 +148,8 @@ class TableContentBuilder
             //打印参数
             dd($this->builder);
         }
+        //加密核心配置（字段、标识、主题等）为签名，用于与后台通讯
+        $this->builder['signature'] = Crypt::encryptString(json_encode(Arr::only($this->builder, ['sign', 'theme', 'fields', 'actions', 'sub_level', 'column_count', 'default_show_fields', 'action_group', 'sub_max_level'])));
         //渲染页面
         return ['html' => view()->make($this->builder['template'], $this->builder)->render()];
     }

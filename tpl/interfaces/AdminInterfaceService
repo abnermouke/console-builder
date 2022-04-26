@@ -174,7 +174,7 @@ class AdminInterfaceService extends BaseService
             return $this->fail(CodeLibrary::DATA_UPDATE_FAIL, '更改失败');
         }
         //记录日志
-        (new AdminLogService())->record('更改管理员状态', array_merge(['id' => $admin_id], $data));
+        (new AdminLogService())->record('更改管理员状态为：'.Admins::TYPE_GROUPS['__status__'][$data['status']], array_merge(['id' => $admin_id], $data));
         //返回成功
         return $this->success(compact('admin_id'));
     }

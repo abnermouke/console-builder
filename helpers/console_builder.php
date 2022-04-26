@@ -57,6 +57,141 @@ if (!function_exists('abbr_acbt_template')) {
     }
 }
 
+if (!function_exists('acbt_conditions_result')) {
+    /**
+     * 表格构建器条件是否成立
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-25 11:26:35
+     * @param $list
+     * @param $conditions
+     * @param string $condition_mode
+     * @return bool
+     */
+    function acbt_conditions_result($list, $conditions, $condition_mode = '&&')
+    {
+        //判断条件信息
+        if (!$conditions) {
+            //直接成立
+            return  true;
+        }
+        //初始化结果
+        $result = true;
+        //整理信息
+        $success = $fail = [];
+        //循环条件信息
+        foreach ($conditions as $condition) {
+            //根据类型处理
+            switch ($condition['type']) {
+                case \Abnermouke\ConsoleBuilder\Builders\Table\ConsoleTableBuilder::VALUE_TYPE_OF_INTEGRAL:
+                    //整理信息
+                    $value = (int)data_get($list, $condition['field'], 0);
+                    $condition['value'] = (int)$condition['value'];
+                    break;
+                case \Abnermouke\ConsoleBuilder\Builders\Table\ConsoleTableBuilder::VALUE_TYPE_OF_FLOAT:
+                    //整理信息
+                    $value = data_get($list, $condition['field'], 0.00);
+                    break;
+                default:
+                    //整理信息
+                    $value = data_get($list, $condition['field'], '');
+                    break;
+            }
+            //根据条件查询
+            switch ($condition['operator']) {
+                case '>':
+                    //判断信息
+                    if ($value > $condition['value']) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+                case '>=':
+                    //判断信息
+                    if ($value >= $condition['value']) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+                case '<':
+                    //判断信息
+                    if ($value < $condition['value']) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+                case '<=':
+                    //判断信息
+                    if ($value <= $condition['value']) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+                case 'in':
+                    //判断信息
+                    if (in_array($value, $condition['value'])) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+                case 'not-in':
+                    //判断信息
+                    if (!in_array($value, $condition['value'])) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+                default:
+                    //判断信息
+                    if ($value === $condition['value']) {
+                        //设置成功
+                        $success[] = $condition['field'];
+                    } else {
+                        //设置失败
+                        $fail[] = $condition['field'];
+                    }
+                    break;
+            }
+        }
+        //判断连接方式
+        if ($condition_mode == '&&') {
+            //判断是否存在失败
+            if (!empty($fail)) {
+                //设置失败
+                $result = false;
+            }
+        } else {
+            //设置失败
+            $result = false;
+            //判断是否存在成功
+            if (!empty($success)) {
+                //设置成功
+                $result = true;
+            }
+        }
+        //返回结果
+        return $result;
+    }
+}
+
 if (!function_exists('abbr_acbt_string')) {
     /**
      * 获取文本大写首字母

@@ -34,7 +34,8 @@ class ConsoleFormBuilder
         'data' => [],
         'space' => 10,
         'bind_modal_id' => '',
-        'bind_table_id' => ''
+        'bind_table_id' => '',
+        'bind_table_parent_sign' => ''
     ];
 
     /**
@@ -55,15 +56,17 @@ class ConsoleFormBuilder
      * @Time 2022-03-22 17:48:15
      * @param $table_id
      * @param $modal_id
+     * @param $table_parent_sign
      * @return \Abnermouke\ConsoleBuilder\Builders\Form\ConsoleFormBuilder
      */
-    public function bindTable($table_id, $modal_id)
+    public function bindTable($table_id, $modal_id, $table_parent_sign)
     {
         //判断参数
         if ($table_id && $modal_id) {
             //设置绑定模态框ID
             $this->builder['bind_table_id'] = $table_id;
             $this->builder['bind_modal_id'] = $modal_id;
+            $this->builder['bind_table_parent_sign'] = $table_parent_sign;
         }
         //返回当前实例对象
         return $this;

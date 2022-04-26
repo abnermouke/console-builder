@@ -1,8 +1,8 @@
 @if(!$bind_modal_id)
     <div class="card">
         <div class="card-body">
-            @endif
-            <div id="acbf_{{ $sign }}" class="acb-form-builder form" data-bind-modal-id="{{ $bind_modal_id }}" data-dropdown-modal-id="{{ $bind_modal_id }}" data-bind-table-id="{{ $bind_table_id }}" data-sign="{{ $sign }}" data-builed="0" data-domain="{{ config('app.url') }}">
+@endif
+            <div id="acbf_{{ $sign }}" class="acb-form-builder form" data-bind-modal-id="{{ $bind_modal_id }}" data-dropdown-modal-id="{{ $bind_modal_id }}" data-bind-table-id="{{ $bind_table_id }}" data-bind-table-parent-sign="{{ $bind_table_parent_sign }}" data-sign="{{ $sign }}" data-builed="0" data-domain="{{ config('app.url') }}">
                 @if($title)
                     <div id="acbf_{{ $sign }}_titles">
                         <h3 class="mb-5">{{ $title }}</h3>
@@ -40,7 +40,7 @@
                             <div class="alert mt-5 {{ $structure['alert']['dismissible'] ? 'alert-dismissible' : '' }} {{ $structure['alert']['bg_light'] ? 'bg-light-'.$structure['alert']['theme'] : 'bg-'.$structure['alert']['theme'] }} {{ $structure['alert']['bolder'] ? ('border border-'.$structure['alert']['bold_style'].' border-'.$structure['alert']['theme']) : '' }} d-flex flex-column flex-sm-row p-5 mb-10">
                                 @if($structure['alert']['icon'])
                                     <span class="text-{{ $structure['alert']['theme'] }} me-4 mb-5 mb-sm-0 {{ $structure['alert']['icon'] }}"></span>
-                                    </span>
+                            </span>
                                 @endif
                                 <div class="d-flex flex-column pe-0 pe-sm-10">
                                     <h5 class="mb-1">{{ $structure['alert']['title'] }}</h5>
@@ -76,7 +76,7 @@
                     @endif
                 </div>
             </div>
-            @if(!$bind_modal_id)
+@if(!$bind_modal_id)
         </div>
     </div>
 @endif

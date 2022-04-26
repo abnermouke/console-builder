@@ -21,6 +21,15 @@ use Illuminate\Support\Str;
 class ConsoleTableBuilder
 {
 
+    //字符串结果类型
+    public const VALUE_TYPE_OF_STRING = 'string';
+    //INT结果类型
+    public const VALUE_TYPE_OF_INTEGRAL = 'integral';
+    //FLOAT结果类型
+    public const VALUE_TYPE_OF_FLOAT = 'float';
+    //Array结果类型
+    public const VALUE_TYPE_OF_ARRAY = 'array';
+
     // 构建参数
     private $builder = [
         'sign' => '',
@@ -30,6 +39,7 @@ class ConsoleTableBuilder
         'query_method' => '',
         'buttons' => [],
         'actions' => [],
+        'action_group' => false,
         'fields' => [],
         'page' => 0,
         'page_size' => 0,
@@ -171,6 +181,20 @@ class ConsoleTableBuilder
     }
 
     /**
+     * 设置Action为组合下拉显示
+     * @Author Abnermouke <abnermouke@outlook.com>
+     * @Originate in Abnermouke's MBP
+     * @Time 2022-04-25 11:30:04
+     * @param bool $group
+     * @return $this
+     */
+    public function setActionGroup($group = true)
+    {
+        //设置为组合下拉显示
+        return $this->setParams('action_group', $group);
+    }
+
+    /**
      * 添加排序
      * @Author Abnermouke <abnermouke@outlook.com>
      * @Originate in Abnermouke's MBP
@@ -204,6 +228,11 @@ class ConsoleTableBuilder
         $this->builder['checkbox_trigger_buttons'] = is_string($trigger_button_id_suffixes) ? explode(',', $trigger_button_id_suffixes) : $trigger_button_id_suffixes;
         //返回当前实例对象
         return $this;
+    }
+
+    public function setSubTable($query_url)
+    {
+
     }
 
     /**
@@ -444,7 +473,7 @@ class ConsoleTableBuilder
         //设置所有可以显示的字段
         $this->builder['show_fields'] = array_column($fields, 'guard_name', 'field');
         //加密核心配置（字段、标识、主题等）为签名，用于与后台通讯
-        $this->builder['signature'] = Crypt::encryptString(json_encode(Arr::only($this->builder, ['sign', 'theme', 'fields', 'checkbox', 'actions'])));
+        $this->builder['signature'] = Crypt::encryptString(json_encode(Arr::only($this->builder, ['sign', 'theme', 'fields', 'checkbox', 'actions', 'action_group'])));
         //调试参数
         if ((int)request()->get('__acbt_debug__', 0) === 1) {
             //打印参数
