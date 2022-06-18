@@ -19,7 +19,7 @@
                 @endforeach
             @endif
     @endif
-            <input type="{{ data_get($extras, 'input_type', 'text')  }}" class="form-control form-control-solid" data-input-mode="{{ data_get($extras, 'input_mode', 'text')  }}" data-format="{{ data_get($extras, 'format', '') }}" data-date-range="{{ data_get($extras, 'range', false) ? 1 : 0 }}" autocomplete="off" id="acbf_{{ $sign }}_item_{{ $field }}" placeholder="{{ data_get($extras, 'placeholder', '') }}" value="{{ $default_value }}" name="{{ $field }}" {!! (int)data_get($extras, 'max_length', 0) > 0 ? 'maxlength="'.data_get($extras, 'max_length', 0).'"' : '' !!}  {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }}/>
+            <input type="{{ data_get($extras, 'input_type', 'text')  }}" class="form-control form-control-solid" data-input-mode="{{ data_get($extras, 'input_mode', 'text')  }}" data-format="{{ data_get($extras, 'format', '') }}" data-date-range="{{ data_get($extras, 'range', false) ? 1 : 0 }}" data-price-ratio="{{ data_get($extras, 'ratio', 0) }}" autocomplete="off" id="acbf_{{ $sign }}_item_{{ $field }}" placeholder="{{ data_get($extras, 'placeholder', '') }}" value="{{ $default_value }}" name="{{ $field }}" {!! (int)data_get($extras, 'max_length', 0) > 0 ? 'maxlength="'.data_get($extras, 'max_length', 0).'"' : '' !!}  {{ $readonly ? 'readonly' : '' }} {{ $disabled ? 'disabled' : '' }}/>
      @if(data_get($extras, 'append', false) || data_get($extras, 'prepend', false))
             @if($appends = data_get($extras, 'append', []))
                 @foreach($appends as $append)

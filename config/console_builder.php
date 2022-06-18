@@ -57,6 +57,7 @@ return [
         'default_page' => 1,
     ],
 
+    //百度编辑器上传配置
     'ueditor_upload' => [
         /* 图片上传配置 */
         "imageActionName" => "uploadimage",
@@ -93,6 +94,6 @@ return [
             ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso",
             ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml", ".mpga"
         ],
-    ]
+    ],
 
 ];

@@ -19,6 +19,7 @@
         "intervention/image": "*",
         "maatwebsite/excel": "*",
         "overtrue/laravel-wechat": "^5.0",
-        "overtrue/laravel-pinyin": "*"
+        "overtrue/laravel-pinyin": "*",
+        "overtrue/easy-sms": "*"
     }
 }

@@ -321,7 +321,6 @@ class ConsoleFormBuilder
                     }
                     break;
                 case 'checkbox':
-                case 'files':
                 case 'image_checkbox':
                 case 'normal_checkbox':
                 case 'tags':
@@ -330,6 +329,15 @@ class ConsoleFormBuilder
                     if ($data = data_get($this->builder['data'], $field, '')) {
                         //设置默认值
                         $config['default_value'] = is_string($data) ? explode(',', $data) : $data;
+                    }
+                    break;
+                case 'files':
+                    //判断内容是否存在
+                    if ($data = data_get($this->builder['data'], $field, '')) {
+                        //设置默认值
+                        $config['default_value'] = $data !== '[]' ? (is_string($data) ? explode(',', $data) : $data) : object_2_array($data);
+                    } else {
+                        $config['default_value'] = [];
                     }
                     break;
                 case 'input':

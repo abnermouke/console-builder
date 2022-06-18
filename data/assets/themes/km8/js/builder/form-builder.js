@@ -1194,6 +1194,24 @@ $.form_builder = {
                         //设置内容
                         params[field] = checkbox_item_value;
                         break;
+                    case 'input':
+                        //获取值
+                        var item_value = $(target).val();
+                        //判断信息
+                        if (parseInt(required) === 1 && (typeof (item_value) === 'undefined' || item_value.length <= 0)) {
+                            //验证提示
+                            return (params = validator_trigger(_this));
+                        }
+                        //判断是否存在价格系数
+                        var price_ratio = $(target).attr('data-price-ratio');
+                        //判断状态
+                        if (typeof (price_ratio) !== 'undefined' && price_ratio.length > 0 && parseInt(price_ratio) > 0) {
+                            //计算值
+                            item_value = parseInt(parseFloat(item_value) * parseInt(price_ratio));
+                        }
+                        //设置内容
+                        params[field] = item_value;
+                    break;
                     default:
                         //获取值
                         var item_value = $(target).val();

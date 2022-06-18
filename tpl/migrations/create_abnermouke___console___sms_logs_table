@@ -49,7 +49,7 @@ class CreateAbnermoukeConsoleSmsLogsTable extends Migration
             $table->timestamp('created_at')->nullable()->comment('创建时间');
             $table->timestamp('updated_at')->nullable()->comment('更新时间');
             //配置索引
-            $table->unique('gateway', 'GATEWAY');
+            $table->index('gateway', 'GATEWAY');
         });
         //添加表自增长值
         (new SmsLogRepository())->setIncrementId(1, SmsLogs::DB_CONNECTION);

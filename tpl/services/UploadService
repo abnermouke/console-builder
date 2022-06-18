@@ -117,6 +117,8 @@ class UploadService extends BaseService
         $file_hash = hash_file('md5', ($storage_path = Storage::disk($storage_disk)->path($storage_name)));
         //更改原文件名
         $storage_name = (!empty($storage_dictionary) ? $storage_dictionary.'/' : '').($origin_name ? pathinfo($origin_name)['filename'].'_' : '').md5($origin_name.$file_hash).($extension ? '.'.$extension : '');
+        //修复空格被转义问题
+        $storage_name = str_replace(' ', '_', $storage_name);
         //强制覆盖文件
         if (!StorageFileLibrary::move($storage_path, $storage_name, $storage_disk, true)) {
             //返回失败
