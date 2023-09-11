@@ -676,17 +676,20 @@ $.form_builder = {
                             ckfinder: {
                                 uploadUrl: _this.attr('data-upload-url')
                             },
-                            toolbar: {
-                                items: [
-                                    'Undo','Redo','SelectAll','RemoveFormat', '|', 'Bold','Italic', '｜', 'NumberedList','BulletedList','|','Outdent','Indent','Blockquote', '|', 'Link','Unlink'
-                                ],
-                            }
+                            //toolbar: {
+                            //    items: [
+                            //        'Undo','Redo','SelectAll','RemoveFormat', '|', 'Bold','Italic', '｜', 'NumberedList','BulletedList','|','Outdent','Indent','Blockquote', '|', 'Link','Unlink'
+                            //    ],
+                            //}
                         }).then(editor => {
                             //设置信息
                             editor.model.document.on('change:data', function () {
                                 //设置信息
                                 $(target).val(editor.getData()).change();
                             });
+                            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                                return new CKeditorUpload( loader,_this.attr('data-upload-url'),_this.attr('data-type'),_this.attr('data-upload-dictionary') );
+                            };
                         });
                     });
                     break;
@@ -1235,4 +1238,59 @@ $.form_builder = {
         return params ? {'__data__': params, '__edited__': edited} : false;
     }
 }
+class CKeditorUpload {
+    constructor(loader,upload_url,file_type,dictionary) {
+        // The file loader instance to use during the upload.
+        this.loader = loader;
+        this.upload_url = upload_url;
+        this.file_type = file_type;
+        this.dictionary = dictionary;
+    }
 
+    // Starts the upload process.
+    upload() {
+        return new Promise((resolve, reject) => {
+            const uploadData = new FormData();
+            let file = [];
+            //this.loader.file 这是一个Promise格式的本地文件流，一定要通过.then 进行获取，之前在各大博客查了很多文章都拿不到这个值，最后经过两个多小时的探索终于找到了是Promise问题。
+            this.loader.file.then(res => {
+                file = res; //文件流
+                uploadData.append('file', file);
+                uploadData.append('file_type', this.file_type);
+                uploadData.append('dictionary', this.dictionary);
+                uploadData.append('origin_name', file.name);
+
+                // 上传文件
+                $.ajax({
+                    url: this.upload_url,
+                    type: 'POST',
+                    data: uploadData,
+                    //dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        //判断上传状态
+                        if (res.state) {
+                            //设置内容
+                            resolve({
+                                default: res.data.link
+                            });
+                        } else {
+                            //提示信息
+                            alertToast(res.msg, 2000, 'error', '图片上传');
+                        }
+                    },
+                    error: function (res) {
+                        //提示信息
+                        alertToast('网络错误，请稍后再试', 2000, 'error', '图片上传');
+                    }
+                });
+            })
+        });
+    }
+    // Aborts the upload process.
+    abort() {
+        // Reject the promise returned from the upload() method.
+        //server.abortUpload();
+    }
+}
